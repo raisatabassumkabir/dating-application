@@ -18,7 +18,7 @@ public class RegistrationServiceTest {
 
         registration.setEmail("test@test.com");
         registration.setPassword("password");
-        registration.setNid("6666");
+        registration.setNidOrPassport("88888888");
 
         registrationService.save(registration);
 

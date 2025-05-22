@@ -33,8 +33,9 @@
                 Password <br />
                 <input type="password" name="password" class="t" required /><br />
                 NID or Passport No  <br />
-                <input type="nid_or_passport" name="nid_or_passport" class="t" required /><br />
+                <input type="nidorpassport" name="nidorpassport" class="t" required /><br />
 
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="submit" value="Register" class="button" /><br />
                 <a href="#"  class="a" style="text-decoration: none; color: #ae0f0f;">Forgot password?</a>
             </form>

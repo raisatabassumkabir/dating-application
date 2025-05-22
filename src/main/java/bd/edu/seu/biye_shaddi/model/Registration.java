@@ -6,18 +6,19 @@ public class Registration {
     @Id
     private String email;
     private String password;
-    private String nid;
-    private String passport;
+    private String nidOrPassport;
 
-    public Registration(String email, String nid, String passport, String password) {
+
+    public Registration() {
+
+    }
+
+    public Registration(String email, String nidOrPassport, String password) {
         this.email = email;
-        this.nid = nid;
-        this.passport = passport;
+        this.nidOrPassport = nidOrPassport;
         this.password = password;
     }
- public Registration() {
 
- }
     public String getEmail() {
         return email;
     }
@@ -26,20 +27,12 @@ public class Registration {
         this.email = email;
     }
 
-    public String getNid() {
-        return nid;
+    public String getNidOrPassport() {
+        return nidOrPassport;
     }
 
-    public void setNid(String nid) {
-        this.nid = nid;
-    }
-
-    public String getPassport() {
-        return passport;
-    }
-
-    public void setPassport(String passport) {
-        this.passport = passport;
+    public void setNidOrPassport(String nidOrPassport) {
+        this.nidOrPassport = nidOrPassport;
     }
 
     public String getPassword() {
