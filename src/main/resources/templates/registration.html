@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+
+</head>
+
+<body>
+<nav>
+    <div class="logo">BiyeShaddi.com</div>
+    <div class="menu">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Registration</a>
+        <a href="#">Login</a>
+    </div>
+</nav>
+
+<div id="main-content">
+    <div id="x">
+        Welcome to <br />
+        <b style="color: #fff;">BiyeShaddi.com</b>
+    </div>
+    <div id="y">
+        <div id="l">
+            <h1>Register</h1>
+            <form action="/registration-form" method="post" th:object="${registration}">
+                E-mail <br />
+                <input type="email" name="email" class="t" required /><br />
+                Password <br />
+                <input type="password" name="password" class="t" required /><br />
+                NID or Passport No  <br />
+                <input type="nid_or_passport" name="nid_or_passport" class="t" required /><br />
+
+                <input type="submit" value="Register" class="button" /><br />
+                <a href="#"  class="a" style="text-decoration: none; color: #ae0f0f;">Forgot password?</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Josefin Sans", sans-serif;
+    }
+    header {
+        width: 100%;
+        height: 100vh;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15)), url("/picture/biye.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+
+    body {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15)), url("/picture/biye.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    nav {
+        width: 100%;
+        height: 15vh;
+        background: rgba(0, 0, 0, 0.2);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-transform: uppercase;
+    }
+
+    nav .logo {
+        width: 25%;
+        text-align: center;
+        text-transform: initial;
+        font-size: 30px;
+    }
+
+    nav .menu {
+        width: 40%;
+        display: flex;
+        justify-content: space-around;
+        gap: 30px;
+    }
+
+    nav .menu a {
+        width: 25%;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+    }
+
+    nav .menu a:first-child {
+        color: #ae0f0f;
+        font-weight: bold;
+        text-decoration: none;
+        width: 25%;
+    }
+
+    #main-content {
+        height: 85vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #x {
+        margin-top: 2px;
+        width: 40%;
+        color: white;
+        text-align: center;
+        font-size: 50px;
+        font-weight: inherit;
+        padding: 20px;
+    }
+
+    #y {
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #l {
+        width: 60%;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 30px;
+        border-radius: 10px;
+        transition: 0.4s ease;
+        font-weight: bold;
+    }
+
+    #l:hover {
+        background: linear-gradient(
+                45deg,
+                rgba(174, 15, 15, 0.3),
+                rgba(255, 255, 255, 0.6)
+        );
+    }
+
+    h1 {
+        text-align: center;
+        color: #ae0f0f;
+        margin-bottom: 20px;
+    }
+
+    form {
+        color: #333;
+    }
+
+    .t {
+        width: 100%;
+        height: 40px;
+        margin: 20px 0 30px 0;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 4px rgba(174, 15, 15, 0.3);
+
+    }
+    .a {
+        display: inline-block;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #ae0f0f;
+    }
+
+
+    .button {
+        width: 100%;
+        height: 40px;
+        background-color: #ae0f0f;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background-color: #880e0e;
+    }
+
+
+</style>
