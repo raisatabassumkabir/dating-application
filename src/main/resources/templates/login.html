@@ -13,7 +13,7 @@
     <div class="logo">BiyeShaddi.com</div>
     <div class="menu">
         <a href="http://localhost:8080/index">Home</a>
-        <a href="http://localhost:">About</a>
+        <a href="http://localhost:8080">About</a>
         <a href="http://localhost:8080/registration">Registration</a>
         <a href="http://localhost:8080/login">Login</a>
     </div>
@@ -26,16 +26,13 @@
     </div>
     <div id="y">
         <div id="l">
-            <h1>Register</h1>
-            <form action="/registration-form" method="post" th:object="${registration}">
+            <h1>Login</h1>
+            <form action="/login-form" method="post" th:object="${login}">
                 E-mail <br />
                 <input type="email" name="email" class="t" required /><br />
                 Password <br />
                 <input type="password" name="password" class="t" required /><br />
-                NID or Passport No  <br />
-                <input type="nid_or_passport" name="nid_or_passport" class="t" required /><br />
-
-                <input type="submit" value="Register" class="button" /><br />
+                <input type="submit" value="Login" class="button" /><br />
                 <a href="#"  class="a" style="text-decoration: none; color: #ae0f0f;">Forgot password?</a>
             </form>
         </div>
