@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://thymeleaf.org" >
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,7 +10,7 @@
 <body>
 <div class="container" role="main">
     <h1>Your Information</h1>
-    <form>
+    <form action="/user-info-form" method="post" th:object="${user}">
         <section aria-labelledby="personal-info">
             <h2 id="personal-info" style="color:#ae0f0f; margin-bottom:15px;"></h2>
             <label for="name">Name</label>
@@ -64,9 +64,13 @@
                 <option value="lawyer">Lawyer</option>
                 <option value="teacher">Teacher</option>
                 <option value="business">Business</option>
+                <option value="govt-employee">Government Employee</option>
                 <option value="student">Student</option>
                 <option value="pilot">Pilot</option>
-                <option value="contentcreator">Content Creator</option>
+                <option value="air-hostage">Air Hostage</option>
+                <option value="service-holder">Service Holder</option>
+                <option value="artist">Artist</option>
+                <option value="content-creator">Content Creator</option>
                 <option value="others">Others</option>
             </select>
 
