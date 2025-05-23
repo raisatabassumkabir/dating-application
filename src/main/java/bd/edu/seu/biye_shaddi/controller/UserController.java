@@ -9,6 +9,6 @@ public class UserController {
 
     @GetMapping("/user_dashboard")
     public String userDashboardPage(){
-        return "userDashboard";
+        return "user_dashboard";
     }
 }

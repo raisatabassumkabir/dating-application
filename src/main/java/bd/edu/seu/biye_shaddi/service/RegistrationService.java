@@ -18,4 +18,6 @@ public class RegistrationService {
     public Registration save(Registration registration) {
         return  registrationRepository.save(registration);
     }
+
+
 }
