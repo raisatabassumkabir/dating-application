@@ -13,7 +13,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request-> request
-                .requestMatchers("/","/registration","/index","registration-form","login","/login-form","/user_dashboard").permitAll()
+                .requestMatchers("/","/registration","/index","/registration-form","/login","/login-form","/user-info-form","/user_dashboard","/user_info").permitAll()
                         .requestMatchers("/picture/**","/css/**").permitAll()
                         .anyRequest()
                         .authenticated()

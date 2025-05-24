@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class UserController {
@@ -23,9 +25,16 @@ public class UserController {
     public String userDashboardPage(Model model){
         return "user_dashboard";
     }
+
+
     @PostMapping("/user-info-form")
-    public String userInfoForm(@ModelAttribute User user){
+    public String userInfoForm(@ModelAttribute User user,@RequestParam String name,@RequestParam int age,@RequestParam String gender,@RequestParam String location, @RequestParam String education, @RequestParam String religion, @RequestParam String height, @RequestParam String relationshipStatus, @RequestParam String bio,@RequestParam String  profession,@RequestParam String interests,@RequestParam String profilePictureUrl, @RequestParam int preferredAgeMin ,@RequestParam int preferredAgeMax ,@RequestParam String preferredGender,@RequestParam String preferredHeightMin,@RequestParam String preferredHeightMax){
         userService.saveUser(user);
-        return "user_dashboard";
+        return "user_info";
+    }
+
+    @GetMapping("/user_info")
+    public String seeInfoPage(Model model){
+        return "user_info";
     }
 }

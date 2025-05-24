@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RegistrationController {
@@ -24,7 +25,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration-form")
-    public String registration  ( @ModelAttribute Registration registration){
+    public String registration  (@ModelAttribute Registration registration , @RequestParam String email , @RequestParam String password,@RequestParam String nidOrPassport ){
         registrationService.save(registration);
         return "login";
     }

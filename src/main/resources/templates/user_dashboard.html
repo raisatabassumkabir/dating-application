@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://thymeleaf.org" >
+<html lang="en" xmlns:th="https://thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dating Website Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-
 </head>
 <body>
 <div class="container" role="main">
@@ -14,16 +13,16 @@
         <section aria-labelledby="personal-info">
             <h2 id="personal-info" style="color:#ae0f0f; margin-bottom:15px;"></h2>
             <label for="name">Name</label>
-            <input type="text" id="name" placeholder="Your full name" required />
+            <input type="text" id="name" name="name" placeholder="Your full name" required />
 
             <div class="inline-group">
                 <div>
                     <label for="age">Age</label>
-                    <input type="number" id="age" min="18" max="100" placeholder="Age" required />
+                    <input type="number" id="age" name="age" min="18" max="100" placeholder="Age" required />
                 </div>
                 <div>
                     <label for="gender">Gender</label>
-                    <select id="gender" required>
+                    <select id="gender" name="gender" required>
                         <option value="" disabled selected>Select Gender</option>
                         <option value="female">Female</option>
                         <option value="male">Male</option>
@@ -34,31 +33,31 @@
             </div>
 
             <label for="location">Location</label>
-            <input type="text" id="location" placeholder="Your city or region" required />
+            <input type="text" id="location" name="location" placeholder="Your city or region" required />
             <label for="education">Educational Qualification</label>
-            <input type="text" id="education"  required />
+            <input type="text" id="education" name="education" required />
             <div class="inline-group">
                 <div>
                     <label for="religion">Religion</label>
-                    <input type="number" id="religion" min="18" max="100" placeholder="Age" required />
+                    <input type="text" id="religion" name="religion" placeholder="Religion" required />
                 </div>
                 <div>
                     <label for="height">Height</label>
-                    <input type="text" id="height"  required />
+                    <input type="text" id="height" name="height" required />
                 </div>
             </div>
             <label for="status">Relationship Status</label>
-            <select id="status" required>
-                <option value=" " disabled selected>Select Status</option>
+            <select id="status" name="relationshipStatus" required>
+                <option value="" disabled selected>Select Status</option>
                 <option value="single">Single</option>
                 <option value="divorced">Divorced</option>
             </select>
-            <label for="bio">Short Introduction of Yourself </label>
-            <input type="text" id="bio"  required />
+            <label for="bio">Short Introduction of Yourself</label>
+            <input type="text" id="bio" name="bio" required />
 
             <label for="profession">Profession</label>
-            <select id="profession" required>
-                <option value=" " disabled selected>Select a profession </option>
+            <select id="profession" name="profession" required>
+                <option value="" disabled selected>Select a profession</option>
                 <option value="doctor">Doctor</option>
                 <option value="engineer">Engineer</option>
                 <option value="lawyer">Lawyer</option>
@@ -67,7 +66,7 @@
                 <option value="govt-employee">Government Employee</option>
                 <option value="student">Student</option>
                 <option value="pilot">Pilot</option>
-                <option value="air-hostage">Air Hostage</option>
+                <option value="air-hostess">Air Hostess</option>
                 <option value="service-holder">Service Holder</option>
                 <option value="artist">Artist</option>
                 <option value="content-creator">Content Creator</option>
@@ -76,56 +75,56 @@
 
             <label>Interests (select all that apply)</label>
             <div class="checkbox-group" role="group" aria-label="Interests">
-                <label><input type="checkbox" name="interest" value="sports" /> Sports</label>
-                <label><input type="checkbox" name="interest" value="music" /> Music</label>
-                <label><input type="checkbox" name="interest" value="travel" /> Travel</label>
-                <label><input type="checkbox" name="interest" value="reading" /> Reading</label>
-                <label><input type="checkbox" name="interest" value="movies" /> Movies</label>
-                <label><input type="checkbox" name="interest" value="gaming" /> Gaming</label>
+                <label><input type="checkbox" name="interests" value="sports" /> Sports</label>
+                <label><input type="checkbox" name="interests" value="music" /> Music</label>
+                <label><input type="checkbox" name="interests" value="travel" /> Travel</label>
+                <label><input type="checkbox" name="interests" value="reading" /> Reading</label>
+                <label><input type="checkbox" name="interests" value="movies" /> Movies</label>
+                <label><input type="checkbox" name="interests" value="gaming" /> Gaming</label>
+            </div>
+
+            <section aria-labelledby="picture-upload" style="margin-top: 30px;">
+                <label class="picture-upload-section" for="profilePictureUrl">
+                    <p>Click or drag your photo here to upload</p>
+                    <input type="file" id="profilePictureUrl" name="profilePictureUrl" accept="image/*" />
+                    <img id="picture-preview" class="picture-preview" alt="Profile Preview" style="display:none;" />
+                </label>
+            </section>
+
+            <section aria-labelledby="preferences" style="margin-top: 30px;">
+                <h2 id="preferences" style="color:#ae0f0f; margin-bottom:15px;">What Kind of Person Are You Looking For?</h2>
+
+                <label>Age range you prefer</label>
+                <div class="range-inputs" role="group" aria-label="Age range preference">
+                    <input type="number" id="preferredAgeMin" name="preferredAgeMin" min="18" max="100" placeholder="Min age" required />
+                    <input type="number" id="preferredAgeMax" name="preferredAgeMax" min="18" max="100" placeholder="Max age" required />
+                </div>
+
+                <label>Preferred Gender</label>
+                <div class="radio-group" role="radiogroup" aria-label="Preferred Gender" id="preferredGender">
+                    <label><input type="radio" name="preferredGender" value="female" required /> Female</label>
+                    <label><input type="radio" name="preferredGender" value="male" /> Male</label>
+                    <label><input type="radio" name="preferredGender" value="nonbinary" /> Non-binary</label>
+                    <label><input type="radio" name="preferredGender" value="any" /> Any</label>
+                </div>
+
+                <label>Height range you prefer</label>
+                <div class="range-inputs" role="group" aria-label="Height range preference">
+                    <input type="text" id="preferredHeightMin" name="preferredHeightMin" placeholder="Min height" required />
+                    <input type="text" id="preferredHeightMax" name="preferredHeightMax" placeholder="Max height" required />
+                </div>
+            </section>
+
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div style="text-align: center;">
+                <button type="submit" class="submit-btn" aria-label="Save your profile and preferences">Save Profile</button>
             </div>
         </section>
-
-        <section aria-labelledby="picture-upload" style="margin-top: 30px;">
-            <h2 id="picture-upload" style="color:#ae0f0f; margin-bottom:15px;">Upload Profile Picture</h2>
-            <label class="picture-upload-section" for="profile-picture">
-                <p>Click or drag your photo here to upload</p>
-                <input type="file" id="profile-picture" name="profile-picture" accept="image/*" />
-                <img id="picture-preview" class="picture-preview" alt="Profile Preview" style="display:none;" />
-            </label>
-        </section>
-
-        <section aria-labelledby="preferences" style="margin-top: 30px;">
-            <h2 id="preferences" style="color:#ae0f0f; margin-bottom:15px;">What Kind of Person Are You Looking For?</h2>
-
-            <label>Age range you prefer</label>
-            <div class="range-inputs" role="group" aria-label="Age range preference">
-                <input type="number" id="pref-age-min" min="18" max="100" placeholder="Min age" required />
-                <input type="number" id="pref-age-max" min="18" max="100" placeholder="Max age" required />
-            </div>
-
-            <label>Preferred Gender</label>
-            <div class="radio-group" role="radiogroup" aria-label="Preferred gender">
-                <label><input type="radio" name="pref-gender" value="female" required /> Female</label>
-                <label><input type="radio" name="pref-gender" value="male" /> Male</label>
-                <label><input type="radio" name="pref-gender" value="nonbinary" /> Non-binary</label>
-                <label><input type="radio" name="pref-gender" value="any" /> Any</label>
-            </div>
-            <label>Height range you prefer</label>
-            <div class="range-inputs" role="group" aria-label="Age range preference">
-                <input type="number" id="pref-height-min" min="18" max="100" placeholder="Min height" required />
-                <input type="number" id="pref-height-max" min="18" max="100" placeholder="Max height" required />
-            </div>
-
-        </section>
-
-        <button type="submit" class="submit-btn" aria-label="Save your profile and preferences">Save Profile</button>
     </form>
 </div>
 
-
-
 <script>
-    const fileInput = document.getElementById('profile-picture');
+    const fileInput = document.getElementById('profilePictureUrl');
     const previewImage = document.getElementById('picture-preview');
 
     fileInput.addEventListener('change', function() {
@@ -143,11 +142,6 @@
         }
     });
 </script>
-
-
-
-</body>
-</html>
 
 <style>
     * {
@@ -169,9 +163,6 @@
         max-width: 800px;
         padding: 40px 50px;
         border-radius: 12px;
-
-
-
     }
     h1 {
         font-weight: 600;
@@ -242,6 +233,7 @@
     .submit-btn {
         align-self: center;
         background: #ae0f0f;
+        margin-top: 25px;
         color: white;
         border: none;
         padding: 15px 40px;
@@ -301,3 +293,5 @@
         }
     }
 </style>
+</body>
+</html>
