@@ -21,6 +21,7 @@ public class UserInfoTest {
     public void userInfo(){
         User user = new User();
         user.setAge(23);
+        user.setEmailId("email@email.com");
         user.setEducation("MBA");
         user.setGender("Male");
         user.setInterests(Collections.singletonList("sports"));

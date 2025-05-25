@@ -1,10 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: white;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 50px;
+            background: white;
+           /* border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);*/
+        }
+        h1 {
+            font-weight: 600;
+            text-align: center;
+            color: #ae0f0f;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        .profile-picture {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .profile-picture img {
+            width: 150px; /* Set the width of the profile picture */
+            height: 150px; /* Set the height of the profile picture */
+            border-radius: 50%; /* Make it circular */
+            object-fit: cover; /* Ensure the image covers the area */
+            border: 2px solid #ae0f0f; /* Optional: Add a border */
+        }
+        p {
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: black;
+        }
+        strong {
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-userInfo
+<div class="container" role="main">
+    <h1>Your Profile Information</h1>
+    <div class="profile-picture">
+        <img th:src="@{${user.profilePictureUrl}}" alt="Profile Picture" style="max-width: 200px; border-radius: 12px;" />
+    </div>
+    <input type="hidden" name="id" th:value="${user.id}" />
+    <p><strong>Name:</strong> <span th:text="${user.name}"></span></p>
+    <p><strong>Age:</strong> <span th:text="${user.age}"></span></p>
+    <p><strong>Gender:</strong> <span th:text="${user.gender}"></span></p>
+    <p><strong>Location:</strong> <span th:text="${user.location}"></span></p>
+    <p><strong>Education:</strong> <span th:text="${user.education}"></span></p>
+    <p><strong>Religion:</strong> <span th:text="${user.religion}"></span></p>
+    <p><strong>Height:</strong> <span th:text="${user.height}"></span></p>
+    <p><strong>Relationship Status:</strong> <span th:text="${user.relationshipStatus}"></span></p>
+    <p><strong>Bio:</strong> <span th:text="${user.bio}"></span></p>
+    <p><strong>Profession:</strong> <span th:text="${user.profession}"></span></p>
+    <p><strong>Preferred Age Range:</strong> <span th:text="${user.preferredAgeMin}"></span> - <span th:text="${user.preferredAgeMax}"></span></p>
+    <p><strong>Preferred Gender:</strong> <span th:text="${user.preferredGender}"></span></p>
+    <p><strong>Preferred Height Range:</strong> <span th:text="${user.preferredHeightMin}"></span> - <span th:text="${user.preferredHeightMax}"></span></p>
+
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+</div>
 </body>
 </html>

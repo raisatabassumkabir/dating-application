@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dating Website Dashboard</title>
+    <title>User Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
+<div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a th:href="@{'/user_info'(id=${user?.id})}">User Info</a>
+
+</div>
 <div class="container" role="main">
     <h1>Your Information</h1>
-    <form action="/user-info-form" method="post" th:object="${user}">
+    <form action="/user-info-form" method="post" th:object="${user}" enctype="multipart/form-data">
+        <!-- Hidden input for id -->
+
+
         <section aria-labelledby="personal-info">
             <h2 id="personal-info" style="color:#ae0f0f; margin-bottom:15px;"></h2>
             <label for="name">Name</label>
             <input type="text" id="name" name="name" placeholder="Your full name" required />
+
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" placeholder="Your Email" required />
 
             <div class="inline-group">
                 <div>
@@ -26,14 +37,29 @@
                         <option value="" disabled selected>Select Gender</option>
                         <option value="female">Female</option>
                         <option value="male">Male</option>
-                        <option value="nonbinary">Non-binary</option>
-                        <option value="other">Other</option>
+
                     </select>
                 </div>
             </div>
 
             <label for="location">Location</label>
-            <input type="text" id="location" name="location" placeholder="Your city or region" required />
+            <select id="location" name="location" required>
+                <option value="" disabled selected>Your city</option>
+                <option value="dhaka">Dhaka</option>
+                <option value="khulna">Khulna</option>
+                <option value="barishal">Barishal</option>
+                <option value="sylhet">Sylhet</option>
+                <option value="chittagong">Chittagong</option>
+                <option value="rajshahi">Rajshahi</option>
+                <option value="rangpur"> Rangpur</option>
+                <option value="mymensingh">Mymensingh</option>
+                <option value="cumilla">Cumilla</option>
+                <option value="narayangan">Narayangan</option>
+                <option value="cox's-bazar">Cox's Bazar</option>
+                <option value="others">Others</option>
+            </select>
+
+
             <label for="education">Educational Qualification</label>
             <input type="text" id="education" name="education" required />
             <div class="inline-group">
@@ -53,7 +79,7 @@
                 <option value="divorced">Divorced</option>
             </select>
             <label for="bio">Short Introduction of Yourself</label>
-            <input type="text" id="bio" name="bio" required />
+            <input type="text" id="bio" name="bio" placeholder="Describe about yourself in few words " required />
 
             <label for="profession">Profession</label>
             <select id="profession" name="profession" required>
@@ -83,13 +109,13 @@
                 <label><input type="checkbox" name="interests" value="gaming" /> Gaming</label>
             </div>
 
-            <section aria-labelledby="picture-upload" style="margin-top: 30px;">
-                <label class="picture-upload-section" for="profilePictureUrl">
-                    <p>Click or drag your photo here to upload</p>
-                    <input type="file" id="profilePictureUrl" name="profilePictureUrl" accept="image/*" />
-                    <img id="picture-preview" class="picture-preview" alt="Profile Preview" style="display:none;" />
-                </label>
-            </section>
+            <!-- Profile Picture Upload -->
+            <div class="picture-upload-section" style="margin-top: 30px;">
+                <label for="profilePicture">Profile Picture</label>
+                <input type="file" id="profilePicture" name="profilePicture" accept="image/*" />
+                <p>Click or drag your photo here to upload</p>
+                <img id="picture-preview" class="picture-preview" alt="Profile Preview" style="display:none;" />
+            </div>
 
             <section aria-labelledby="preferences" style="margin-top: 30px;">
                 <h2 id="preferences" style="color:#ae0f0f; margin-bottom:15px;">What Kind of Person Are You Looking For?</h2>
@@ -104,8 +130,7 @@
                 <div class="radio-group" role="radiogroup" aria-label="Preferred Gender" id="preferredGender">
                     <label><input type="radio" name="preferredGender" value="female" required /> Female</label>
                     <label><input type="radio" name="preferredGender" value="male" /> Male</label>
-                    <label><input type="radio" name="preferredGender" value="nonbinary" /> Non-binary</label>
-                    <label><input type="radio" name="preferredGender" value="any" /> Any</label>
+
                 </div>
 
                 <label>Height range you prefer</label>
@@ -163,6 +188,7 @@
         max-width: 800px;
         padding: 40px 50px;
         border-radius: 12px;
+
     }
     h1 {
         font-weight: 600;
@@ -184,6 +210,7 @@
     }
     input[type="text"],
     input[type="number"],
+    input[type="email"],
     select {
         width: 100%;
         padding: 12px;
@@ -194,6 +221,7 @@
     }
     input[type="text"]:focus,
     input[type="number"]:focus,
+    input[type="email"]:focus,
     select:focus {
         border-color: #ae0f0f;
         outline: none;

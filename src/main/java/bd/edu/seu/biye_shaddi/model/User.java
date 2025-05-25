@@ -4,11 +4,14 @@ import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
+
+
 public class User {
-    // Basic Information
+
     @Id
-    private String userId;
+    private String id;
     private String name;
+    private String emailId; // This will be the unique identifier for MongoDB
     private int age;
     private String gender;
     private String location;
@@ -18,6 +21,7 @@ public class User {
     private String height; // can be string to allow units or formatted height
     private String relationshipStatus;
     private String bio;
+    // Email for login linkage
     // Preferences
     private int preferredAgeMin;
     private int preferredAgeMax;
@@ -32,7 +36,8 @@ public class User {
 
     public User() {}
 
-    public User(int age, String bio, String education, String gender, String height, List<String> interests, String location, String name, Integer preferredAgeMax, Integer preferredAgeMin, String preferredGender, String preferredHeightMax, String preferredHeightMin, String profession, String profilePictureUrl, String relationshipStatus, String religion, String userId) {
+    public User( String id,String emailId,int age, String bio, String education, String gender, String height, List<String> interests, String location, String name, Integer preferredAgeMax, Integer preferredAgeMin, String preferredGender, String preferredHeightMax, String preferredHeightMin, String profession, String profilePictureUrl, String relationshipStatus, String religion) {
+        this.id=id;
         this.age = age;
         this.bio = bio;
         this.education = education;
@@ -50,7 +55,8 @@ public class User {
         this.profilePictureUrl = profilePictureUrl;
         this.relationshipStatus = relationshipStatus;
         this.religion = religion;
-        this.userId = userId;
+        this.emailId = emailId;
+
     }
 
     public int getAge() {
@@ -189,11 +195,27 @@ public class User {
         this.religion = religion;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getEmailId() {
+        return emailId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+
+    public void setPreferredAgeMax(int preferredAgeMax) {
+        this.preferredAgeMax = preferredAgeMax;
+    }
+
+    public void setPreferredAgeMin(int preferredAgeMin) {
+        this.preferredAgeMin = preferredAgeMin;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
