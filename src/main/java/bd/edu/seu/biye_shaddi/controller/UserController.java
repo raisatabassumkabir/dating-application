@@ -48,24 +48,25 @@ public class UserController {
 
 
     @PostMapping("/user-info-form")
-    public String userInfoForm(@ModelAttribute User user, @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture) {
-        // Handle profile picture upload
-        if (profilePicture != null && !profilePicture.isEmpty()) {
-            try {
-                String uploadDir = "uploads/";
-                java.io.File uploadDirFile = new java.io.File(uploadDir);
-                if (!uploadDirFile.exists()) {
-                    uploadDirFile.mkdirs();
-                }
-                String fileExtension = org.springframework.util.StringUtils.getFilenameExtension(profilePicture.getOriginalFilename());
-                String newFileName = java.util.UUID.randomUUID().toString() + (fileExtension != null ? "." + fileExtension : "");
-                java.nio.file.Path filePath = java.nio.file.Paths.get(uploadDir, newFileName);
-                java.nio.file.Files.copy(profilePicture.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                user.setProfilePictureUrl("/" + uploadDir + newFileName);
-            } catch (Exception e) {
-                e.printStackTrace();
+    public String userInfoForm(@ModelAttribute User user,@RequestParam("profilePicture")MultipartFile file) throws IOException  {
+        //  profile picture upload
+        if (!file.isEmpty()) {
+            String uploadDir = "uploads/";
+            String originalFileName = file.getOriginalFilename();
+            String fileName = UUID.randomUUID() + "_" + originalFileName;
+
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
             }
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // store the file path in the user model
+            user.setProfilePictureUrl("/" + uploadDir + fileName); // assuming profilePictureUrl is a String
         }
+
         userService.saveUser(user);
         return "redirect:/user_info?id=" + user.getId();
     }

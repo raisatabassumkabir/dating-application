@@ -1,6 +1,7 @@
 package bd.edu.seu.biye_shaddi.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class Registration {
     @Id
@@ -40,6 +41,6 @@ public class Registration {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 }

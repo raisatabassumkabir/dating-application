@@ -19,7 +19,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Fetch by email
     public Optional<User> getUserById(String id) {
         return userRepository.findById(id);
     }

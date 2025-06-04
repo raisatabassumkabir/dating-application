@@ -62,7 +62,7 @@
 <div class="container" role="main">
     <h1>Your Profile Information</h1>
     <div class="profile-picture">
-        <img th:src="@{${user.profilePictureUrl}}" alt="Profile Picture" style="max-width: 200px; border-radius: 12px;" />
+        <img th:src="${user.profilePictureUrl}" alt="Profile Picture" style="max-width: 200px; border-radius: 12px;" />
     </div>
     <input type="hidden" name="id" th:value="${user.id}" />
     <p><strong>Name:</strong> <span th:text="${user.name}"></span></p>

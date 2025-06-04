@@ -11,7 +11,7 @@ public class User {
     @Id
     private String id;
     private String name;
-    private String emailId; // This will be the unique identifier for MongoDB
+    private String emailId;
     private int age;
     private String gender;
     private String location;
@@ -21,7 +21,7 @@ public class User {
     private String height; // can be string to allow units or formatted height
     private String relationshipStatus;
     private String bio;
-    // Email for login linkage
+
     // Preferences
     private int preferredAgeMin;
     private int preferredAgeMax;
@@ -83,6 +83,14 @@ public class User {
         this.education = education;
     }
 
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+
     public String getGender() {
         return gender;
     }
@@ -97,6 +105,14 @@ public class User {
 
     public void setHeight(String height) {
         this.height = height;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<String> getInterests() {
@@ -123,19 +139,19 @@ public class User {
         this.name = name;
     }
 
-    public Integer getPreferredAgeMax() {
+    public int getPreferredAgeMax() {
         return preferredAgeMax;
     }
 
-    public void setPreferredAgeMax(Integer preferredAgeMax) {
+    public void setPreferredAgeMax(int preferredAgeMax) {
         this.preferredAgeMax = preferredAgeMax;
     }
 
-    public Integer getPreferredAgeMin() {
+    public int getPreferredAgeMin() {
         return preferredAgeMin;
     }
 
-    public void setPreferredAgeMin(Integer preferredAgeMin) {
+    public void setPreferredAgeMin(int preferredAgeMin) {
         this.preferredAgeMin = preferredAgeMin;
     }
 
@@ -193,29 +209,5 @@ public class User {
 
     public void setReligion(String religion) {
         this.religion = religion;
-    }
-
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
-
-    public void setPreferredAgeMax(int preferredAgeMax) {
-        this.preferredAgeMax = preferredAgeMax;
-    }
-
-    public void setPreferredAgeMin(int preferredAgeMin) {
-        this.preferredAgeMin = preferredAgeMin;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }
