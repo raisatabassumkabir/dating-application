@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- ADDED: Proper HTML structure and title -->
+    <title>Contact Details</title>
+    <!-- Add your CSS styles here (e.g., Bootstrap for form-control) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Contact Details</h2>
+    <!-- CHANGED: Added Thymeleaf form with proper binding -->
+    <form th:action="@{/saveContactDetails}" th:object="${contactDetails}" method="post">
+        <!-- ADDED: Hidden input for emailId -->
+        <input type="hidden" th:field="*{emailId}" />
+
+        <div class="form-group">
+            <label for="mobile">Mobile:</label>
+            <!-- CHANGED: Added Thymeleaf binding and input attributes -->
+            <input type="text" th:field="*{mobile}" id="mobile" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="whatsApp">WhatsApp:</label>
+            <!-- CHANGED: Added Thymeleaf binding and input attributes -->
+            <input type="text" th:field="*{whatsApp}" id="whatsApp" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="instagram">Instagram:</label>
+            <!-- CHANGED: Added Thymeleaf binding and input attributes -->
+            <input type="text" th:field="*{instagram}" id="instagram" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="facebook">Facebook:</label>
+            <!-- CHANGED: Added Thymeleaf binding and input attributes -->
+            <input type="text" th:field="*{facebook}" id="facebook" class="form-control" />
+        </div>
+
+        <!-- CHANGED: Standardized submit button -->
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+</body>
+</html>
+<style>
+    form {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fafafa;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    fieldset {
+        border: none;
+        padding: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    legend {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-group input[type="text"] {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    button[type="submit"] {
+        background-color: #007bff;
+        color: white;
+        padding: 0.7rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+</style>
+

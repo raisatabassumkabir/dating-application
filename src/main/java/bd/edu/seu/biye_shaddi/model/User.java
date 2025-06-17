@@ -1,7 +1,9 @@
 package bd.edu.seu.biye_shaddi.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -12,6 +14,8 @@ public class User {
     private String id;
     private String name;
     private String emailId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dateOfBirth;
     private int age;
     private String gender;
     private String location;
@@ -33,10 +37,13 @@ public class User {
     private List<String> interests;
     // Profile picture URL or file path
     private String profilePictureUrl;
+    private Double compatibilityScore; // Stores compatibility percentage with current user
+
+    private ContactDetails contactDetails;
 
     public User() {}
 
-    public User( String id,String emailId,int age, String bio, String education, String gender, String height, List<String> interests, String location, String name, Integer preferredAgeMax, Integer preferredAgeMin, String preferredGender, String preferredHeightMax, String preferredHeightMin, String profession, String profilePictureUrl, String relationshipStatus, String religion) {
+    public User( String id,String emailId,Date dateOfBirth,int age, String bio, String education, String gender, String height, List<String> interests, String location, String name, Integer preferredAgeMax, Integer preferredAgeMin, String preferredGender, String preferredHeightMax, String preferredHeightMin, String profession, String profilePictureUrl, String relationshipStatus, String religion) {
         this.id=id;
         this.age = age;
         this.bio = bio;
@@ -56,7 +63,16 @@ public class User {
         this.relationshipStatus = relationshipStatus;
         this.religion = religion;
         this.emailId = emailId;
+        this.dateOfBirth=dateOfBirth;
 
+    }
+
+    public ContactDetails getContactDetails() {
+        return contactDetails;
+    }
+
+    public void setContactDetails(ContactDetails contactDetails) {
+        this.contactDetails = contactDetails;
     }
 
     public int getAge() {
@@ -195,6 +211,14 @@ public class User {
         this.profilePictureUrl = profilePictureUrl;
     }
 
+    public Double getCompatibilityScore() {
+        return compatibilityScore;
+    }
+
+    public void setCompatibilityScore(Double compatibilityScore) {
+        this.compatibilityScore = compatibilityScore;
+    }
+
     public String getRelationshipStatus() {
         return relationshipStatus;
     }
@@ -209,5 +233,13 @@ public class User {
 
     public void setReligion(String religion) {
         this.religion = religion;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }

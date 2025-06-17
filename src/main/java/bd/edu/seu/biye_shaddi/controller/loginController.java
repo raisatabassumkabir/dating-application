@@ -37,31 +37,26 @@ public class loginController {
     }
 
 
+
+
     @PostMapping("/login-form")
     public String loginForm(@RequestParam String email, @RequestParam String password, Model model) {
         boolean isUserAuthenticated = loginService.userAuthenticated(email, password);
-
-
         if (isUserAuthenticated) {
-            return "user_dashboard";
-        }
+            // Check if user-info exists and is filled
+            Optional<User> userOptional = userRepository.findByEmailId(email);
+            if (userOptional.isPresent() && userOptional.get().getName() != null && !userOptional.get().getName().isEmpty()) {
+                // Profile is filled, redirect to dashboard
+                 return "redirect:/user_info?emailId=" + email;
 
-         else {
+            } else {
+                // Profile not filled, redirect to user_info
+                return "redirect:/user_dashboard?emailId=" + email;
+            }
+        } else {
             model.addAttribute("error", "Invalid email or password");
             return "login";
         }
+    }//working one
 
-
-    }
-
-    private boolean isUserInfoComplete(User user) {
-        return user.getName() != null && !user.getName().isEmpty() &&
-                user.getAge() > 0 && // Check for positive age
-                user.getGender() != null && !user.getGender().isEmpty() &&
-                user.getLocation() != null && !user.getLocation().isEmpty() &&
-                user.getEmailId() != null && !user.getEmailId().isEmpty() &&
-                user.getBio()!= null && !user.getBio().isEmpty()&&
-                user.getEducation()!= null && !user.getEducation().isEmpty();
-
-    }
 }

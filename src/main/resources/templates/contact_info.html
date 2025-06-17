@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>User Profile</title>
+    <title>Contact Details</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
@@ -11,28 +11,15 @@
     <h2>Panel</h2>
     <a th:href="@{/user_info(emailId=${user.emailId})}"><i class="fa fa-user"></i> Your Profile</a>
     <a th:href="@{/contact_info(emailId=${user.emailId})}"><i class="fa fa-address-book"></i> Contact Details</a>
-    <a th:href="@{/matches(emailId=${user.emailId})}"><i class="fa fa-heart"></i> Find Your Match</a>
 </div>
 <div class="container" role="main">
-    <h1>Your Profile Information</h1>
-    <div class="profile-picture">
-        <img th:src="${user.profilePictureUrl}" alt="Profile Picture" />
-    </div>
-    <input type="hidden" name="id" th:value="${user.id}" />
-    <p><strong>Name:</strong> <span th:text="${user.name}"></span></p>
-    <p><strong>Date Of Birth:</strong> <span th:text="${#dates.format(user.dateOfBirth, 'dd MMM, yyyy')}"></span></p>
-    <p><strong>Age:</strong> <span th:text="${user.age}"></span></p>
-    <p><strong>Gender:</strong> <span th:text="${user.gender}"></span></p>
-    <p><strong>Location:</strong> <span th:text="${user.location}"></span></p>
-    <p><strong>Education:</strong> <span th:text="${user.education}"></span></p>
-    <p><strong>Religion:</strong> <span th:text="${user.religion}"></span></p>
-    <p><strong>Height:</strong> <span th:text="${user.height}"></span></p>
-    <p><strong>Relationship Status:</strong> <span th:text="${user.relationshipStatus}"></span></p>
-    <p><strong>Bio:</strong> <span th:text="${user.bio}"></span></p>
-    <p><strong>Profession:</strong> <span th:text="${user.profession}"></span></p>
-    <p><strong>Preferred Age Range:</strong> <span th:text="${user.preferredAgeMin}"></span> - <span th:text="${user.preferredAgeMax}"></span></p>
-    <p><strong>Preferred Gender:</strong> <span th:text="${user.preferredGender}"></span></p>
-    <p><strong>Preferred Height Range:</strong> <span th:text="${user.preferredHeightMin}"></span> - <span th:text="${user.preferredHeightMax}"></span></p>
+    <h1>Your Contact Information</h1>
+    <input type="hidden" name="id" th:value="${contactDetails.id}" />
+    <input type="hidden" name="emailId" th:value="${contactDetails.emailId}" />
+    <p><strong>Mobile:</strong> <span th:text="${contactDetails.mobile}"></span></p>
+    <p><strong>WhatsApp:</strong> <span th:text="${contactDetails.whatsApp}"></span></p>
+    <p><strong>Instagram:</strong> <span th:text="${contactDetails.instagram}"></span></p>
+    <p><strong>Facebook:</strong> <span th:text="${contactDetails.facebook}"></span></p>
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 </div>
 <style>
@@ -63,8 +50,6 @@
         display: flex;
         line-height: 1.6;
         padding-left: var(--sidebar-width);
-        justify-content: flex-start;
-        align-items: flex-start;
     }
 
     .sidebar {
@@ -112,13 +97,15 @@
 
     .container {
         width: 100%;
-        max-width: 1000px;
-        margin: 2rem auto;
+        max-width: 900px;
+        height:500px ;
+        margin: 13rem auto;
         background: var(--bg-light);
         border-radius: 20px;
         padding: 4rem;
         box-shadow: var(--shadow);
         transition: transform var(--transition), box-shadow var(--transition);
+
     }
 
     .container:hover {
@@ -135,26 +122,6 @@
         letter-spacing: -0.025em;
     }
 
-    .profile-picture {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 3rem;
-    }
-
-    .profile-picture img {
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid var(--primary-color);
-        transition: var(--transition);
-    }
-
-    .profile-picture img:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(174, 15, 15, 0.2);
-    }
-
     p {
         font-size: 1.1rem;
         margin: 1rem 0;
@@ -162,12 +129,15 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+
     }
 
     strong {
         font-weight: 600;
         color: var(--text-muted);
         min-width: 180px;
+        display: inline-block;
+
     }
 
     span {
@@ -186,11 +156,6 @@
 
         h1 {
             font-size: 2rem;
-        }
-
-        .profile-picture img {
-            width: 160px;
-            height: 160px;
         }
     }
 
@@ -222,48 +187,6 @@
             padding: 1.5rem;
             border-radius: 12px;
             margin-bottom: 1rem;
-            box-shadow: var(--shadow);
-        }
-
-        .sidebar h2 {
-            margin-bottom: 1.5rem;
-        }
-
-        .sidebar a {
-            width: 100%;
-            justify-content: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .match-button-container {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-
-        .match-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: var(--primary-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-        }
-
-        .match-button:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
-        }
-
-        .match-button i {
-            font-size: 1.25rem;
         }
 
         .container {
@@ -274,11 +197,6 @@
 
         h1 {
             font-size: 1.75rem;
-        }
-
-        .profile-picture img {
-            width: 120px;
-            height: 120px;
         }
 
         p {

@@ -1,147 +1,175 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>User Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
 <div class="sidebar">
-    <h2>Admin Panel</h2>
-    <a th:href="@{'/user_info'(id=${user?.id})}">User Info</a>
-
+    <h2>Panel</h2>
+    <a href="/user_info"><i class="fa fa-home"></i> Your Profile</a>
+    <a href="/contact_info"><i class="fa fa-home"></i> Contact Details</a>
 </div>
 <div class="container" role="main">
     <h1>Your Information</h1>
+    <div style="text-align:center;margin-bottom:40px;">
+        <strong>Email:</strong> <span th:text="${user.emailId}"></span>
+    </div>
     <form action="/user-info-form" method="post" th:object="${user}" enctype="multipart/form-data">
-        <!-- Hidden input for id -->
-
-
         <section aria-labelledby="personal-info">
             <h2 id="personal-info" style="color:#ae0f0f; margin-bottom:15px;"></h2>
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Your full name" required />
 
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" placeholder="Your Email" required />
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your full name" required/>
+            </div>
 
-            <div class="inline-group">
-                <div>
-                    <label for="age">Age</label>
-                    <input type="number" id="age" name="age" min="18" max="100" placeholder="Age" required />
-                </div>
-                <div>
-                    <label for="gender">Gender</label>
-                    <select id="gender" name="gender" required>
-                        <option value="" disabled selected>Select Gender</option>
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
+            <input type="hidden" id="emailId" name="emailId" th:value="${user.emailId}" required/>
 
-                    </select>
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" min="18" max="100" placeholder="Age" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <select id="location" name="location" required>
+                    <option value="" disabled selected>Your city</option>
+                    <option value="Dhaka">Dhaka</option>
+                    <option value="Khulna">Khulna</option>
+                    <option value="Barishal">Barishal</option>
+                    <option value="Sylhet">Sylhet</option>
+                    <option value="Chittagong">Chittagong</option>
+                    <option value="Rajshahi">Rajshahi</option>
+                    <option value="Rangpur">Rangpur</option>
+                    <option value="Mymensingh">Mymensingh</option>
+                    <option value="Cumilla">Cumilla</option>
+                    <option value="Narayangan">Narayanganj</option>
+                    <option value="Cox's-Bazar">Cox's Bazar</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="education">Educational Qualification</label>
+                <input type="text" id="education" name="education" placeholder="Your education" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="religion">Religion</label>
+                <input type="text" id="religion" name="religion" placeholder="Your religion" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="height">Height</label>
+                <input type="text" id="height" name="height" placeholder="Your height" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Relationship Status</label>
+                <select id="status" name="relationshipStatus" required>
+                    <option value="" disabled selected>Select Status</option>
+                    <option value="single">Single</option>
+                    <option value="divorced">Divorced</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Short Introduction of Yourself</label>
+                <input type="text" id="bio" name="bio" placeholder="Describe yourself in a few words" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="profession">Profession</label>
+                <select id="profession" name="profession" required>
+                    <option value="" disabled selected>Select a profession</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="engineer">Engineer</option>
+                    <option value="lawyer">Lawyer</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="business">Business</option>
+                    <option value="govt-employee">Government Employee</option>
+                    <option value="student">Student</option>
+                    <option value="pilot">Pilot</option>
+                    <option value="air-hostess">Air Hostess</option>
+                    <option value="service-holder">Service Holder</option>
+                    <option value="artist">Artist捏
+                    <option value="content-creator">Content Creator</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Interests (select all that apply)</label>
+                <div class="checkbox-group" role="group" aria-label="Interests">
+                    <label><input type="checkbox" name="interests" value="sports"/> Sports</label>
+                    <label><input type="checkbox" name="interests" value="music"/> Music</label>
+                    <label><input type="checkbox" name="interests" value="travel"/> Travel</label>
+                    <label><input type="checkbox" name="interests" value="reading"/> Reading</label>
+                    <label><input type="checkbox" name="interests" value="movies"/> Movies</label>
+                    <label><input type="checkbox" name="interests" value="gaming"/> Gaming</label>
                 </div>
             </div>
 
-            <label for="location">Location</label>
-            <select id="location" name="location" required>
-                <option value="" disabled selected>Your city</option>
-                <option value="dhaka">Dhaka</option>
-                <option value="khulna">Khulna</option>
-                <option value="barishal">Barishal</option>
-                <option value="sylhet">Sylhet</option>
-                <option value="chittagong">Chittagong</option>
-                <option value="rajshahi">Rajshahi</option>
-                <option value="rangpur"> Rangpur</option>
-                <option value="mymensingh">Mymensingh</option>
-                <option value="cumilla">Cumilla</option>
-                <option value="narayangan">Narayangan</option>
-                <option value="cox's-bazar">Cox's Bazar</option>
-                <option value="others">Others</option>
-            </select>
-
-
-            <label for="education">Educational Qualification</label>
-            <input type="text" id="education" name="education" required />
-            <div class="inline-group">
-                <div>
-                    <label for="religion">Religion</label>
-                    <input type="text" id="religion" name="religion" placeholder="Religion" required />
-                </div>
-                <div>
-                    <label for="height">Height</label>
-                    <input type="text" id="height" name="height" required />
-                </div>
-            </div>
-            <label for="status">Relationship Status</label>
-            <select id="status" name="relationshipStatus" required>
-                <option value="" disabled selected>Select Status</option>
-                <option value="single">Single</option>
-                <option value="divorced">Divorced</option>
-            </select>
-            <label for="bio">Short Introduction of Yourself</label>
-            <input type="text" id="bio" name="bio" placeholder="Describe about yourself in few words " required />
-
-            <label for="profession">Profession</label>
-            <select id="profession" name="profession" required>
-                <option value="" disabled selected>Select a profession</option>
-                <option value="doctor">Doctor</option>
-                <option value="engineer">Engineer</option>
-                <option value="lawyer">Lawyer</option>
-                <option value="teacher">Teacher</option>
-                <option value="business">Business</option>
-                <option value="govt-employee">Government Employee</option>
-                <option value="student">Student</option>
-                <option value="pilot">Pilot</option>
-                <option value="air-hostess">Air Hostess</option>
-                <option value="service-holder">Service Holder</option>
-                <option value="artist">Artist</option>
-                <option value="content-creator">Content Creator</option>
-                <option value="others">Others</option>
-            </select>
-
-            <label>Interests (select all that apply)</label>
-            <div class="checkbox-group" role="group" aria-label="Interests">
-                <label><input type="checkbox" name="interests" value="sports" /> Sports</label>
-                <label><input type="checkbox" name="interests" value="music" /> Music</label>
-                <label><input type="checkbox" name="interests" value="travel" /> Travel</label>
-                <label><input type="checkbox" name="interests" value="reading" /> Reading</label>
-                <label><input type="checkbox" name="interests" value="movies" /> Movies</label>
-                <label><input type="checkbox" name="interests" value="gaming" /> Gaming</label>
-            </div>
-
-            <!-- Profile Picture Upload -->
-            <div class="picture-upload-section" style="margin-top: 30px;">
+            <div class="form-group picture-upload-section">
                 <label for="profilePictureUrl">Profile Picture</label>
-                <input type="file" id="profilePictureUrl" name="profilePicture" accept="image/*" />
+                <input type="file" id="profilePictureUrl" name="profilePicture" accept="image/*"/>
                 <p>Click or drag your photo here to upload</p>
-                <img id="picture-preview" class="picture-preview" alt="Profile Preview" style="display:none;" />
+                <img id="picture-preview" class="picture-preview" alt="Profile Preview" style="display:none;"/>
             </div>
 
-            <section aria-labelledby="preferences" style="margin-top: 30px;">
-                <h2 id="preferences" style="color:#ae0f0f; margin-bottom:15px;">What Kind of Person Are You Looking For?</h2>
+            <div class="preferences-wrapper">
+                <section aria-labelledby="preferences">
+                    <h2 id="preferences" style="color:#ae0f0f; margin-bottom:15px;">What Kind of Person Are You Looking For?</h2>
 
-                <label>Age range you prefer</label>
-                <div class="range-inputs" role="group" aria-label="Age range preference">
-                    <input type="number" id="preferredAgeMin" name="preferredAgeMin" min="18" max="100" placeholder="Min age" required />
-                    <input type="number" id="preferredAgeMax" name="preferredAgeMax" min="18" max="100" placeholder="Max age" required />
-                </div>
+                    <div class="form-group">
+                        <label for="preferredAgeMin">Preferred Age (Minimum)</label>
+                        <input type="number" id="preferredAgeMin" name="preferredAgeMin" min="18" max="100" placeholder="Min age" required/>
+                    </div>
 
-                <label>Preferred Gender</label>
-                <div class="radio-group" role="radiogroup" aria-label="Preferred Gender" id="preferredGender">
-                    <label><input type="radio" name="preferredGender" value="female" required /> Female</label>
-                    <label><input type="radio" name="preferredGender" value="male" /> Male</label>
+                    <div class="form-group">
+                        <label for="preferredAgeMax">Preferred Age (Maximum)</label>
+                        <input type="number" id="preferredAgeMax" name="preferredAgeMax" min="18" max="100" placeholder="Max age" required/>
+                    </div>
 
-                </div>
+                    <div class="form-group">
+                        <label>Preferred Gender</label>
+                        <div class="radio-group" role="radiogroup" aria-label="Preferred Gender" id="preferredGender">
+                            <label><input type="radio" name="preferredGender" value="female" required/> Female</label>
+                            <label><input type="radio" name="preferredGender" value="male"/> Male</label>
+                        </div>
+                    </div>
 
-                <label>Height range you prefer</label>
-                <div class="range-inputs" role="group" aria-label="Height range preference">
-                    <input type="text" id="preferredHeightMin" name="preferredHeightMin" placeholder="Min height" required />
-                    <input type="text" id="preferredHeightMax" name="preferredHeightMax" placeholder="Max height" required />
-                </div>
-            </section>
+                    <div class="form-group">
+                        <label for="preferredHeightMin">Preferred Height (Minimum)</label>
+                        <input type="text" id="preferredHeightMin" name="preferredHeightMin" placeholder="Min height" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="preferredHeightMax">Preferred Height (Maximum)</label>
+                        <input type="text" id="preferredHeightMax" name="preferredHeightMax" placeholder="Max height" required/>
+                    </div>
+                </section>
+            </div>
 
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <div style="text-align: center;">
+            <div class="form-group submit-group">
                 <button type="submit" class="submit-btn" aria-label="Save your profile and preferences">Save Profile</button>
             </div>
         </section>
@@ -169,127 +197,223 @@
 </script>
 
 <style>
+    :root {
+        --primary-color: #ae0f0f;
+        --primary-dark: #8c0c0c;
+        --text-dark: #1a1a1a;
+        --text-muted: #4a4a4a;
+        --border-color: #e0e0e0;
+        --bg-light: #ffffff;
+        --bg-muted: #f8fafc;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --sidebar-width: 260px;
+    }
+
     * {
         box-sizing: border-box;
-    }
-    body {
-        font-family: 'Poppins', sans-serif;
         margin: 0;
-        background: #f5f5f5;
-        color: #333;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-muted);
+        color: var(--text-dark);
         min-height: 100vh;
         display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 40px 20px;
+        line-height: 1.6;
+        padding-left: var(--sidebar-width);
     }
-    .container {
-        width: 100%;
-        max-width: 800px;
-        padding: 40px 50px;
-        border-radius: 12px;
 
+    .sidebar {
+        width: var(--sidebar-width);
+        background: linear-gradient(180deg, #2c3e50, #1a2634);
+        height: 100vh;
+        color: white;
+        padding: 2.5rem 1.5rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        transition: width var(--transition);
     }
-    h1 {
+
+    .sidebar h2 {
+        font-size: 1.6rem;
         font-weight: 600;
         text-align: center;
-        color: #ae0f0f;
-        margin-bottom: 30px;
-        letter-spacing: 1px;
+        margin-bottom: 2rem;
+        letter-spacing: 0.5px;
+        color: #ffffff;
     }
+
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        color: #d1d5db;
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        font-size: 1rem;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .sidebar a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .sidebar a i {
+        margin-right: 0.75rem;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 900px;
+        margin: 2rem auto;
+        background: var(--bg-light);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--shadow);
+        transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .container:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+    }
+
+    h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 2rem;
+        letter-spacing: -0.025em;
+    }
+
     form {
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 1.5rem;
     }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
     label {
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-        color: #555;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
     }
+
     input[type="text"],
     input[type="number"],
     input[type="email"],
+    input[type="date"],
     select {
         width: 100%;
-        padding: 12px;
-        border: 1.8px solid #ddd;
-        border-radius: 8px;
+        padding: 0.85rem;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
         font-size: 1rem;
-        transition: border-color 0.3s ease;
+        background: var(--bg-light);
+        transition: var(--transition);
     }
+
     input[type="text"]:focus,
     input[type="number"]:focus,
     input[type="email"]:focus,
+    input[type="date"]:focus,
     select:focus {
-        border-color: #ae0f0f;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(174, 15, 15, 0.1);
         outline: none;
     }
-    .inline-group {
-        display: flex;
-        gap: 15px;
-    }
-    .inline-group > div {
-        flex: 1;
-    }
-    .radio-group,
+
     .checkbox-group {
         display: flex;
-        gap: 20px;
+        flex-direction: row;
         flex-wrap: wrap;
+        gap: 1.5rem;
+        padding: 0.5rem 0;
     }
-    .radio-group label,
+
     .checkbox-group label {
-        font-weight: 500;
+        font-size: 0.95rem;
+        font-weight: 400;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
         cursor: pointer;
-        user-select: none;
+        padding: 0.25rem 0.5rem;
+        transition: var(--transition);
     }
+
+    .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.5rem 0;
+    }
+
+    .radio-group label,
+    .checkbox-group label:hover {
+        background: rgba(174, 15, 15, 0.05);
+        border-radius: 6px;
+    }
+
     input[type="radio"],
     input[type="checkbox"] {
-        margin-right: 6px;
-        accent-color: #ae0f0f;
-        cursor: pointer;
+        margin-right: 0.5rem;
+        accent-color: var(--primary-color);
+        width: 1.1rem;
+        height: 1.1rem;
     }
-    .range-inputs {
-        display: flex;
-        gap: 15px;
-    }
-    .range-inputs input {
-        flex: 1;
-    }
+
     .submit-btn {
-        align-self: center;
-        background: #ae0f0f;
-        margin-top: 25px;
+        background: var(--primary-color);
         color: white;
         border: none;
-        padding: 15px 40px;
-        border-radius: 50px;
-        font-weight: 700;
-        font-size: 1.1rem;
+        padding: 0.85rem 2.5rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 6px 20px rgba(174, 15, 15, 0.4);
-        transition: background 0.3s ease;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        align-self: center;
+        margin-top: 1.5rem;
     }
+
     .submit-btn:hover {
-        background: #9c0d0d;
+        background: var(--primary-dark);
+        transform: scale(1.02);
+        box-shadow: 0 6px 16px rgba(174, 15, 15, 0.3);
     }
-    /* Picture upload section */
+
     .picture-upload-section {
-        border: 2px dashed #ae0f0f;
+        border: 2px dashed var(-- приоритетный-цвет);
         border-radius: 12px;
-        padding: 25px;
+        padding: 2rem;
         text-align: center;
-        color: #ae0f0f;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+        background: var(--bg-muted);
+        transition: var(--transition);
         position: relative;
-        user-select: none;
     }
+
     .picture-upload-section:hover {
-        background-color: #f9e6e6;
+        border-color: var(--primary-color);
+        background: rgba(174, 15, 15, 0.05);
     }
+
     .picture-upload-section input[type="file"] {
         position: absolute;
         left: 0;
@@ -299,25 +423,128 @@
         opacity: 0;
         cursor: pointer;
     }
+
     .picture-upload-section p {
-        margin: 0;
-        font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
     }
+
     .picture-preview {
-        margin-top: 15px;
-        max-width: 180px;
-        max-height: 180px;
+        margin-top: 1rem;
+        max-width: 160px;
+        max-height: 160px;
         border-radius: 12px;
         object-fit: cover;
-        box-shadow: 0 6px 15px rgba(174, 15, 15, 0.3);
+        border: 2px solid var(--border-color);
+        transition: var(--transition);
     }
-    @media (max-width: 480px) {
-        .inline-group {
-            flex-direction: column;
+
+    .picture-preview:hover {
+        transform: scale(1.05);
+    }
+
+    .submit-group {
+        text-align: center;
+    }
+
+    .preferences-wrapper {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
+    }
+
+    .preferences-wrapper section {
+        max-width: 600px;
+        width: 100%;
+        padding: 2rem;
+        background: var(--bg-muted);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .preferences-wrapper h2 {
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+        body {
+            padding-left: var(--sidebar-width);
         }
-        .range-inputs {
+
+        .sidebar {
+            width: var(--sidebar-width);
+        }
+
+        .container {
+            max-width: 80%;
+            margin: 1.5rem auto;
+            padding: 2rem;
+        }
+
+        .checkbox-group {
+            gap: 1rem;
+        }
+
+        .preferences-wrapper section {
+            max-width: 100%;
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            max-width: 90%;
+            padding: 1.5rem;
+        }
+
+        .checkbox-group {
+            gap: 0.75rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        body {
             flex-direction: column;
+            padding-left: 0;
+        }
+
+        .sidebar {
+            position: static;
+            width: 100%;
+            height: auto;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 1rem auto;
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        .checkbox-group {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .preferences-wrapper section {
+            padding: 1rem;
+        }
+
+        .picture-upload-section {
+            padding: 1.5rem;
+        }
+
+        .picture-preview {
+            max-width: 120px;
+            max-height: 120px;
         }
     }
 </style>
