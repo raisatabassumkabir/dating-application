@@ -68,6 +68,33 @@
         method: 'GET',
         success: function(response) {
           console.log('Pending requests:', response);
+          // Update the UI with new requests
+          $('.requests-container').html('');
+          if (response && response.length > 0) {
+            response.forEach(function(request) {
+              const sender = request.sender;
+              const cardHtml = `
+                <div class="request-card">
+                  <img th:src="${sender.profilePictureUrl || '/images/default-profile.jpg'}" alt="Profile Picture"/>
+                  <h3 th:text="${sender.name}"></h3>
+                  <p th:text="${sender.bio || 'No bio provided'}"></p>
+                  <p th:text="'Age: ' + ${sender.age}"></p>
+                  <p th:text="'Gender: ' + ${sender.gender}"></p>
+                  <p th:text="'Height: ' + ${sender.height}"></p>
+                  <p th:text="'Location: ' + ${sender.city}"></p>
+                  <p th:text="'Profession: ' + ${sender.profession}"></p>
+                  <div class="buttons">
+                    <button class="view-btn" data-email-id="${sender.emailId}">View Profile</button>
+                    <button class="accept-btn" data-request-id="${request.id}" data-email-id="${emailId}">Accept</button>
+                    <button class="reject-btn" data-request-id="${request.id}" data-email-id="${emailId}">Reject</button>
+                  </div>
+                </div>
+              `;
+              $('.requests-container').append(cardHtml);
+            });
+          } else {
+            $('.requests-container').html('<div class="no-requests">No talk requests at this time</div>');
+          }
         },
         error: function(xhr, status, error) {
           console.error('Error fetching pending requests:', xhr.responseText);
@@ -90,6 +117,8 @@
         success: function(response) {
           console.log('Request accepted:', response);
           $(this).closest('.request-card').remove();
+          // Refresh the list to show updated state
+          $('.refresh-btn').click();
         },
         error: function(xhr, status, error) {
           console.error('Error accepting request:', xhr.responseText);
