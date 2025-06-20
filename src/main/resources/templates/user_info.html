@@ -12,6 +12,7 @@
     <a th:href="@{/user_info(emailId=${user.emailId})}"><i class="fa fa-user"></i> Your Profile</a>
     <a th:href="@{/contact_info(emailId=${user.emailId})}"><i class="fa fa-address-book"></i> Contact Details</a>
     <a th:href="@{/matches(emailId=${user.emailId})}"><i class="fa fa-heart"></i> Find Your Match</a>
+    <a th:href="@{/talkrequest(emailId=${user.emailId})}"><i class="fa fa-heart"></i>Find Your Request</a>
 </div>
 <div class="container" role="main">
     <h1>Your Profile Information</h1>
@@ -30,6 +31,7 @@
     <p><strong>Relationship Status:</strong> <span th:text="${user.relationshipStatus}"></span></p>
     <p><strong>Bio:</strong> <span th:text="${user.bio}"></span></p>
     <p><strong>Profession:</strong> <span th:text="${user.profession}"></span></p>
+    <p><strong>Interests:</strong> <span th:text="${user.interests}"></span></p>
     <p><strong>Preferred Age Range:</strong> <span th:text="${user.preferredAgeMin}"></span> - <span th:text="${user.preferredAgeMax}"></span></p>
     <p><strong>Preferred Gender:</strong> <span th:text="${user.preferredGender}"></span></p>
     <p><strong>Preferred Height Range:</strong> <span th:text="${user.preferredHeightMin}"></span> - <span th:text="${user.preferredHeightMax}"></span></p>

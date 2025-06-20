@@ -89,17 +89,5 @@ public class UserController {
         return "user_info";
     }//the working one
 
-//    @GetMapping("/user_info")
-//    public String seeProfilePage(@RequestParam String emailId, Model model) {
-//        Optional<User> userOptional = userService.getUserByEmail(emailId);
-//        if (userOptional.isPresent()) {
-//            model.addAttribute("user", userOptional.get());
-//            Optional<ContactDetails> contactDetailsOptional = contactDetailsService.getContactDetailsByEmail(emailId);
-//            model.addAttribute("contactDetails", contactDetailsOptional.orElse(new ContactDetails()));
-//        } else {
-//            model.addAttribute("error", "User not found");
-//            return "error";
-//        }
-//        return "user_info";
-//    }
+
 }

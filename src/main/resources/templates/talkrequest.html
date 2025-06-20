@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Talk Requests</title>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+    h1 { text-align: center; color: #333; }
+    p { text-align: center; color: #555; }
+    .no-requests { text-align: center; color: #888; margin-top: 20px; }
+    .requests-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+    .request-card { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 300px; padding: 15px; }
+    .request-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+    .request-card h3 { margin: 10px 0; color: #333; }
+    .request-card p { margin: 5px 0; color: #555; }
+    .request-card .interests { font-style: italic; }
+    .request-card .buttons { margin-top: 10px; display: flex; gap: 10px; }
+    .request-card button { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
+    .view-btn { background-color: #007bff; color: white; }
+    .accept-btn { background-color: #28a745; color: white; }
+    .reject-btn { background-color: #dc3545; color: white; }
+    .refresh-btn { display: block; margin: 20px auto; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+<h1>Your Talk Requests</h1>
+<p>Review and respond to talk requests from your matches</p>
+<button class="refresh-btn">Refresh</button>
+
+<div th:if="${senders == null or senders.isEmpty()}" class="no-requests">
+  <p>No talk requests at this time. Check back later!</p>
+</div>
+
+<div class="requests-container" th:if="${senders != null and not senders.isEmpty()}">
+  <div class="request-card" th:each="sender, iter : ${senders}">
+    <img th:src="${sender.profilePictureUrl != null ? sender.profilePictureUrl : '/images/default-profile.jpg'}" alt="Profile Picture"/>
+    <h3 th:text="${sender.name}"></h3>
+    <p th:text="${sender.bio != null ? sender.bio : 'No bio provided'}"></p>
+    <p th:text="'Age: ' + ${sender.age}"></p>
+    <p th:text="'Gender: ' + ${sender.gender}"></p>
+    <p th:text="'Height: ' + ${sender.height}"></p>
+    <p th:text="'Location: ' + ${sender.city}"></p>
+    <p th:text="'Profession: ' + ${sender.profession}"></p>
+    <p class="interests" th:if="${sender.interests != null and not sender.interests.isEmpty()}">
+      Interests: <span th:text="${sender.interests.join(', ')}"></span>
+    </p>
+    <div class="buttons">
+      <button class="view-btn" th:attr="data-email-id=${sender.emailId}">View Profile</button>
+      <button class="accept-btn" th:attr="data-request-id=${pendingRequests[iter.index].id},data-email-id=${emailId}">Accept</button>
+      <button class="reject-btn" th:attr="data-request-id=${pendingRequests[iter.index].id},data-email-id=${emailId}">Reject</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    const emailId = /*[[${emailId}]]*/ '';
+    console.log('Talk requests page loaded. EmailId:', emailId);
+
+    $('.refresh-btn').click(function() {
+      console.log('Refreshing pending requests for:', emailId);
+      $.ajax({
+        url: '/api/talk-requests/pending/' + emailId,
+        method: 'GET',
+        success: function(response) {
+          console.log('Pending requests:', response);
+        },
+        error: function(xhr, status, error) {
+          console.error('Error fetching pending requests:', xhr.responseText);
+          alert('Failed to refresh requests: ' + xhr.responseText);
+        }
+      });
+    });
+
+    $('.accept-btn').click(function() {
+      const requestId = $(this).data('request-id');
+      const emailId = $(this).data('email-id');
+      console.log('Accepting request:', requestId, 'by:', emailId);
+      $.ajax({
+        url: '/api/talk-requests/accept/' + requestId,
+        method: 'POST',
+        data: { emailId: emailId },
+        headers: {
+          [$('meta[name="_csrf_header"]').attr('content')]: $('meta[name="_csrf"]').attr('content')
+        },
+        success: function(response) {
+          console.log('Request accepted:', response);
+          $(this).closest('.request-card').remove();
+        },
+        error: function(xhr, status, error) {
+          console.error('Error accepting request:', xhr.responseText);
+          alert('Failed to accept request: ' + xhr.responseText);
+        }
+      });
+    });
+
+    $('.reject-btn').click(function() {
+      const requestId = $(this).data('request-id');
+      const emailId = $(this).data('email-id');
+      console.log('Rejecting request:', requestId, 'by:', emailId);
+      $.ajax({
+        url: '/api/talk-requests/reject/' + requestId,
+        method: 'POST',
+        data: { emailId: emailId },
+        headers: {
+          [$('meta[name="_csrf_header"]').attr('content')]: $('meta[name="_csrf"]').attr('content')
+        },
+        success: function(response) {
+          console.log('Request rejected:', response);
+          $(this).closest('.request-card').remove();
+        },
+        error: function(xhr, status, error) {
+          console.error('Error rejecting request:', xhr.responseText);
+          alert('Failed to reject request: ' + xhr.responseText);
+        }
+      });
+    });
+
+    $('.view-btn').click(function() {
+      const emailId = $(this).data('email-id');
+      console.log('Viewing profile:', emailId);
+    });
+  });
+</script>
+</body>
+</html>

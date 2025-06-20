@@ -1,7 +1,9 @@
 package bd.edu.seu.biye_shaddi;
 
 
+import bd.edu.seu.biye_shaddi.model.TalkRequest;
 import bd.edu.seu.biye_shaddi.model.User;
+import bd.edu.seu.biye_shaddi.service.TalkRequestService;
 import bd.edu.seu.biye_shaddi.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ public class UserInfoTest {
 
     @Autowired
     private  UserService userService;
+    @Autowired
+    private TalkRequestService talkRequestService;
 
 
     @Test
@@ -29,6 +33,15 @@ public class UserInfoTest {
 
 
 
+    }
+    @Test
+    public void talkRequest(){
+        TalkRequest talkRequest = new TalkRequest();
+        talkRequest.setToEmailId("jane@gmail.com");
+        talkRequest.setFromEmailId("abul@gmail.com");
+        talkRequest.setId("1");
+
+       talkRequestService.sendTalkRequest(talkRequest.getFromEmailId(), talkRequest.getToEmailId());
     }
 
 }

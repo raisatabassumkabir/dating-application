@@ -1,8 +1,10 @@
 package bd.edu.seu.biye_shaddi.controller;
 
+import bd.edu.seu.biye_shaddi.model.TalkRequest;
 import bd.edu.seu.biye_shaddi.model.User;
 import bd.edu.seu.biye_shaddi.service.MatchingService;
 
+import bd.edu.seu.biye_shaddi.service.TalkRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,11 @@ public class MatchingController {
 
 
     private final MatchingService matchingService;
+    private final TalkRequestService talkRequestService;
 
-    public MatchingController(MatchingService matchingService) {
+    public MatchingController(MatchingService matchingService, TalkRequestService talkRequestService) {
         this.matchingService = matchingService;
+        this.talkRequestService = talkRequestService;
     }
 
     @GetMapping("/top")
@@ -98,4 +102,7 @@ public class MatchingController {
                     .body(null);
         }
     }
+
+
+
 }
