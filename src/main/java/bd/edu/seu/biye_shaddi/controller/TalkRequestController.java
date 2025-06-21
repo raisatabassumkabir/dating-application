@@ -7,13 +7,8 @@ import bd.edu.seu.biye_shaddi.service.TalkRequestService;
 import bd.edu.seu.biye_shaddi.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/talk-requests")

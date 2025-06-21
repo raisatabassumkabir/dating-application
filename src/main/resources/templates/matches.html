@@ -2,210 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Top Matches</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background-color: #f8fafc;
-            padding: 40px 20px;
-            line-height: 1.6;
-            color: #1f2937;
-        }
-        h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 10px;
-            color: #111827;
-        }
-        p {
-            text-align: center;
-            color: #6b7280;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-        .matches-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, 450px);
-            gap: 20px;
-            justify-content: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .match-card {
-            background: #ffffff;
-            border: none;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 10px;
-            width: 450px;
-            min-width: 450px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .match-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-        .match-card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #111827;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .profile-picture-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-        .match-card img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .bio {
-            font-size: 1rem;
-            color: #374151;
-            text-align: center;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        .talk-button-container {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .match-details p {
-            font-size: 1rem;
-            color: #374151;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .match-details p span {
-            font-weight: 500;
-            color: #1f2937;
-        }
-        .shared-interests {
-            color: #4b5563;
-            font-style: italic;
-            background: #f1f5f9;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 15px;
-        }
-        .match-details p:last-child {
-            font-weight: 600;
-            color: #10b981;
-        }
-        .profile-link {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .profile-link:hover {
-            background-color: #0056b3;
-        }
-        .ignore-button {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            background-color: #6b7280;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .ignore-button:hover {
-            background-color: #4b5563;
-        }
-        .talk-button {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            background-color: #10b981;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        .talk-button:hover {
-            background-color: #059669;
-        }
-        .no-matches {
-            text-align: center;
-            color: #6b7280;
-            font-size: 1.1rem;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            width: 450px;
-            margin: 20px auto;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-        @media (max-width: 900px) {
-            .matches-container {
-                grid-template-columns: repeat(auto-fit, 450px);
-                gap: 10px;
-            }
-            .match-card {
-                margin: 5px;
-            }
-        }
-        @media (max-width: 600px) {
-            .matches-container {
-                grid-template-columns: 1fr;
-            }
-            .match-card {
-                width: 100%;
-                max-width: 450px;
-                min-width: 0;
-                margin: 10px auto;
-            }
-            h2 {
-                font-size: 1.5rem;
-            }
-            p {
-                font-size: 1rem;
-            }
-            .match-card img {
-                width: 100px;
-                height: 100px;
-            }
-            .bio {
-                font-size: 0.9rem;
-            }
-            .match-details p {
-                font-size: 0.9rem;
-            }
-        }
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    </style>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <h2>Your Top Matches</h2>
@@ -219,9 +20,6 @@
     <div th:each="match : ${matches}" class="match-card">
         <h3 th:text="${match.name}"></h3>
         <div class="profile-picture-container">
-            <div class="talk-button-container">
-                <button class="talk-button" onclick="sendTalkRequest(this)" data-to-email="${match.emailId}">Wanna Talk</button>
-            </div>
             <img th:if="${match.profilePictureUrl}" th:src="@{${match.profilePictureUrl} ?: '/images/default-profile.png'}" alt="Profile Picture"/>
         </div>
         <p class="bio" th:text="${match.bio}"></p>
@@ -236,48 +34,351 @@
             </p>
             <p>Compatibility Score: <span th:text="${match.compatibilityScore != null ? (match.compatibilityScore + '%') : 'N/A'}"></span></p>
         </div>
-        <button data-from-email="${emailId}" data-to-email="${match.emailId}" onclick="sendTalkRequest(this)" class="profile-link">Wanna Talk?</button>
-        <button data-email="${match.emailId}" onclick="ignoreMatch(this)" class="ignore-button">Ignore</button>
+        <div class="talk-button-container">
+            <button class="talk-button"
+                    th:attr="data-from-email=${emailId},data-to-email=${match.emailId}"
+                    th:text="'Wanna Talk?'">Wanna Talk?</button>
+            <button class="ignore-button" th:attr="data-email=${match.emailId}">Ignore</button>
+            <div class="message" style="display: none; padding: 10px; margin-top: 10px;"></div>
+            <!-- CHANGED: Added notification div -->
+            <div class="notification" style="display: none; background-color: #d4edda; color: #155724; padding: 10px; margin-top: 10px; border-radius: 6px;"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    function sendTalkRequest(button) {
-        const toEmail = button.getAttribute('data-to-email');
-        const fromEmail = button.getAttribute('data-from-email');
-        
-        if (!toEmail || !fromEmail) {
-            alert('Email addresses not found');
-            return;
+    const currentUserEmail = /*[[${emailId}]]*/ 'user@example.com';
+    const csrfToken = $('meta[name="_csrf"]').attr('content');
+    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+    $(document).ready(function() {
+        // CHANGED: Skip authentication check since user is logged in; initialize status checks
+        console.log('Current user email:', currentUserEmail);
+        console.log('CSRF token:', csrfToken, 'Header:', csrfHeader);
+        checkAllRequestStatuses();
+
+        // CHANGED: Check status for all talk buttons
+        function checkAllRequestStatuses() {
+            $('.talk-button').each(function() {
+                const $button = $(this);
+                const fromEmailId = $button.data('from-email');
+                const toEmailId = $button.data('to-email');
+                checkRequestStatus($button, fromEmailId, toEmailId);
+            });
         }
 
-        fetch('/api/talk-requests/talk-request', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `fromEmailId=${encodeURIComponent(fromEmail)}&toEmailId=${encodeURIComponent(toEmail)}`
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+        // CHANGED: Check individual request status
+        function checkRequestStatus($button, fromEmailId, toEmailId) {
+            if (!fromEmailId || !toEmailId || !csrfToken) {
+                console.error('Invalid data for status check:', fromEmailId, toEmailId);
+                return;
             }
-            return response.json();
-        })
-        .then(data => {
-            alert('Talk request sent successfully!');
-            button.disabled = true;
-            button.textContent = 'Request Sent';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to send talk request. Please try again.');
-        });
-    }
+            $.ajax({
+                url: '/api/talk-requests/status',
+                method: 'GET',
+                headers: { [csrfHeader]: csrfToken },
+                data: { fromEmailId: fromEmailId, toEmailId: toEmailId },
+                success: function(response) {
+                    console.log('Status check for', fromEmailId, 'to', toEmailId, ':', response);
+                    const $notification = $button.siblings('.notification');
+                    if (response) {
+                        if (response.status === 'PENDING') {
+                            $button.text('Pending').prop('disabled', true).css('background-color', '#6b7280');
+                        } else if (response.status === 'ACCEPTED') {
+                            $button.text('See Contact Info?')
+                                .prop('disabled', false)
+                                .css('background-color', '#1d4ed8')
+                                .off('click')
+                                .click(function() {
+                                    window.location.href = `/matches-contact-info?emailId=${toEmailId}&viewerEmailId=${fromEmailId}`;
+                                });
+                            // CHANGED: Show notification if newly accepted
+                            if (!$notification.data('shown')) {
+                                $notification.text('Talk request accepted by ' + toEmailId + '!')
+                                    .show()
+                                    .data('shown', true);
+                                setTimeout(() => $notification.hide(), 5000);
+                            }
+                        } else if (response.status === 'REJECTED') {
+                            $button.text('Wanna Talk?').prop('disabled', false).css('background-color', '#10b981');
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Status check failed:', xhr.status, xhr.responseText);
+                }
+            });
+        }
 
-    function ignoreMatch(button) {
-        button.parentElement.remove();
-    }
+        $('.talk-button').click(function() {
+            const $button = $(this);
+            const fromEmailId = $button.data('from-email');
+            const toEmailId = $button.data('to-email');
+            const $messageDiv = $(this).siblings('.message');
+            console.log('Sending request: from=' + fromEmailId + ', to=' + toEmailId); // CHANGED: Added debug
+
+            // Preserved user-provided validation
+            if (!fromEmailId || fromEmailId === 'user@example.com') {
+                $messageDiv.text('Error: Please log in').css({
+                    'background-color': '#f8d7da',
+                    'color': '#721c24',
+                    'padding': '10px',
+                    'display': 'block'
+                });
+                return;
+            }
+            // CHANGED: Additional validation
+            if (!toEmailId) {
+                console.error('Invalid toEmailId:', toEmailId);
+                $messageDiv.text('Error: Invalid recipient').css({
+                    'background-color': '#f8d7da', 'color': '#721c24', 'display': 'block'
+                });
+                return;
+            }
+            if (!csrfToken || !csrfHeader) {
+                console.error('CSRF token or header missing');
+                $messageDiv.text('Error: Session expired. Please log in again').css({
+                    'background-color': '#f8d7da', 'color': '#721c24', 'display': 'block'
+                });
+                setTimeout(() => window.location.href = '/login', 2000);
+                return;
+            }
+
+            $.ajax({
+                url: '/api/talk-requests/talk-request',
+                method: 'POST',
+                headers: { [csrfHeader]: csrfToken },
+                data: { fromEmailId: fromEmailId, toEmailId: toEmailId },
+                success: function(response) {
+                    console.log('Talk request success:', response);
+                    $messageDiv.text('Talk request sent successfully!').css({
+                        'background-color': '#d4edda', 'color': '#155724', 'display': 'block'
+                    });
+                    $button.text('Pending').prop('disabled', true).css('background-color', '#6b7280');
+                    setTimeout(() => $messageDiv.hide(), 3000);
+                    // CHANGED: Start polling for status
+                    const interval = setInterval(() => checkRequestStatus($button, fromEmailId, toEmailId), 5000);
+                    $button.data('poll-interval', interval);
+                },
+                error: function(xhr) {
+                    console.error('Talk request error:', xhr.status, xhr.statusText, xhr.responseText);
+                    let errorMsg = xhr.responseText || 'Failed to send talk request';
+                    if (xhr.status === 403 || xhr.status === 302) {
+                        errorMsg = 'Session expired or unauthorized. Please log in again.';
+                        setTimeout(() => window.location.href = '/login', 2000);
+                    }
+                    $messageDiv.text(errorMsg).css({
+                        'background-color': '#f8d7da', 'color': '#721c24', 'display': 'block'
+                    });
+                    setTimeout(() => $messageDiv.hide(), 3000);
+                }
+            });
+        });
+
+        $('.ignore-button').click(function() {
+            const $messageDiv = $(this).siblings('.message');
+            console.log('Ignoring match:', $(this).data('email'));
+            $messageDiv.text('Match ignored').css({
+                'background-color': '#d4edda', 'color': '#155724', 'display': 'block'
+            });
+            setTimeout(() => $messageDiv.hide(), 3000);
+        });
+    });
 </script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+        background-color: #f8fafc;
+        padding: 40px 20px;
+        line-height: 1.6;
+        color: #1f2937;
+    }
+    h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 10px;
+        color: #111827;
+    }
+    p {
+        text-align: center;
+        color: #6b7280;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+    .matches-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 450px);
+        gap: 20px;
+        justify-content: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .match-card {
+        background: #ffffff;
+        border: none;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 10px;
+        width: 450px;
+        min-width: 450px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .match-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+    .match-card h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .profile-picture-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    .match-card img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .bio {
+        font-size: 1rem;
+        color: #333;
+        text-align: center;
+        margin-bottom: 25px;
+        font-style: italic;
+    }
+    .talk-button-container {
+        text-align: center;
+        margin-top: 15px;
+    }
+    .match-details p {
+        font-size: .600;
+        color: #374151;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .match-details p span {
+        font-weight: 500;
+        color: #1f2937;
+    }
+    .shared-interests {
+        color: #4b5563;
+        font-style: italic;
+        background: #fff;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 15px;
+    }
+    .match-details p:last-child {
+        font-weight: 600;
+        color: #10b981;
+    }
+    .talk-button {
+        display: block;
+        text-align: center;
+        padding: 10px;
+        background-color: #10b981;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-top: 15px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    .talk-button:hover:not(:disabled) {
+        background-color: #059669;
+    }
+    .talk-button:disabled {
+        background-color: #6b7280;
+        cursor: not-allowed;
+    }
+    .ignore-button {
+        display: block;
+        text-align: center;
+        padding: 10px;
+        background-color: #6b7280;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-top: 10px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    .ignore-button:hover {
+        background-color: #4b5563;
+    }
+    .no-matches {
+        text-align: center;
+        color: #6b7280;
+        font-size: 1.1rem;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        width: 450px;
+        margin: 20px auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    .message {
+        border-radius: 6px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    @media (max-width: 900px) {
+        .matches-container {
+            grid-template-columns: repeat(auto-fit, 450px);
+            gap: 10px;
+        }
+        .match-card {
+            margin: 5px;
+        }
+    }
+    @media (max-width: 600px) {
+        .matches-container {
+            grid-template-columns: 1fr;
+        }
+        .match-card {
+            width: 100%;
+            max-width: 450px;
+            min-width: 0;
+            margin: 10px auto;
+        }
+        h2 {
+            font-size: 1.5rem;
+        }
+        p {
+            font-size: 1rem;
+        }
+        .match-card img {
+            width: 100px;
+            height: 100px;
+        }
+        .bio {
+            font-size: 0.9rem;
+        }
+        .match-details p {
+            font-size: 0.9rem;
+        }
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+</style>
 </body>
 </html>
