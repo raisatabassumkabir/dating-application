@@ -1,7 +1,6 @@
 package bd.edu.seu.biye_shaddi.controller;
 
 import bd.edu.seu.biye_shaddi.model.ContactDetails;
-import bd.edu.seu.biye_shaddi.model.TalkRequest;
 import bd.edu.seu.biye_shaddi.model.User;
 import bd.edu.seu.biye_shaddi.service.ContactDetailsService;
 import bd.edu.seu.biye_shaddi.service.MatchingService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Controller
@@ -38,17 +36,6 @@ public class IndexController {
     }
 
 
-//    @GetMapping("/matches")
-//    public String getMatches(@RequestParam String emailId, Model model) {
-//        // Get the user's matches
-//        List<User> matches = matchingService.findTopMatchesByEmailId(emailId,20);
-//
-//        // Add matches to the model
-//        model.addAttribute("matches", matches);
-//        model.addAttribute("emailId", emailId);
-//
-//        return "matches";
-//    }
 
     @GetMapping("/matches")
     public String getMatchesPage(@RequestParam(required = false) String emailId, Model model, Principal principal) {
@@ -116,4 +103,35 @@ public class IndexController {
         System.out.println("Contact details rendered for: " + emailId);
         return "matches-contact-info";
     }
+
+//    @GetMapping("/matches-contact-info")
+//    public String getMatchesContactInfoPage(@RequestParam String emailId, @RequestParam(required = false) String viewerEmailId, Model model) {
+//        System.out.println("Fetching contact details: viewer=" + viewerEmailId + ", target=" + emailId);
+//       Optional<User>user=userService.getUserByEmail(emailId);
+//        Optional<ContactDetails> contactDetails = contactDetailsService.getContactDetailsByEmail(emailId);
+//        if (user == null || contactDetails.isEmpty()) {
+//            System.out.println("Contact details not found for: " + emailId);
+//            model.addAttribute("error", "Contact details not found");
+//            model.addAttribute("viewerEmailId", viewerEmailId);
+//            return "contact_info";
+//        }
+//        model.addAttribute("user", user);
+//        model.addAttribute("contactDetails", contactDetails);
+//        model.addAttribute("viewerEmailId", viewerEmailId);
+//        return "contact_info";
+//    }
+//
+//    @GetMapping("/matches")
+//    public String getMatchesPage(@RequestParam String emailId, Model model, Principal principal) {
+//        System.out.println("Accessing /matches with emailId: " + emailId);
+//        Optional<User>user=userService.getUserByEmail(emailId);
+//        if (user == null) {
+//            System.out.println("User not found for emailId: " + emailId);
+//            return "redirect:/dashboard";
+//        }
+//        List<User> matches = matchingService.findTopMatchesByEmailId(emailId,10);
+//        model.addAttribute("emailId", emailId);
+//        model.addAttribute("matches", matches);
+//        return "matches";
+//    }
 }

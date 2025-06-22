@@ -29,65 +29,66 @@ public class UserController {
     }
 
 
-    @GetMapping("/user_dashboard")
-    public String userDashboardPage(Model model, @RequestParam("emailId") String emailId) {
-        if (emailId!= null && !emailId.isEmpty()) {
-            Optional<User> userOptional = userService.getUserByEmail(emailId);
-            if (userOptional.isPresent()) {
-                return "redirect:/user_info?emailId=" + emailId;
-            }
-            User user = new User();
-            user.setEmailId(emailId);
-            model.addAttribute("user", user);
-        } else {
-            model.addAttribute("user", new User());
-        }
-        return "user_dashboard";
-    }//the working one
+@GetMapping("/user_dashboard")
+public String userDashboardPage(Model model, @RequestParam(value = "emailId", required = false) String emailId) {
+    User user;
+    if (emailId != null && !emailId.isEmpty()) {
+        Optional<User> userOptional = userService.getUserByEmail(emailId);
+        user = userOptional.orElseGet(() -> {
+            User newUser = new User();
+            newUser.setEmailId(emailId);
+            return newUser;
 
+        });
+    } else {
+        user = new User();
+    }
+    model.addAttribute("user", user);
+    System.out.println("Accessing user_dashboard with emailId: " + emailId);
+    return "user_dashboard";
+}
 
     @PostMapping("/user-info-form")
-    public String userInfoForm(@ModelAttribute User user,@RequestParam("profilePicture")MultipartFile file) throws IOException  {
-        //  profile picture upload
-
+    public String userInfoForm(@ModelAttribute User user, @RequestParam("profilePicture") MultipartFile file) throws IOException {
+        System.out.println("Received user data: " + user);
+        System.out.println("Profile picture is empty: " + file.isEmpty());
         if (!file.isEmpty()) {
-            String uploadDir = "uploads/";
+            String uploadDir = "Uploads/";
             String originalFileName = file.getOriginalFilename();
             String fileName = UUID.randomUUID() + "_" + originalFileName;
 
             Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
-
             }
 
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            // store the file path in the user model
-            user.setProfilePictureUrl("/" + uploadDir + fileName); // assuming profilePictureUrl is a String
-
+            user.setProfilePictureUrl("/" + uploadDir + fileName);
+        } else if (user.getId() != null) {
+            Optional<User> existingUser = userService.getUserById(user.getId());
+            if (existingUser.isPresent()) {
+                user.setProfilePictureUrl(existingUser.get().getProfilePictureUrl());
+            }
         }
+
         userService.saveUser(user);
-        System.out.println("User: " + user);
-       //return "redirect:/contact_details?emailId=" + user.getEmailId();
+        System.out.println("Saved user: " + user);
         return "redirect:/contact_details?emailId=" + user.getEmailId();
-
     }
-
-
 
     @GetMapping("/user_info")
     public String seeProfilePage(@RequestParam String emailId, Model model) {
         Optional<User> userOptional = userService.getUserByEmail(emailId);
         if (userOptional.isPresent()) {
             model.addAttribute("user", userOptional.get());
+            System.out.println("Displaying user_info for emailId: " + emailId);
         } else {
             model.addAttribute("error", "User not found");
+            System.out.println("User not found for emailId: " + emailId);
             return "error";
         }
         return "user_info";
-    }//the working one
-
-
+    }
 }
+

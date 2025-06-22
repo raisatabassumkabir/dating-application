@@ -15,16 +15,18 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request-> request
-                .requestMatchers("/","/registration","/index","/registration-form","/login","/login-form","/user-info-form","/user_dashboard","/user_info","/contact_details","/saveContactDetails","/contact_info","/matches","/talkrequest","/matches-contact-info").permitAll()
+                .requestMatchers("/","/registration","/index","/registration-form","/login","/login-form","/user_dashboard","/user-info-form","/user_info","/contact_details","/saveContactDetails","/contact_info","/matches","/talkrequest","/matches-contact-info","/error").permitAll()
                         .requestMatchers("/picture/**","/css/**","/uploads/**","/user/**","/api/talk-requests/**").permitAll()
                         .anyRequest()
                         .authenticated())
                 .formLogin(form->form.loginPage("/login")
                         .usernameParameter("email")
                        .passwordParameter("password")
-                       //.successForwardUrl("/user_dashboard")
+                       .successForwardUrl("/user_dashboard")
                         .failureForwardUrl("/login?error=true")
                         .permitAll())
+              .csrf(csrf->csrf
+                      .ignoringRequestMatchers("/user-info-form","/saveContactDetails"))
                 .build();
 
     }

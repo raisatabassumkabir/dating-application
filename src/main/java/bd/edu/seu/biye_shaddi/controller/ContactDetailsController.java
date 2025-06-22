@@ -30,38 +30,40 @@ public class ContactDetailsController {
 
     @GetMapping("/contact_details")
     public String showContactDetailsForm(Model model, @RequestParam("emailId") String emailId) {
-        // CHANGED: Validate user existence first to avoid "user not found" error
         Optional<User> userOptional = userService.getUserByEmail(emailId);
         if (!userOptional.isPresent()) {
             model.addAttribute("error", "User not found");
+            logger.error("User not found for emailId: {}", emailId);
             return "error";
         }
 
-        //Fetch  ContactDetails
         Optional<ContactDetails> contactDetailsOptional = contactDetailsService.getContactDetailsByEmail(emailId);
         ContactDetails contactDetails = contactDetailsOptional.orElse(new ContactDetails());
-        contactDetails.setEmailId(emailId); //  Ensure emailId is set for new ContactDetails
+        contactDetails.setEmailId(emailId);
         model.addAttribute("contactDetails", contactDetails);
         model.addAttribute("user", userOptional.get());
+        logger.debug("Loaded contact details for emailId: {}", emailId);
 
         return "contact_details";
     }
 
     @PostMapping("/saveContactDetails")
-    public String saveContactDetails(@ModelAttribute ContactDetails contactDetails, @RequestParam("emailId") String emailId) {
-        //  Validate user existence before saving
-        logger.debug("Saving contact details for emailId: {}", emailId);
-        Optional<User> userOptional = userService.getUserByEmail(emailId);
+    public String saveContactDetails(@ModelAttribute ContactDetails contactDetails, @RequestParam("emailId") String emailId, Model model) {
+        logger.debug("Saving contact details for emailId: {}, ContactDetails: {}", emailId, contactDetails);
+        // Clean emailId to prevent duplication
+        String cleanedEmailId = emailId.split(",")[0].trim();
+        Optional<User> userOptional = userService.getUserByEmail(cleanedEmailId);
         if (!userOptional.isPresent()) {
-            logger.error("User not found for emailId: {}", emailId);
-            return "redirect:/error?message=User not found"; // Redirect to error page
+            logger.error("User not found for emailId: {}", cleanedEmailId);
+            model.addAttribute("error", "User not found for email: " + cleanedEmailId);
+            return "error";
         }
 
-        // emailId is set and save ContactDetails
-        contactDetails.setEmailId(emailId); //  Reinforce emailId relationship
+        contactDetails.setEmailId(cleanedEmailId);
         contactDetailsService.saveContactDetails(contactDetails);
+        logger.info("Saved contact details for emailId: {}", cleanedEmailId);
 
-        return "redirect:/contact_info?emailId=" + emailId;
+        return "redirect:/contact_info?emailId=" + cleanedEmailId;
     }
 
     @GetMapping("/contact_info")
@@ -70,17 +72,15 @@ public class ContactDetailsController {
         if (!userOptional.isPresent()) {
             model.addAttribute("error", "User not found");
             logger.error("User not found for emailId: {}", emailId);
-            return "error"; // ADDED: Return error page if user not found
+            return "error";
         }
 
         Optional<ContactDetails> contactDetailsOptional = contactDetailsService.getContactDetailsByEmail(emailId);
         ContactDetails contactDetails = contactDetailsOptional.orElse(new ContactDetails());
         model.addAttribute("contactDetails", contactDetails);
-        model.addAttribute("user", userOptional.get());// Add user to model for navigation
+        model.addAttribute("user", userOptional.get());
         logger.info("Rendering contact_info.html for emailId: {}", emailId);
 
-
         return "contact_info";
-
     }
 }

@@ -103,7 +103,7 @@
                                 .css('background-color', '#1d4ed8')
                                 .off('click')
                                 .click(function() {
-                                    window.location.href = `/matches-contact-info?emailId=${fromEmailId}&viewerEmailId=${toEmailId}`;
+                                    window.location.href = `/matches-contact-info?emailId=${toEmailId}&viewerEmailId=${fromEmailId}`;
                                 });
                             if (!$notification.data('shown')) {
                                 $notification.text('Talk request accepted from ' + fromEmailId + '!')
