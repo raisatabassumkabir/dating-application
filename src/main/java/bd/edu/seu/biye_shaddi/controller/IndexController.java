@@ -79,7 +79,6 @@ public class IndexController {
             return "matches-contact-info";
         }
 
-
         // Fetch contact details
         Optional<ContactDetails> contactDetails = contactDetailsService.getContactDetailsByEmail(emailId);
         if (!contactDetails.isPresent()) {

@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface LoginRepository extends MongoRepository<Login, String> {
 
 
+
 }

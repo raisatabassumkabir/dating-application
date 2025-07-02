@@ -39,7 +39,6 @@ public class TalkRequestController {
     }
 
 
-
     @PostMapping("/accept/{requestId}")
     public ResponseEntity<?> acceptTalkRequest(@PathVariable String requestId, @RequestParam String emailId) {
         try {

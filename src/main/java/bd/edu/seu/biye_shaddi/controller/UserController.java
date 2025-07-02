@@ -26,7 +26,6 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
     @GetMapping("/user_dashboard")
     public String userDashboardPage(Model model, @RequestParam(value = "emailId", required = false) String emailId) {
         User user;

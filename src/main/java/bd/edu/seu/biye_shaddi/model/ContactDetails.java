@@ -47,6 +47,7 @@ public class ContactDetails {
         this.facebook = facebook;
     }
 
+
     public String getInstagram() {
         return instagram;
     }

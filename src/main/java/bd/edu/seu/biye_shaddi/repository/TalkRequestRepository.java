@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface TalkRequestRepository extends MongoRepository<TalkRequest, String> {
+
     List<TalkRequest> findByToEmailIdAndStatus(String toEmailId, String status);
     List<TalkRequest> findByFromEmailIdAndToEmailId(String fromEmailId, String toEmailId);
     List<TalkRequest> findByFromEmailIdAndToEmailIdAndStatus(String fromEmailId, String toEmailId, String status);

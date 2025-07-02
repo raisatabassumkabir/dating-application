@@ -36,7 +36,6 @@ public class loginController {
         return "login";
     }
 
-
     @PostMapping("/login-form")
     public String loginForm(@RequestParam String email, @RequestParam String password, Model model) {
         boolean isUserAuthenticated = loginService.userAuthenticated(email, password);

@@ -59,5 +59,4 @@ public class TalkRequestViewController {
             return "talkrequest";
         }
     }
-
 }

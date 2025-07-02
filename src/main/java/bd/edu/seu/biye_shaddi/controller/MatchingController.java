@@ -5,7 +5,7 @@ import bd.edu.seu.biye_shaddi.model.User;
 import bd.edu.seu.biye_shaddi.service.MatchingService;
 
 import bd.edu.seu.biye_shaddi.service.TalkRequestService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

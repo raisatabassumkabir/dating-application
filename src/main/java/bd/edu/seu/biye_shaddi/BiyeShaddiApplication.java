@@ -10,4 +10,5 @@ public class BiyeShaddiApplication {
         SpringApplication.run(BiyeShaddiApplication.class, args);
     }
 
+
 }
