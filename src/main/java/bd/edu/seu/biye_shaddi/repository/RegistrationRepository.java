@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface RegistrationRepository extends MongoRepository<Registration, String> {
 
-
    Optional <Registration> findByEmail(String email);
 }

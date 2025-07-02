@@ -33,6 +33,10 @@
             <p class="facebook"><i class="fab fa-facebook-f"></i> <strong>Facebook:</strong> <span th:text="${contactDetails.facebook != null ? contactDetails.facebook : 'Not specified'}"></span></p>
         </div>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="update-group">
+            <a th:href="@{/contact_details(emailId=${user.emailId})}" class="update-btn" aria-label="Update your profile">Update Your Contact Information</a>
+        </div>
     </div>
 </div>
 
@@ -205,7 +209,30 @@
         color: var(--text-primary);
         flex: 1;
     }
+    .update-group {
+        text-align: center;
+    }
 
+    .update-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.85rem 2.5rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    .update-btn:hover {
+        background: var(--primary-dark);
+        transform: scale(1.02);
+        box-shadow: 0 6px 16px rgba(174, 15, 15, 0.3);
+    }
     input[type="hidden"] {
         display: none;
     }

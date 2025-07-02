@@ -4,172 +4,191 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
-<div class="container" role="main">
-    <h1>Your Information</h1>
-    <div style="text-align:center;margin-bottom:40px;">
-        <strong>Email:</strong> <span th:text="${user.emailId}"></span>
-    </div>
-    <form th:object="${user}" th:action="@{/user-info-form}" method="post" enctype="multipart/form-data">
-        <input type="hidden" th:field="*{id}"/>
-        <section aria-labelledby="personal-info">
-            <h2 id="personal-info" style="color:#ae0f0f; margin-bottom:15px;"></h2>
-
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" th:field="*{name}" placeholder="Your full name" required/>
-            </div>
-
-            <input type="hidden" id="emailId" th:field="*{emailId}" required/>
-
-            <div class="form-group">
-                <label for="dateOfBirth">Date of Birth</label>
-                <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required/>
-            </div>
-
-            <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" id="age" th:field="*{age}" min="18" max="100" placeholder="Age" required/>
-            </div>
-
-            <div class="form-group">
-                <label for="gender">Gender</label>
-                <select id="gender" th:field="*{gender}" required>
-                    <option value="" disabled>Select Gender</option>
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="location">Location</label>
-                <select id="location" th:field="*{location}" required>
-                    <option value="" disabled>Your city</option>
-                    <option value="Dhaka">Dhaka</option>
-                    <option value="Khulna">Khulna</option>
-                    <option value="Barishal">Barishal</option>
-                    <option value="Sylhet">Sylhet</option>
-                    <option value="Chittagong">Chittagong</option>
-                    <option value="Rajshahi">Rajshahi</option>
-                    <option value="Rangpur">Rangpur</option>
-                    <option value="Mymensingh">Mymensingh</option>
-                    <option value="Cumilla">Cumilla</option>
-                    <option value="Narayanganj">Narayanganj</option>
-                    <option value="Cox's Bazar">Cox's Bazar</option>
-                    <option value="Others">Others</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="education">Educational Qualification</label>
-                <input type="text" id="education" th:field="*{education}" placeholder="Your education" required/>
-            </div>
-
-            <div class="form-group">
-                <label for="religion">Religion</label>
-                <input type="text" id="religion" th:field="*{religion}" placeholder="Your religion" required/>
-            </div>
-
-            <div class="form-group">
-                <label for="height">Height</label>
-                <input type="text" id="height" th:field="*{height}" placeholder="Your height" required/>
-            </div>
-
-            <div class="form-group">
-                <label for="status">Relationship Status</label>
-                <select id="status" th:field="*{relationshipStatus}" required>
-                    <option value="" disabled>Select Status</option>
-                    <option value="single">Single</option>
-                    <option value="divorced">Divorced</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="bio">Short Introduction of Yourself</label>
-                <input type="text" id="bio" th:field="*{bio}" placeholder="Describe yourself in a few words" required/>
-            </div>
-
-            <div class="form-group">
-                <label for="profession">Profession</label>
-                <select id="profession" th:field="*{profession}" required>
-                    <option value="" disabled>Select a profession</option>
-                    <option value="doctor">Doctor</option>
-                    <option value="engineer">Engineer</option>
-                    <option value="lawyer">Lawyer</option>
-                    <option value="teacher">Teacher</option>
-                    <option value="business">Business</option>
-                    <option value="govt-employee">Government Employee</option>
-                    <option value="student">Student</option>
-                    <option value="pilot">Pilot</option>
-                    <option value="air-hostess">Air Hostess</option>
-                    <option value="service-holder">Service Holder</option>
-                    <option value="artist">Artist</option>
-                    <option value="content-creator">Content Creator</option>
-                    <option value="others">Others</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Interests (select all that apply)</label>
-                <div class="checkbox-group" role="group" aria-label="Interests">
-                    <label><input type="checkbox" th:field="*{interests}" value="sports"/> Sports</label>
-                    <label><input type="checkbox" th:field="*{interests}" value="music"/> Music</label>
-                    <label><input type="checkbox" th:field="*{interests}" value="travel"/> Travel</label>
-                    <label><input type="checkbox" th:field="*{interests}" value="reading"/> Reading</label>
-                    <label><input type="checkbox" th:field="*{interests}" value="movies"/> Movies</label>
-                    <label><input type="checkbox" th:field="*{interests}" value="gaming"/> Gaming</label>
-                </div>
-            </div>
-
-            <div class="form-group picture-upload-section">
-                <label for="profilePicture">Profile Picture</label>
-                <input type="file" id="profilePicture" name="profilePicture" accept="image/*"/>
-                <p th:if="${user.profilePictureUrl}" th:text="'Current: ' + ${user.profilePictureUrl}"></p>
-                <img id="picture-preview" class="picture-preview" th:src="${user.profilePictureUrl != null ? user.profilePictureUrl : '/images/default-profile.jpg'}" alt="Profile Preview" th:style="${user.profilePictureUrl} ? 'display:block' : 'display:none'"/>
-            </div>
-
-            <div class="preferences-wrapper">
-                <section aria-labelledby="preferences">
-                    <h2 id="preferences" style="color:#ae0f0f; margin-bottom:15px;">What Kind of Person Are You Looking For?</h2>
-
-                    <div class="form-group">
-                        <label for="preferredAgeMin">Preferred Age (Minimum)</label>
-                        <input type="number" id="preferredAgeMin" th:field="*{preferredAgeMin}" min="18" max="100" placeholder="Min age" required/>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="preferredAgeMax">Preferred Age (Maximum)</label>
-                        <input type="number" id="preferredAgeMax" th:field="*{preferredAgeMax}" min="18" max="100" placeholder="Max age" required/>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Preferred Gender</label>
-                        <div class="radio-group" role="radiogroup" aria-label="Preferred Gender" id="preferredGender">
-                            <label><input type="radio" th:field="*{preferredGender}" value="female" required/> Female</label>
-                            <label><input type="radio" th:field="*{preferredGender}" value="male"/> Male</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="preferredHeightMin">Preferred Height (Minimum)</label>
-                        <input type="text" id="preferredHeightMin" th:field="*{preferredHeightMin}" placeholder="Min height" required/>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="preferredHeightMax">Preferred Height (Maximum)</label>
-                        <input type="text" id="preferredHeightMax" th:field="*{preferredHeightMax}" placeholder="Max height" required/>
-                    </div>
-                </section>
-            </div>
-
+<div class="navbar">
+    <div class="navbar-menu">
+        <a th:href="@{/user_info(emailId=${user.emailId})}"><i class="fas fa-user"></i> Your Profile</a>
+        <a th:href="@{/contact_info(emailId=${user.emailId})}"><i class="fas fa-address-book"></i> Contact Details</a>
+        <a th:href="@{/matches(emailId=${user.emailId})}"><i class="fas fa-heart"></i> Find Your Match</a>
+        <a th:href="@{/talkrequest(emailId=${user.emailId})}"><i class="fas fa-comments"></i> Find Your Request</a>
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</button>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <div class="form-group submit-group">
-                <button type="submit" class="submit-btn" aria-label="Save your profile and preferences">Save Profile</button>
-            </div>
-        </section>
-    </form>
+        </form>
+    </div>
+    <div class="navbar-toggle">
+        <i class="fas fa-bars"></i>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="container" role="main">
+        <h1>Your Information</h1>
+        <div style="text-align:center;margin-bottom:40px;">
+            <strong>Email:</strong> <span th:text="${user.emailId}"></span>
+        </div>
+        <form th:object="${user}" th:action="@{/user-info-form}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{emailId}"/>
+            <section aria-labelledby="personal-info">
+                <h2 id="personal-info" style="color:#ae0f0f; margin-bottom:15px;">Personal Information</h2>
+
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="Your full name" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateOfBirth">Date of Birth</label>
+                    <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" th:field="*{age}" min="18" max="100" placeholder="Age" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" th:field="*{gender}" required>
+                        <option value="">Select Gender</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <select id="location" th:field="*{location}" required>
+                        <option value="">Your city</option>
+                        <option value="Dhaka">Dhaka</option>
+                        <option value="Khulna">Khulna</option>
+                        <option value="Barishal">Barishal</option>
+                        <option value="Sylhet">Sylhet</option>
+                        <option value="Chittagong">Chittagong</option>
+                        <option value="Rajshahi">Rajshahi</option>
+                        <option value="Rangpur">Rangpur</option>
+                        <option value="Mymensingh">Mymensingh</option>
+                        <option value="Cumilla">Cumilla</option>
+                        <option value="Narayanganj">Narayanganj</option>
+                        <option value="Cox's Bazar">Cox's Bazar</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="education">Educational Qualification</label>
+                    <input type="text" id="education" th:field="*{education}" placeholder="Your education" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="religion">Religion</label>
+                    <input type="text" id="religion" th:field="*{religion}" placeholder="Your religion" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="height">Height</label>
+                    <input type="text" id="height" th:field="*{height}" placeholder="Your height" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Relationship Status</label>
+                    <select id="status" th:field="*{relationshipStatus}" required>
+                        <option value="">Select Status</option>
+                        <option value="single">Single</option>
+                        <option value="divorced">Divorced</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Short Introduction of Yourself</label>
+                    <textarea id="bio" th:field="*{bio}" placeholder="Describe yourself in a few words" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="profession">Profession</label>
+                    <select id="profession" th:field="*{profession}" required>
+                        <option value="">Select a profession</option>
+                        <option value="doctor">Doctor</option>
+                        <option value="engineer">Engineer</option>
+                        <option value="lawyer">Lawyer</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="business">Business</option>
+                        <option value="govt-employee">Government Employee</option>
+                        <option value="student">Student</option>
+                        <option value="pilot">Pilot</option>
+                        <option value="air-hostess">Air Hostess</option>
+                        <option value="service-holder">Service Holder</option>
+                        <option value="artist">Artist</option>
+                        <option value="content-creator">Content Creator</option>
+                        <option value="others">Others</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Interests (select all that apply)</label>
+                    <div class="checkbox-group" role="group" aria-label="Interests">
+                        <label><input type="checkbox" th:field="*{interests}" value="sports"/> Sports</label>
+                        <label><input type="checkbox" th:field="*{interests}" value="music"/> Music</label>
+                        Book
+                        <label><input type="checkbox" th:field="*{interests}" value="travel"/> Travel</label>
+                        <label><input type="checkbox" th:field="*{interests}" value="reading"/> Reading</label>
+                        <label><input type="checkbox" th:field="*{interests}" value="movies"/> Movies</label>
+                        <label><input type="checkbox" th:field="*{interests}" value="gaming"/> Gaming</label>
+                    </div>
+                </div>
+
+                <div class="form-group picture-upload-section">
+                    <label for="profilePicture">Profile Picture</label>
+                    <input type="file" id="profilePicture" name="profilePicture" accept="image/*"/>
+                    <p th:if="${user.profilePictureUrl}" th:text="'Current: ' + ${user.profilePictureUrl}"></p>
+                    <img id="picture-preview" class="picture-preview" th:src="${user.profilePictureUrl != null ? user.profilePictureUrl : '/images/default-profile.jpg'}" alt="Profile Preview"/>
+                </div>
+
+                <div class="preferences-wrapper">
+                    <section aria-labelledby="preferences">
+                        <h2 id="preferences" style="color:#ae0f0f; margin-bottom:15px;">What Kind of Person Are You Looking For?</h2>
+
+                        <div class="form-group">
+                            <label for="preferredAgeMin">Preferred Age (Minimum)</label>
+                            <input type="number" id="preferredAgeMin" th:field="*{preferredAgeMin}" min="18" max="100" placeholder="Min age" required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="preferredAgeMax">Preferred Age (Maximum)</label>
+                            <input type="number" id="preferredAgeMax" th:field="*{preferredAgeMax}" min="18" max="100" placeholder="Max age" required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Preferred Gender</label>
+                            <div class="radio-group" role="radiogroup" aria-label="Preferred Gender" id="preferredGender">
+                                <label><input type="radio" th:field="*{preferredGender}" value="female" required/> Female</label>
+                                <label><input type="radio" th:field="*{preferredGender}" value="male"/> Male</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="preferredHeightMin">Preferred Height (Minimum)</label>
+                            <input type="text" id="preferredHeightMin" th:field="*{preferredHeightMin}" placeholder="Min height" required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="preferredHeightMax">Preferred Height (Maximum)</label>
+                            <input type="text" id="preferredHeightMax" th:field="*{preferredHeightMax}" placeholder="Max height" required/>
+                        </div>
+                    </section>
+                </div>
+
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="form-group submit-group">
+                    <button type="submit" class="submit-btn" aria-label="Save your profile and preferences">Save Profile</button>
+                </div>
+            </section>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -182,11 +201,10 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 previewImage.setAttribute('src', e.target.result);
-                previewImage.style.display = 'block';
             }
             reader.readAsDataURL(file);
         } else {
-            previewImage.style.display = previewImage.getAttribute('src') ? 'block' : 'none';
+            previewImage.setAttribute('src', previewImage.getAttribute('th:src'));
         }
     });
 </script>
@@ -201,6 +219,7 @@
         --bg-light: #ffffff;
         --bg-muted: #f8fafc;
         --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        --navbar-height: 70px;
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -215,9 +234,84 @@
         background: var(--bg-muted);
         color: var(--text-dark);
         min-height: 100vh;
+        line-height: 1.6;
+        padding-top: var(--navbar-height);
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: var(--navbar-height);
+        background-color: #111827;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transition: var(--transition);
+    }
+
+    .navbar-menu {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        flex-grow: 1;
+    }
+
+    .navbar-menu a, .navbar-menu .logout-link {
+        display: flex;
+        align-items: center;
+        color: #d1d5db;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        background: none;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+        text-align: center;
+        max-width: 200px;
+    }
+
+    .navbar-menu a:hover, .navbar-menu .logout-link:hover {
+        background-color: #1f2937;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .navbar-menu a i, .navbar-menu .logout-link i {
+        margin-right: 8px;
+        font-size: 1.2rem;
+    }
+
+    .navbar-menu .logout-form {
+        display: inline;
+        flex: 1;
+        max-width: 200px;
+    }
+
+    .navbar-toggle {
+        display: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #ffffff;
+        position: absolute;
+        right: 20px;
+    }
+
+    .main-content {
+        padding: 40px 20px;
+        max-width: 1400px;
+        margin: 0 auto;
         display: flex;
         justify-content: center;
-        line-height: 1.6;
     }
 
     .container {
@@ -266,9 +360,9 @@
 
     input[type="text"],
     input[type="number"],
-    input[type="email"],
     input[type="date"],
-    select {
+    select,
+    textarea {
         width: 100%;
         padding: 0.85rem;
         border: 1px solid var(--border-color);
@@ -278,11 +372,16 @@
         transition: var(--transition);
     }
 
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
     input[type="text"]:focus,
     input[type="number"]:focus,
-    input[type="email"]:focus,
     input[type="date"]:focus,
-    select:focus {
+    select:focus,
+    textarea:focus {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(174, 15, 15, 0.1);
         outline: none;
@@ -418,6 +517,10 @@
         font-size: 1.5rem;
     }
 
+    input[type="hidden"] {
+        display: none;
+    }
+
     @media (max-width: 1024px) {
         .container {
             max-width: 80%;
@@ -435,18 +538,65 @@
         }
     }
 
-    @media (max-width: 768px) {
-        .container {
-            max-width: 90%;
-            padding: 1.5rem;
+    @media (max-width: 900px) {
+        .navbar {
+            padding: 10px 15px;
         }
 
-        .checkbox-group {
-            gap: 0.75rem;
+        .navbar-menu {
+            gap: 10px;
+        }
+
+        .navbar-menu a, .navbar-menu .logout-link {
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            max-width: 150px;
+        }
+
+        .container {
+            max-width: 80%;
         }
     }
 
     @media (max-width: 600px) {
+        .navbar {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .navbar-menu {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .navbar-menu.active {
+            display: flex;
+        }
+
+        .navbar-menu a, .navbar-menu .logout-link {
+            padding: 10px;
+            width: 100%;
+            justify-content: flex-start;
+            max-width: none;
+            text-align: left;
+        }
+
+        .navbar-menu .logout-form {
+            max-width: none;
+        }
+
+        .navbar-toggle {
+            display: block;
+        }
+
+        .main-content {
+            padding: 20px 10px;
+        }
+
         .container {
             max-width: 100%;
             margin: 1rem auto;
@@ -476,5 +626,3 @@
         }
     }
 </style>
-</body>
-</html>

@@ -15,4 +15,5 @@ WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:/C:/Users/User/Desktop/Advance Java/Biye_Shaddi/uploads/");
     }
 
+
 }

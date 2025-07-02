@@ -180,4 +180,5 @@ public class TalkRequestService {
             throw new RuntimeException("Failed to find talk requests", e);
         }
     }
+
 }

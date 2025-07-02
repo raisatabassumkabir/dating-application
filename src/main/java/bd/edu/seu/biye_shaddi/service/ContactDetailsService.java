@@ -22,4 +22,5 @@ public class ContactDetailsService {
     public Optional<ContactDetails> getContactDetailsByEmail(String emailId) {
         return contactDetailsRepository.findByEmailId(emailId);
     }
+
 }

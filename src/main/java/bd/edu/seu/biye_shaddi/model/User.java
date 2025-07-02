@@ -67,6 +67,7 @@ public class User {
 
     }
 
+
     public ContactDetails getContactDetails() {
         return contactDetails;
     }
