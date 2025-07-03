@@ -11,4 +11,5 @@ public interface TalkRequestRepository extends MongoRepository<TalkRequest, Stri
     List<TalkRequest> findByToEmailIdAndStatus(String toEmailId, String status);
     List<TalkRequest> findByFromEmailIdAndToEmailIdAndStatus(String fromEmailId, String toEmailId, String status);
     List<TalkRequest> findByFromEmailId(String fromEmailId);
+    List<TalkRequest> findByToEmailIdAndFromEmailId(String toEmailId, String fromEmailId);
 }

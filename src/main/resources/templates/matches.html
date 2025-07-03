@@ -74,9 +74,9 @@
         function checkAllRequestStatuses() {
             $('.talk-button').each(function() {
                 const $button = $(this);
-                const fromEmailId = $button.data('from-email');
-                const toEmailId = $button.data('to-email');
-                checkRequestStatus($button, fromEmailId, toEmailId);
+                const currentUserEmailId = $button.data('from-email'); // Current user (e.g., Abul)
+                const matchEmailId = $button.data('to-email'); // Match (e.g., Jane)
+                checkRequestStatus($button, matchEmailId, currentUserEmailId); // Check incoming request
             });
         }
 
@@ -95,16 +95,22 @@
                     const $notification = $button.siblings('.notification');
                     if (response) {
                         if (response.status === 'PENDING') {
-                            $button.text('Request Pending')
+                            $button.text('Already sent you a request')
                                 .prop('disabled', true)
                                 .css('background-color', '#6b7280');
+                            if (!$notification.data('shown')) {
+                                $notification.text('You have a pending talk request from this match!')
+                                    .show()
+                                    .data('shown', true);
+                                setTimeout(() => $notification.hide(), 5000);
+                            }
                         } else if (response.status === 'ACCEPTED') {
                             $button.text('See Contact Info?')
                                 .prop('disabled', false)
                                 .css('background-color', '#1d4ed8')
                                 .off('click')
                                 .click(function() {
-                                    window.location.href = `/matches-contact-info?emailId=${toEmailId}&viewerEmailId=${fromEmailId}`;
+                                    window.location.href = `/matches-contact-info?emailId=${fromEmailId}&viewerEmailId=${toEmailId}`;
                                 });
                             if (!$notification.data('shown')) {
                                 $notification.text('Talk request accepted!')
@@ -131,8 +137,8 @@
 
         $('.talk-button').click(function() {
             const $button = $(this);
-            const fromEmailId = $button.data('from-email');
-            const toEmailId = $button.data('to-email');
+            const fromEmailId = $button.data('from-email'); // Current user (e.g., Abul)
+            const toEmailId = $button.data('to-email'); // Match (e.g., Jane)
             const $messageDiv = $button.siblings('.message');
             console.log('Sending request: from=' + fromEmailId + ', to=' + toEmailId);
 
@@ -168,11 +174,11 @@
                     $messageDiv.text('Talk request sent successfully!').css({
                         'background-color': '#d4edda', 'color': '#155724', 'display': 'block'
                     });
-                    $button.text('Request Pending')
+                    $button.text('Request Sent')
                         .prop('disabled', true)
                         .css('background-color', '#6b7280');
                     setTimeout(() => $messageDiv.hide(), 3000);
-                    const interval = setInterval(() => checkRequestStatus($button, fromEmailId, toEmailId), 5000);
+                    const interval = setInterval(() => checkRequestStatus($button, toEmailId, fromEmailId), 5000);
                     $button.data('poll-interval', interval);
                 },
                 error: function(xhr) {
@@ -430,7 +436,7 @@
         font-weight: 500;
         font-size: 1rem;
         cursor: pointer;
-        transition: background 0.3s ease, transform 0.2s ease;
+        transition: background 0.3s ease, transform 0.3s ease;
     }
 
     .ignore-button:hover {

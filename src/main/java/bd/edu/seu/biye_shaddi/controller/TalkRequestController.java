@@ -102,7 +102,8 @@ public class TalkRequestController {
     @GetMapping("/status")
     public ResponseEntity<?> getTalkRequestStatus(@RequestParam String fromEmailId, @RequestParam String toEmailId) {
         try {
-            List<TalkRequest> requests = talkRequestService.findByFromEmailIdAndToEmailId(fromEmailId, toEmailId);
+            System.out.println("Checking request status: from=" + fromEmailId + " to=" + toEmailId);
+            List<TalkRequest> requests = talkRequestService.findByToEmailIdAndFromEmailId(toEmailId, fromEmailId); // Check incoming requests
             System.out.println("Found " + requests.size() + " requests from " + fromEmailId + " to " + toEmailId);
             if (requests.isEmpty()) {
                 return ResponseEntity.ok(null);
