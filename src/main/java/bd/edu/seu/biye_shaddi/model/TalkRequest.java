@@ -1,6 +1,6 @@
 package bd.edu.seu.biye_shaddi.model;
-import org.springframework.data.annotation.Id;
 
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
@@ -11,8 +11,9 @@ public class TalkRequest {
     private String toEmailId;
     private String status; // PENDING, ACCEPTED, REJECTED
     private LocalDateTime timestamp;
+    private User toUser; //  recipient details
 
-    // Constructors
+
     public TalkRequest() {
         this.timestamp = LocalDateTime.now();
     }
@@ -24,7 +25,6 @@ public class TalkRequest {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -45,7 +45,6 @@ public class TalkRequest {
         return toEmailId;
     }
 
-
     public void setToEmailId(String toEmailId) {
         this.toEmailId = toEmailId;
     }
@@ -64,5 +63,13 @@ public class TalkRequest {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public User getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(User toUser) {
+        this.toUser = toUser;
     }
 }

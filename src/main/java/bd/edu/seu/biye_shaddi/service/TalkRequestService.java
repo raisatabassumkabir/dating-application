@@ -4,8 +4,8 @@ import bd.edu.seu.biye_shaddi.model.TalkRequest;
 import bd.edu.seu.biye_shaddi.model.User;
 import bd.edu.seu.biye_shaddi.repository.TalkRequestRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.data.mongodb.core.MongoTemplate; // CHANGED: Added for connection check
-import org.springframework.beans.factory.annotation.Autowired; // CHANGED: For MongoTemplate
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +14,9 @@ import java.util.Optional;
 public class TalkRequestService {
     private final TalkRequestRepository talkRequestRepository;
     private final UserService userService;
-    private final MongoTemplate mongoTemplate; // CHANGED: Added MongoTemplate
+    private final MongoTemplate mongoTemplate;
 
-    @Autowired // CHANGED: Autowire dependencies
+    @Autowired
     public TalkRequestService(TalkRequestRepository talkRequestRepository, UserService userService, MongoTemplate mongoTemplate) {
         this.talkRequestRepository = talkRequestRepository;
         this.userService = userService;
@@ -24,7 +24,6 @@ public class TalkRequestService {
     }
 
     public TalkRequest sendTalkRequest(String fromEmailId, String toEmailId) {
-        // CHANGED: Validate inputs
         if (fromEmailId == null || fromEmailId.isEmpty()) {
             System.out.println("Invalid fromEmailId: " + fromEmailId);
             throw new IllegalArgumentException("Invalid fromEmailId");
@@ -33,7 +32,6 @@ public class TalkRequestService {
             System.out.println("Invalid toEmailId: " + toEmailId);
             throw new IllegalArgumentException("Invalid toEmailId");
         }
-        // CHANGED: Check database connection
         try {
             mongoTemplate.getDb().getCollection("talkRequests").find().first();
             System.out.println("✅ Database connection verified for talkRequests collection");
@@ -59,7 +57,6 @@ public class TalkRequestService {
             return existingRequests.get(0);
         }
         TalkRequest request = new TalkRequest(fromEmailId, toEmailId, "PENDING");
-        // CHANGED: Validate request object
         System.out.println("Saving talk request: " + request.toString());
         try {
             if (request.getFromEmailId() == null || request.getToEmailId() == null || request.getStatus() == null) {
@@ -67,7 +64,6 @@ public class TalkRequestService {
                 throw new IllegalArgumentException("Invalid TalkRequest data");
             }
             TalkRequest savedRequest = talkRequestRepository.save(request);
-            // CHANGED: Verify save by querying
             Optional<TalkRequest> verified = talkRequestRepository.findById(savedRequest.getId());
             if (verified.isPresent()) {
                 System.out.println("✅ Talk request saved and verified: id=" + savedRequest.getId() + ", from=" + fromEmailId + ", to=" + toEmailId + ", status=" + savedRequest.getStatus());
@@ -137,7 +133,7 @@ public class TalkRequestService {
     }
 
     public List<TalkRequest> getPendingRequests(String toEmailId) {
-        System.out.println("Fetching pending requests for: " + toEmailId);
+        System.out.println("Fetching for: " + toEmailId);
         Optional<User> user = userService.getUserByEmail(toEmailId);
         if (!user.isPresent()) {
             System.out.println("Invalid user emailId: " + toEmailId);
@@ -151,6 +147,24 @@ public class TalkRequestService {
         } catch (Exception e) {
             System.out.println("Failed to fetch pending requests for " + toEmailId + ": " + e.getMessage());
             throw new RuntimeException("Failed to fetch pending requests", e);
+        }
+    }
+
+    public List<TalkRequest> getSentRequests(String fromEmailId) {
+        System.out.println("Fetching sent requests for: " + fromEmailId);
+        Optional<User> user = userService.getUserByEmail(fromEmailId);
+        if (!user.isPresent()) {
+            System.out.println("Invalid user emailId: " + fromEmailId);
+            throw new IllegalArgumentException("Invalid user emailId: " + fromEmailId);
+        }
+        try {
+            List<TalkRequest> requests = talkRequestRepository.findByFromEmailId(fromEmailId);
+            System.out.println("Found " + requests.size() + " sent requests for " + fromEmailId + ":");
+            requests.forEach(req -> System.out.println(" - To: " + req.getToEmailId() + ", ID: " + req.getId() + ", Status: " + req.getStatus()));
+            return requests;
+        } catch (Exception e) {
+            System.out.println("Failed to fetch sent requests for " + fromEmailId + ": " + e.getMessage());
+            throw new RuntimeException("Failed to fetch sent requests", e);
         }
     }
 
@@ -180,6 +194,4 @@ public class TalkRequestService {
             throw new RuntimeException("Failed to find talk requests", e);
         }
     }
-
-
 }

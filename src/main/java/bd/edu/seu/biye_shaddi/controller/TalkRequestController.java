@@ -8,6 +8,7 @@ import bd.edu.seu.biye_shaddi.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -37,7 +38,6 @@ public class TalkRequestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending talk request: " + e.getMessage());
         }
     }
-
 
     @PostMapping("/accept/{requestId}")
     public ResponseEntity<?> acceptTalkRequest(@PathVariable String requestId, @RequestParam String emailId) {
@@ -84,6 +84,21 @@ public class TalkRequestController {
         }
     }
 
+    @GetMapping("/sent/{emailId}")
+    public ResponseEntity<?> getSentTalkRequests(@PathVariable String emailId) {
+        try {
+            List<TalkRequest> sentRequests = talkRequestService.getSentRequests(emailId);
+            System.out.println("Fetched " + sentRequests.size() + " sent requests for " + emailId);
+            return ResponseEntity.ok(sentRequests);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Bad request: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error fetching sent requests: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching sent requests: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/status")
     public ResponseEntity<?> getTalkRequestStatus(@RequestParam String fromEmailId, @RequestParam String toEmailId) {
         try {
@@ -110,7 +125,4 @@ public class TalkRequestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
     }
-
-
-
 }

@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface TalkRequestRepository extends MongoRepository<TalkRequest, String> {
 
-    List<TalkRequest> findByToEmailIdAndStatus(String toEmailId, String status);
     List<TalkRequest> findByFromEmailIdAndToEmailId(String fromEmailId, String toEmailId);
+    List<TalkRequest> findByToEmailIdAndStatus(String toEmailId, String status);
     List<TalkRequest> findByFromEmailIdAndToEmailIdAndStatus(String fromEmailId, String toEmailId, String status);
+    List<TalkRequest> findByFromEmailId(String fromEmailId);
 }
