@@ -1,205 +1,256 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://thymeleaf.org" >
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BiyeShaddi.com</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <style>
+        body {
+            background: #fff;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .login-sidebar {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.9), rgba(255, 183, 77, 0.9)), url('/picture/biye.jpg');
+            background-size: cover;
+            background-position: center;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .login-sidebar h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-sidebar p {
+            font-size: 1.2rem;
+            max-width: 400px;
+            opacity: 0.9;
+        }
+
+        .login-form-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        @media (min-width: 900px) {
+            .login-sidebar {
+                display: flex;
+            }
+
+            .login-form-area {
+                padding: 60px;
+                max-width: 50%;
+            }
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .auth-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: -2px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius-md);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            color: var(--text-body);
+        }
+
+        .social-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            margin: 20px 0;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .floating-input {
+            margin-bottom: 20px;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-home:hover {
+            color: var(--primary-color);
+        }
+    </style>
 </head>
 
 <body>
-<nav>
-    <div class="logo">BiyeShaddi.com</div>
-    <div class="menu">
-        <a href="http://localhost:8080/index">Home</a>
-        <a href="http://localhost:8080">About</a>
-        <a href="http://localhost:8080/registration">Registration</a>
-        <a href="http://localhost:8080/login">Login</a>
-    </div>
-</nav>
 
-<div id="main-content">
-    <div id="x">
-        Welcome to <br />
-        <b style="color: #fff;">BiyeShaddi.com</b>
-    </div>
-    <div id="y">
-        <div id="l">
-            <h1>Login</h1>
-            <form action="/login-form" method="post" th:object="${login}">
-                E-mail <br />
-                <input type="email" name="email" class="t" required /><br />
-                Password <br />
-                <input type="password" name="password" class="t" required /><br />
+    <div class="login-container">
+        <!-- Brand Sidebar -->
+        <div class="login-sidebar">
+            <h1 class="animate__animated animate__fadeInDown">BiyeShaddi.com</h1>
+            <p class="animate__animated animate__fadeInUp">Find your perfect match where tradition meets technology.</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-form-area">
+            <a th:href="@{/index}" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: var(--text-main); font-size: 1.8rem; margin-bottom: 10px;">Welcome Back</h2>
+                <p style="color: var(--text-light);">Please login to your account</p>
+            </div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active">Login</div>
+                <a th:href="@{/registration}" class="auth-tab">Register</a>
+            </div>
+
+            <!-- Social Login Placeholders -->
+            <div class="social-login">
+                <button type="button" class="social-btn">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" alt="Google">
+                    Google
+                </button>
+                <button type="button" class="social-btn">
+                    <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" width="20" alt="Facebook">
+                    Facebook
+                </button>
+            </div>
+
+            <div class="divider">
+                <span>OR LOGIN WITH EMAIL</span>
+            </div>
+
+            <form th:action="@{/login-form}" method="post" th:object="${login}">
+
+                <div class="form-group floating-input">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"
+                            style="position: absolute; left: 12px; top: 12px; color: var(--text-light);"></i>
+                        <input type="email" name="email" class="form-control" style="padding-left: 40px;"
+                            placeholder="name@example.com" required />
+                    </div>
+                </div>
+
+                <div class="form-group floating-input">
+                    <label class="form-label" style="display: flex; justify-content: space-between;">
+                        Password
+                        <a href="#"
+                            style="font-size: 0.85rem; color: var(--primary-color); text-decoration: none;">Forgot?</a>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"
+                            style="position: absolute; left: 12px; top: 12px; color: var(--text-light);"></i>
+                        <input type="password" name="password" class="form-control" style="padding-left: 40px;"
+                            placeholder="Min. 8 characters" required />
+                    </div>
+                </div>
+
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <input type="submit" value="Login" class="button" /><br />
 
-                <p class="p" th:if="${error}" th:text="${error}" style="color:mediumblue;"></p>
+                <div style="margin-bottom: 25px; display: flex; align-items: center;">
+                    <input type="checkbox" id="remember" style="margin-right: 10px;">
+                    <label for="remember" style="color: var(--text-body); font-size: 0.9rem;">Keep me logged in</label>
+                </div>
 
-                <a href="#"  class="a" style="text-decoration: none; color: #ae0f0f;">Forgot password?</a>
+                <p th:if="${error}" th:text="${error}"
+                    style="color:red; font-size: 0.9rem; margin-bottom: 15px; text-align: center;"></p>
 
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem;">Login
+                    to Continue</button>
             </form>
+
+            <p style="text-align: center; margin-top: 25px; font-size: 0.9rem; color: var(--text-body);">
+                Don't have an account? <a th:href="@{/registration}"
+                    style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Register Free</a>
+            </p>
         </div>
     </div>
-</div>
 
 </body>
 
-
 </html>
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Josefin Sans", sans-serif;
-    }
-    header {
-        width: 100%;
-        height: 100vh;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15)), url("/picture/biye.jpg");
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-
-
-    body {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15)), url("/picture/biye.jpg");
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
-
-    nav {
-        width: 100%;
-        height: 15vh;
-        background: rgba(0, 0, 0, 0.2);
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-transform: uppercase;
-    }
-
-    nav .logo {
-        width: 25%;
-        text-align: center;
-        text-transform: initial;
-        font-size: 30px;
-    }
-
-    nav .menu {
-        width: 40%;
-        display: flex;
-        justify-content: space-around;
-        gap: 30px;
-    }
-
-    nav .menu a {
-        width: 25%;
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-    }
-
-    nav .menu a:first-child {
-        color: #ae0f0f;
-        font-weight: bold;
-        text-decoration: none;
-        width: 25%;
-    }
-
-    #main-content {
-        height: 85vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #x {
-        margin-top: 2px;
-        width: 40%;
-        color: white;
-        text-align: center;
-        font-size: 50px;
-        font-weight: inherit;
-        padding: 20px;
-    }
-
-    #y {
-        width: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #l {
-        width: 60%;
-        background: rgba(255, 255, 255, 0.6);
-        padding: 30px;
-        border-radius: 10px;
-        transition: 0.4s ease;
-        font-weight: bold;
-    }
-
-    #l:hover {
-        background: linear-gradient(
-                45deg,
-                rgba(174, 15, 15, 0.3),
-                rgba(255, 255, 255, 0.6)
-        );
-    }
-
-    h1 {
-        text-align: center;
-        color: #ae0f0f;
-        margin-bottom: 20px;
-    }
-
-    form {
-        color: #333;
-    }
-
-    .t {
-        width: 100%;
-        height: 40px;
-        margin: 20px 0 30px 0;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 0 4px rgba(174, 15, 15, 0.3);
-
-    }
-    .a {
-        display: inline-block;
-        margin-top: 15px;
-        text-decoration: none;
-        color: #ae0f0f;
-        margin-bottom: 15px;
-
-    }
-
-.p{
-    margin-top: 15px;
-
-}
-    .button {
-        width: 100%;
-        height: 40px;
-        background-color: #ae0f0f;
-        color: white;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .button:hover {
-        background-color: #880e0e;
-    }
-
-
-</style>

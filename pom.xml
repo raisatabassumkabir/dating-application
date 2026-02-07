@@ -52,7 +52,7 @@
     </scm>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>23</java.version>
         <spring-ai.version>1.0.0</spring-ai.version>
     </properties>
 
@@ -108,9 +108,14 @@
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-ollama</artifactId>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>4.11.0</version>
+            <scope>runtime</scope>
         </dependency>
+
+
+
 
 
     </dependencies>

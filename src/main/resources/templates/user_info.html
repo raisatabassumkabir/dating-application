@@ -1,357 +1,336 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-</head>
-<body>
-<div class="navbar">
-    <div class="navbar-menu">
-        <a th:href="@{/user_info(emailId=${user.emailId})}"><i class="fas fa-user"></i> Your Profile</a>
-        <a th:href="@{/contact_info(emailId=${user.emailId})}"><i class="fas fa-address-book"></i> Contact Details</a>
-        <a th:href="@{/matches(emailId=${user.emailId})}"><i class="fas fa-heart"></i> Find Your Match</a>
-        <a th:href="@{/talkrequest(emailId=${user.emailId})}"><i class="fas fa-comments"></i> Find Your Request</a>
-        <form th:action="@{/logout}" method="post" class="logout-form">
-            <button type="submit" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        </form>
-    </div>
-    <div class="navbar-toggle">
-        <i class="fas fa-bars"></i>
-    </div>
-</div>
-
-<div class="main-content">
-    <div class="container" role="main">
-        <h1>Your Profile Information</h1>
-        <div class="profile-picture">
-            <img th:src="${user.profilePictureUrl != null ? user.profilePictureUrl : '/images/default-profile.jpg'}" alt="Profile Picture"/>
-        </div>
-        <input type="hidden" name="id" th:value="${user.id}"/>
-        <div class="profile-details">
-            <p><strong>Name:</strong> <span th:text="${user.name != null ? user.name : 'Not specified'}"></span></p>
-            <p><strong>Date of Birth:</strong> <span th:text="${user.dateOfBirth != null ? #dates.format(user.dateOfBirth, 'dd MMMM yyyy') : 'Not specified'}"></span></p>
-            <p><strong>Age:</strong> <span th:text="${user.age != null ? user.age : 'Not specified'}"></span></p>
-            <p><strong>Gender:</strong> <span th:text="${user.gender != null ? user.gender : 'Not specified'}"></span></p>
-            <p><strong>Location:</strong> <span th:text="${user.location != null ? user.location : 'Not specified'}"></span></p>
-            <p><strong>Education:</strong> <span th:text="${user.education != null ? user.education : 'Not specified'}"></span></p>
-            <p><strong>Religion:</strong> <span th:text="${user.religion != null ? user.religion : 'Not specified'}"></span></p>
-            <p><strong>Height:</strong> <span th:text="${user.height != null ? user.height : 'Not specified'}"></span></p>
-            <p><strong>Relationship Status:</strong> <span th:text="${user.relationshipStatus != null ? user.relationshipStatus : 'Not specified'}"></span></p>
-            <p><strong>Bio:</strong> <span th:text="${user.bio != null ? user.bio : 'No bio provided'}"></span></p>
-            <p><strong>Profession:</strong> <span th:text="${user.profession != null ? user.profession : 'Not specified'}"></span></p>
-            <p><strong>Interests:</strong> <span th:text="${user.interests != null and not #lists.isEmpty(user.interests) ? #strings.listJoin(user.interests, ', ') : 'None'}"></span></p>
-            <p><strong>Preferred Minimum Age:</strong> <span th:text="${user.preferredAgeMin != null ? user.preferredAgeMin : 'N/A'}"></span></p>
-            <p><strong>Preferred Maximum Age:</strong> <span th:text="${user.preferredAgeMax != null ? user.preferredAgeMax : 'N/A'}"></span></p>
-            <p><strong>Preferred Gender:</strong> <span th:text="${user.preferredGender != null ? user.preferredGender : 'Not specified'}"></span></p>
-            <p><strong>Preferred Minimum Height:</strong> <span th:text="${user.preferredHeightMin != null ? user.preferredHeightMin : 'N/A'}"></span></p>
-            <p><strong>Preferred Maximum Height:</strong> <span th:text="${user.preferredHeightMax != null ? user.preferredHeightMax : 'N/A'}"></span></p>
-        </div>
-        <div class="update-group">
-            <a th:href="@{/user_dashboard(emailId=${user.emailId})}" class="update-btn" aria-label="Update your profile">Update Your Information</a>
-        </div>
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-    </div>
-</div>
-
-<script>
-    document.querySelector('.navbar-toggle').addEventListener('click', () => {
-        document.querySelector('.navbar-menu').classList.toggle('active');
-    });
-</script>
-
-<style>
-    :root {
-        --primary-color: #ae0f0f;
-        --primary-dark: #8c0c0c;
-        --text-dark: #1a1a1a;
-        --text-muted: #4a4a4a;
-        --border-color: #e0e0e0;
-        --bg-light: #ffffff;
-        --bg-muted: #f8fafc;
-        --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        --navbar-height: 70px;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: 'Inter', sans-serif;
-    }
-
-    body {
-        background: var(--bg-muted);
-        color: var(--text-dark);
-        line-height: 1.6;
-        padding-top: var(--navbar-height);
-    }
-
-    .navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: var(--navbar-height);
-        background-color: #111827;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        transition: var(--transition);
-    }
-
-    .navbar-menu {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        flex-grow: 1;
-    }
-
-    .navbar-menu a, .navbar-menu .logout-link {
-        display: flex;
-        align-items: center;
-        color: #d1d5db;
-        text-decoration: none;
-        padding: 10px 15px;
-        border-radius: 6px;
-        font-size: 1rem;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-        background: none;
-        border: none;
-        cursor: pointer;
-        flex: 1;
-        text-align: center;
-        max-width: 200px;
-    }
-
-    .navbar-menu a:hover, .navbar-menu .logout-link:hover {
-        background-color: #1f2937;
-        color: #ffffff;
-        transform: translateY(-2px);
-    }
-
-    .navbar-menu a i, .navbar-menu .logout-link i {
-        margin-right: 8px;
-        font-size: 1.2rem;
-    }
-
-    .navbar-menu .logout-form {
-        display: inline;
-        flex: 1;
-        max-width: 200px;
-    }
-
-    .navbar-toggle {
-        display: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: #ffffff;
-        position: absolute;
-        right: 20px;
-    }
-
-    .main-content {
-        padding: 40px 20px;
-        max-width: 1400px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: center;
-    }
-
-    .container {
-        background: var(--bg-light);
-        border-radius: 20px;
-        padding: 3rem;
-        width: 100%;
-        max-width: 900px;
-        box-shadow: var(--shadow);
-        transition: transform var(--transition), box-shadow var(--transition);
-    }
-
-    .container:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
-    }
-
-    h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 2rem;
-        color: var(--primary-color);
-    }
-
-    .profile-picture {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 25px;
-    }
-
-    .profile-picture img {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid var(--bg-light);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .profile-picture img:hover {
-        transform: scale(1.05);
-    }
-
-    .profile-details p {
-        font-size: 1rem;
-        color: var(--text-muted);
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-    }
-
-    .profile-details p strong {
-        font-weight: 600;
-        color: var(--text-dark);
-        min-width: 200px;
-    }
-
-    .profile-details p span {
-        font-weight: 500;
-        color: var(--text-dark);
-        text-align: left;
-        max-width: 500px;
-    }
-
-    .update-group {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .update-btn {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 0.85rem 2.5rem;
-        border-radius: 10px;
-        font-size: 1rem;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-block;
-        cursor: pointer;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-    }
-
-    .update-btn:hover {
-        background-color: var(--primary-dark);
-        transform: scale(1.05);
-        box-shadow: 0 6px 16px rgba(174, 15, 15, 0.3);
-    }
-
-    input[type="hidden"] {
-        display: none;
-    }
-
-    @media (max-width: 900px) {
-        .navbar {
-            padding: 10px 15px;
-        }
-
-        .navbar-menu {
-            gap: 10px;
-        }
-
-        .navbar-menu a, .navbar-menu .logout-link {
-            padding: 8px 12px;
-            font-size: 0.95rem;
-            max-width: 150px;
-        }
-
-        .container {
-            max-width: 80%;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .navbar {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 10px;
-        }
-
-        .navbar-menu {
-            display: none;
-            flex-direction: column;
-            width: 100%;
-            margin-top: 10px;
-            gap: 10px;
-        }
-
-        .navbar-menu.active {
+    <title>Profile - BiyeShaddi.com</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/variables.css}">
+    <style>
+        /* Dashboard Layout Shared Styles */
+        .dashboard-layout {
             display: flex;
+            min-height: 100vh;
         }
 
-        .navbar-menu a, .navbar-menu .logout-link {
-            padding: 10px;
-            width: 100%;
-            justify-content: flex-start;
-            max-width: none;
-            text-align: left;
-        }
-
-        .navbar-menu .logout-form {
-            max-width: none;
-        }
-
-        .navbar-toggle {
-            display: block;
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid #eee;
+            position: fixed;
+            height: 100vh;
+            padding-top: 80px;
+            display: none;
+            z-index: 900;
         }
 
         .main-content {
-            padding: 20px 10px;
+            flex: 1;
+            padding: 80px 20px 80px 20px;
+            background: var(--bg-light);
+            min-height: 100vh;
         }
 
-        .container {
-            max-width: 100%;
-            margin: 1rem auto;
-            padding: 1.5rem;
+        @media (min-width: 1024px) {
+            .sidebar {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 260px;
+                padding-bottom: 20px;
+            }
+
+            .bottom-nav {
+                display: none !important;
+            }
         }
 
-        h1 {
-            font-size: 1.75rem;
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: var(--text-body);
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .profile-picture img {
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(255, 107, 107, 0.05);
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+
+        .sidebar-link i {
+            width: 30px;
+            font-size: 1.1rem;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        /* Profile Specific Styles */
+        .profile-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+
+        .profile-banner {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .profile-avatar-section {
+            padding: 0 30px;
+            position: relative;
+            margin-top: -60px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
             width: 120px;
             height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            box-shadow: var(--shadow-md);
         }
 
-        .profile-details p {
+        .profile-actions {
+            margin-bottom: 15px;
+        }
+
+        .profile-body {
+            padding: 0 30px 30px;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .profile-headline {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 12px;
             font-size: 0.95rem;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 6px;
         }
 
-        .profile-details p strong {
-            min-width: auto;
+        .detail-icon {
+            width: 30px;
+            color: var(--primary-color);
         }
 
-        .profile-details p span {
-            text-align: left;
+        .detail-text {
+            color: var(--text-body);
         }
-    }
+    </style>
+</head>
 
-</style>
+<body>
+
+    <!-- Top Header -->
+    <nav class="navbar" style="position: fixed; width: 100%;">
+        <div class="container nav-container" style="max-width: 100%;">
+            <a th:href="@{/index}" class="logo">
+                <i class="fas fa-heart" style="color: var(--primary-color);"></i> BiyeShaddi.com
+            </a>
+            <div class="flex items-center gap-md">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-weight: 600; color: var(--text-main);" th:text="${emailId}">User</span>
+                    <form th:action="@{/logout}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-outline"
+                            style="padding: 4px 12px; font-size: 0.8rem; color: var(--text-main); border-color: #ddd;">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div style="margin-bottom: 20px;">
+                <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link">
+                    <i class="fas fa-fire"></i> New Matches
+                </a>
+                <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link">
+                    <i class="fas fa-heart"></i> Daily Recommendations
+                </a>
+                <a th:href="@{/talkrequest(emailId=${emailId})}" class="sidebar-link">
+                    <i class="fas fa-comment-alt"></i> Messages
+                </a>
+                <a th:href="@{/user_dashboard(emailId=${emailId})}" class="sidebar-link">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </a>
+                <a th:href="@{/user_info(emailId=${emailId})}" class="sidebar-link active">
+                    <i class="fas fa-user"></i> View Profile
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content (Profile View) -->
+        <main class="main-content">
+            <div class="container" style="max-width: 900px;">
+
+                <div class="profile-header">
+                    <div class="profile-banner"></div>
+                    <div class="profile-avatar-section">
+                        <img th:src="${user.profilePictureUrl != null ? user.profilePictureUrl : '/images/default-profile.jpg'}"
+                            class="profile-avatar" alt="Profile">
+                        <div class="profile-actions">
+                            <a th:href="@{/user_dashboard(emailId=${user.emailId})}" class="btn btn-primary"
+                                style="padding: 8px 20px; font-size: 0.9rem;">
+                                <i class="fas fa-pen"></i> Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                    <div class="profile-body">
+                        <div class="profile-name">
+                            <span th:text="${user.name}">User Name</span>
+                            <span
+                                style="font-weight: 400; font-size: 1.2rem; color: var(--text-light); margin-left: 10px;"
+                                th:text="${user.age}">25</span>
+                        </div>
+                        <div class="profile-headline">
+                            <span th:text="${user.profession}">Profession</span> • <span
+                                th:text="${user.location}">Location</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-md">
+                            <div>
+                                <h4 style="color: var(--text-main); margin-bottom: 15px;">About Me</h4>
+                                <p style="color: var(--text-body); line-height: 1.6;" th:text="${user.bio}">Bio text
+                                    goes here...</p>
+
+                                <h4 style="color: var(--text-main); margin-top: 30px; margin-bottom: 15px;">Interests
+                                </h4>
+                                <div class="flex gap-sm" style="flex-wrap: wrap;">
+                                    <!-- Use Safe Navigation Operator for List -->
+                                    <span th:each="interest : ${user.interests}" class="badge badge-success"
+                                        style="background: rgba(174, 15, 15, 0.1); color: var(--primary-color);"
+                                        th:text="${interest}">Interest</span>
+                                </div>
+                            </div>
+
+                            <div class="card" style="box-shadow: none; border: 1px solid #eee;">
+                                <h4 style="color: var(--text-main); margin-bottom: 20px;">Personal Details</h4>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-user"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Gender:</span> <span
+                                            th:text="${user.gender}">Female</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-heart"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Status:</span> <span
+                                            th:text="${user.relationshipStatus}">Single</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-pray"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Religion:</span> <span
+                                            th:text="${user.religion}">Religion</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-ruler-vertical"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Height:</span> <span
+                                            th:text="${user.height}">5.5</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-graduation-cap"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Education:</span> <span
+                                            th:text="${user.education}">Degree</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Activity / Stats Placeholder -->
+                <div class="grid grid-cols-3 gap-md">
+                    <div class="card" style="text-align: center;">
+                        <h2 style="color: var(--primary-color);">120</h2>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">Profile Views</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <h2 style="color: var(--secondary-color);">15</h2>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">Interests Received</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <h2 style="color: var(--success-color);">8</h2>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">Matches</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom Nav (Mobile) -->
+    <div class="bottom-nav">
+        <a th:href="@{/matches(emailId=${emailId})}" class="nav-item">
+            <i class="fas fa-fire"></i>
+            <span>Matches</span>
+        </a>
+        <a th:href="@{/talkrequest(emailId=${emailId})}" class="nav-item">
+            <i class="fas fa-comment-alt"></i>
+            <span>Chats</span>
+        </a>
+        <a th:href="@{/user_dashboard(emailId=${emailId})}" class="nav-item">
+            <i class="fas fa-user-edit"></i>
+            <span>Edit</span>
+        </a>
+        <a th:href="@{/user_info(emailId=${emailId})}" class="nav-item active">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
 </body>
+
 </html>

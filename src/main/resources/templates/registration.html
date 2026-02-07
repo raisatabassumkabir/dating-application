@@ -1,199 +1,279 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://thymeleaf.org">
+
 <head>
+    <title>Register - BiyeShaddi.com</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .step-container {
+            display: none;
+        }
 
+        .step-container.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #eee;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .profile-for-card {
+            border: 2px solid #eee;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .profile-for-card:hover,
+        .profile-for-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(255, 107, 107, 0.05);
+        }
+
+        .profile-for-card i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .profile-for-card.selected i {
+            color: var(--primary-color);
+        }
+    </style>
 </head>
 
-<body>
-<nav>
-    <div class="logo">BiyeShaddi.com</div>
-    <div class="menu">
-        <a href="http://localhost:8080/index">Home</a>
-        <a href="http://localhost:">About</a>
-        <a href="http://localhost:8080/registration">Registration</a>
-        <a href="http://localhost:8080/login">Login</a>
-    </div>
-</nav>
+<body style="background: var(--bg-light);">
 
-<div id="main-content">
-    <div id="x">
-        Welcome to <br />
-        <b style="color: #fff;">BiyeShaddi.com</b>
-    </div>
-    <div id="y">
-        <div id="l">
-            <h1>Register</h1>
-            <form action="/registration-form" method="post" th:object="${registration}">
-                E-mail <br />
-                <input type="email" name="email" class="t" required /><br />
-                Password <br />
-                <input type="password" name="password" class="t" required /><br />
-                NID or Passport No  <br />
-                <input type="nidorpassport" name="nidOrPassport" class="t" required /><br />
+    <!-- Simple Nav -->
+    <nav class="navbar" style="position: relative;">
+        <div class="container nav-container">
+            <a th:href="@{/index}" class="logo">
+                <i class="fas fa-heart" style="color: var(--primary-color);"></i> BiyeShaddi.com
+            </a>
+            <div class="nav-links">
+                <span class="text-sm text-light">Already have an account?</span>
+                <a th:href="@{/login}" class="btn btn-outline"
+                    style="color: var(--text-main); border-color: var(--text-light); padding: 6px 16px;">Login</a>
+            </div>
+        </div>
+    </nav>
 
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <input type="submit" value="Register" class="button" /><br />
+    <div class="container" style="max-width: 600px; padding-top: 40px; padding-bottom: 40px;">
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 5px;">Create your profile</h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 30px;">Let's find your perfect match!
+            </p>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <form action="/registration-form" method="post" th:object="${registration}" id="regForm">
+
+                <!-- Step 1: Profile For -->
+                <div class="step-container active" id="step1">
+                    <h3 style="margin-bottom: 20px;">This profile is for</h3>
+                    <div class="grid grid-cols-3 gap-md" style="margin-bottom: 30px;">
+                        <div class="profile-for-card" onclick="selectProfileFor('Self', this)">
+                            <i class="fas fa-user"></i> Self
+                        </div>
+                        <div class="profile-for-card" onclick="selectProfileFor('Son', this)">
+                            <i class="fas fa-male"></i> Son
+                        </div>
+                        <div class="profile-for-card" onclick="selectProfileFor('Daughter', this)">
+                            <i class="fas fa-female"></i> Daughter
+                        </div>
+                        <div class="profile-for-card" onclick="selectProfileFor('Brother', this)">
+                            <i class="fas fa-user-tie"></i> Brother
+                        </div>
+                        <div class="profile-for-card" onclick="selectProfileFor('Sister', this)">
+                            <i class="fas fa-user-graduate"></i> Sister
+                        </div>
+                        <div class="profile-for-card" onclick="selectProfileFor('Friend', this)">
+                            <i class="fas fa-users"></i> Friend
+                        </div>
+                    </div>
+                    <input type="hidden" id="profileFor" name="profileFor" required>
+                    <div style="text-align: right;">
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Basic Details -->
+                <div class="step-container" id="step2">
+                    <h3 style="margin-bottom: 20px;">Basic Details</h3>
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="firstName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="lastName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" name="dateOfBirth" class="form-control" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select name="gender" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Religion</label>
+                            <select name="religion" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Muslim">Muslim</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Christian">Christian</option>
+                                <option value="Buddhist">Buddhist</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="btn btn-outline"
+                            style="color: var(--text-main); border-color: #ddd;" onclick="prevStep(1)">Back</button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Account Details -->
+                <div class="step-container" id="step3">
+                    <h3 style="margin-bottom: 20px;">Account Security</h3>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NID / Passport No. <span
+                                style="font-weight: 400; font-size: 0.8rem; color: var(--text-light);">(For
+                                Verification)</span></label>
+                        <input type="text" name="nidOrPassport" class="form-control" required>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" class="btn btn-outline"
+                            style="color: var(--text-main); border-color: #ddd;" onclick="prevStep(2)">Back</button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(4)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Professional & Location -->
+                <div class="step-container" id="step4">
+                    <h3 style="margin-bottom: 20px;">Career & Location</h3>
+                    <div class="form-group">
+                        <label class="form-label">Highest Education</label>
+                        <input type="text" name="education" class="form-control" placeholder="e.g. BSc in CS" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Occupation</label>
+                        <input type="text" name="occupation" class="form-control" placeholder="e.g. Software Engineer"
+                            required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            <input type="text" name="country" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="flex justify-between" style="margin-top: 30px;">
+                        <button type="button" class="btn btn-outline"
+                            style="color: var(--text-main); border-color: #ddd;" onclick="prevStep(3)">Back</button>
+                        <button type="submit" class="btn btn-primary"
+                            style="padding-left: 40px; padding-right: 40px;">Complete Registration</button>
+                    </div>
+                </div>
 
             </form>
         </div>
-
-
     </div>
-</div>
 
+    <!-- Script for Multi-step Form -->
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function updateProgress() {
+            const percent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+            updateProgress();
+        }
+
+        function nextStep(step) {
+            // Simple validation for current step
+            const currentContainer = document.getElementById('step' + (step - 1));
+            const inputs = currentContainer.querySelectorAll('input[required], select[required]');
+            let valid = true;
+            inputs.forEach(input => {
+                if (!input.value) {
+                    valid = false;
+                    input.style.borderColor = 'red';
+                } else {
+                    input.style.borderColor = '#e0e0e0';
+                }
+            });
+
+            if (valid) {
+                showStep(step);
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        }
+
+        function prevStep(step) {
+            showStep(step);
+        }
+
+        function selectProfileFor(value, element) {
+            document.getElementById('profileFor').value = value;
+            document.querySelectorAll('.profile-for-card').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
 </body>
+
 </html>
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Josefin Sans", sans-serif;
-    }
-    header {
-        width: 100%;
-        height: 100vh;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15)), url("/picture/biye.jpg");
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-
-
-    body {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15)), url("/picture/biye.jpg");
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
-
-    nav {
-        width: 100%;
-        height: 15vh;
-        background: rgba(0, 0, 0, 0.2);
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-transform: uppercase;
-    }
-
-    nav .logo {
-        width: 25%;
-        text-align: center;
-        text-transform: initial;
-        font-size: 30px;
-    }
-
-    nav .menu {
-        width: 40%;
-        display: flex;
-        justify-content: space-around;
-        gap: 30px;
-    }
-
-    nav .menu a {
-        width: 25%;
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-    }
-
-    nav .menu a:first-child {
-        color: #ae0f0f;
-        font-weight: bold;
-        text-decoration: none;
-        width: 25%;
-    }
-
-    #main-content {
-        height: 85vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #x {
-        margin-top: 2px;
-        width: 40%;
-        color: white;
-        text-align: center;
-        font-size: 50px;
-        font-weight: inherit;
-        padding: 20px;
-    }
-
-    #y {
-        width: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #l {
-        width: 60%;
-        background: rgba(255, 255, 255, 0.6);
-        padding: 30px;
-        border-radius: 10px;
-        transition: 0.4s ease;
-        font-weight: bold;
-    }
-
-    #l:hover {
-        background: linear-gradient(
-                45deg,
-                rgba(174, 15, 15, 0.3),
-                rgba(255, 255, 255, 0.6)
-        );
-    }
-
-    h1 {
-        text-align: center;
-        color: #ae0f0f;
-        margin-bottom: 20px;
-    }
-
-    form {
-        color: #333;
-    }
-
-    .t {
-        width: 100%;
-        height: 40px;
-        margin: 20px 0 30px 0;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 0 4px rgba(174, 15, 15, 0.3);
-
-    }
-    .a {
-        display: inline-block;
-        margin-top: 15px;
-        text-decoration: none;
-        color: #ae0f0f;
-    }
-
-
-    .button {
-        width: 100%;
-        height: 40px;
-        background-color: #ae0f0f;
-        color: white;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .button:hover {
-        background-color: #880e0e;
-    }
-
-
-</style>

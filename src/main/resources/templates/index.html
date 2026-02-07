@@ -1,192 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://thymeleaf.org">
 
 <head>
-  <title></title>
+  <title>BiyeShaddi.com - Find Your Perfect Match</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-<header>
-
-  <nav>
-    <div class="logo">  BiyeShaddi.com </h1> </div>
-    <div class="menu">
-      <a href="http://localhost:8080/index" >Home</a>
-      <a href="http://localhost:" >About</a>
-      <a href="http://localhost:8080/registration">Registration</a>
-      <a href="http://localhost:8080/login">Login</a>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a th:href="@{/index}" class="logo">
+        <i class="fas fa-heart" style="color: var(--primary-color);"></i> BiyeShaddi.com
+      </a>
+      <div class="nav-links">
+        <a th:href="@{/index}" class="nav-link active">Home</a>
+        <a th:href="@{/about}" class="nav-link">About</a>
+        <a th:href="@{/login}" class="nav-link">Login</a>
+        <a th:href="@{/registration}" class="btn btn-primary" style="padding: 8px 20px;">Register Free</a>
+      </div>
+      <!-- Mobile Menu Toggle (To be implemented with JS) -->
+      <div class="mobile-toggle" style="display: none;">
+        <i class="fas fa-bars"></i>
+      </div>
     </div>
   </nav>
 
-  <main>
-    <section>
-      <h3>Welcome !!!</h3>
-      <h1>“In marriage, the foundation is always built on love, trust, and… <span class="change_content"> </span> <span style="margin-top: -10px;"> | </span> </h1>
-      <p>"In marriage, it's not about thinking alike, but learning to think together."</p>
-      <a href="#" class="btnone">learn more</a>
-      <a href="http://localhost:8080/registration" class="btntwo">Register Now</a>
-    </section>
-  </main>
+  <!-- Hero Section -->
+  <header class="hero" style="background-image: url('/picture/biye.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content animate__animated animate__fadeIn">
+      <h1 class="animate__animated animate__fadeInUp">Find Your Perfect Life Partner</h1>
+      <p class="animate__animated animate__fadeInUp animate__delay-1s"
+        style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
+        Trusted by millions of Brides & Grooms. Join the largest matrimonial site.
+      </p>
 
+      <!-- Quick Search Widget -->
+      <div class="card"
+        style="background: rgba(255, 255, 255, 0.95); padding: 20px; display: inline-block; width: 100%; max-width: 900px;">
+        <form action="#" class="grid grid-cols-4 gap-sm items-center">
+          <div class="form-group" style="margin-bottom: 0; text-align: left;">
+            <label class="form-label">I'm looking for a</label>
+            <select class="form-control">
+              <option>Woman</option>
+              <option>Man</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0; text-align: left;">
+            <label class="form-label">Aged</label>
+            <div class="flex gap-sm">
+              <select class="form-control">
+                <option>20</option>
+                <option>25</option>
+              </select>
+              <span style="align-self: center;">to</span>
+              <select class="form-control">
+                <option>30</option>
+                <option>35</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0; text-align: left;">
+            <label class="form-label">Religion</label>
+            <select class="form-control">
+              <option>Muslim</option>
+              <option>Hindu</option>
+              <option>Christian</option>
+              <option>Buddhist</option>
+            </select>
+          </div>
+          <div style="text-align: left; padding-top: 24px;">
+            <button type="button" class="btn btn-primary" style="width: 100%;">Search <i class="fas fa-search"
+                style="margin-left: 8px;"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </header>
 
-</header>
+  <!-- Stats Section -->
+  <section class="section" style="background: white;">
+    <div class="container">
+      <div class="grid grid-cols-3 gap-lg" style="text-align: center;">
+        <div class="animate__animated animate__fadeInUp">
+          <i class="fas fa-users fa-3x" style="color: var(--primary-color); margin-bottom: 15px;"></i>
+          <h3>10 Lakh+</h3>
+          <p style="color: var(--text-light);">Active Profiles</p>
+        </div>
+        <div class="animate__animated animate__fadeInUp animate__delay-1s">
+          <i class="fas fa-check-circle fa-3x" style="color: var(--success-color); margin-bottom: 15px;"></i>
+          <h3>100% Verified</h3>
+          <p style="color: var(--text-light);">Mobile & ID Verified</p>
+        </div>
+        <div class="animate__animated animate__fadeInUp animate__delay-2s">
+          <i class="fas fa-heart fa-3x" style="color: var(--secondary-color); margin-bottom: 15px;"></i>
+          <h3>Thousands</h3>
+          <p style="color: var(--text-light);">Happy Marriages</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Profiles (Teaser) -->
+  <section class="section" style="background: var(--bg-light);">
+    <div class="container">
+      <div class="section-title">
+        <h2>Featured Profiles</h2>
+        <p>Meet some of our premium members looking for their soulmate.</p>
+      </div>
+
+      <div class="grid grid-cols-4 gap-md">
+        <!-- Mock Profile 1 -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div
+            style="height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #aaa;">
+            <i class="fas fa-user fa-4x"></i> <!-- Placeholder for Image -->
+          </div>
+          <div style="padding: 15px; text-align: center;">
+            <h4>Sarah K.</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px;">24 yrs, 5'4"</p>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">Software Engineer, Dhaka</p>
+            <a href="#" class="btn btn-outline"
+              style="border-color: var(--primary-color); color: var(--primary-color); font-size: 0.8rem; padding: 6px 16px;">Connect</a>
+          </div>
+        </div>
+        <!-- Mock Profile 2 -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div
+            style="height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #aaa;">
+            <i class="fas fa-user fa-4x"></i>
+          </div>
+          <div style="padding: 15px; text-align: center;">
+            <h4>Rahim A.</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px;">28 yrs, 5'10"</p>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">Banker, Chittagong</p>
+            <a href="#" class="btn btn-outline"
+              style="border-color: var(--primary-color); color: var(--primary-color); font-size: 0.8rem; padding: 6px 16px;">Connect</a>
+          </div>
+        </div>
+        <!-- Mock Profile 3 -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div
+            style="height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #aaa;">
+            <i class="fas fa-user fa-4x"></i>
+          </div>
+          <div style="padding: 15px; text-align: center;">
+            <h4>Nadia I.</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px;">25 yrs, 5'3"</p>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">Doctor, Sylhet</p>
+            <a href="#" class="btn btn-outline"
+              style="border-color: var(--primary-color); color: var(--primary-color); font-size: 0.8rem; padding: 6px 16px;">Connect</a>
+          </div>
+        </div>
+        <!-- Mock Profile 4 -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div
+            style="height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #aaa;">
+            <i class="fas fa-user fa-4x"></i>
+          </div>
+          <div style="padding: 15px; text-align: center;">
+            <h4>Tanvir H.</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px;">29 yrs, 5'9"</p>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">Architect, Dhaka</p>
+            <a href="#" class="btn btn-outline"
+              style="border-color: var(--primary-color); color: var(--primary-color); font-size: 0.8rem; padding: 6px 16px;">Connect</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <a th:href="@{/registration}" class="btn btn-primary" style="padding: 12px 40px;">View More Profiles</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background: #222; color: white; padding: 40px 0;">
+    <div class="container">
+      <div class="grid grid-cols-4 gap-lg">
+        <div>
+          <h4 style="color: white; margin-bottom: 20px;">BiyeShaddi.com</h4>
+          <p style="color: #aaa; font-size: 0.9rem;">The most trusted matrimony brand in Bangladesh.</p>
+        </div>
+        <div>
+          <h5 style="color: white; margin-bottom: 15px;">Help & Support</h5>
+          <ul style="color: #aaa; font-size: 0.9rem;">
+            <li style="margin-bottom: 8px;"><a href="#">24x7 Live Help</a></li>
+            <li style="margin-bottom: 8px;"><a href="#">Contact Us</a></li>
+            <li style="margin-bottom: 8px;"><a href="#">Feedback</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 style="color: white; margin-bottom: 15px;">Quick Links</h5>
+          <ul style="color: #aaa; font-size: 0.9rem;">
+            <li style="margin-bottom: 8px;"><a href="#">About Us</a></li>
+            <li style="margin-bottom: 8px;"><a href="#">Privacy Policy</a></li>
+            <li style="margin-bottom: 8px;"><a href="#">Terms & Conditions</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 style="color: white; margin-bottom: 15px;">Follow Us</h5>
+          <div class="flex gap-sm">
+            <a href="#" style="color: white;"><i class="fab fa-facebook fa-lg"></i></a>
+            <a href="#" style="color: white;"><i class="fab fa-twitter fa-lg"></i></a>
+            <a href="#" style="color: white;"><i class="fab fa-instagram fa-lg"></i></a>
+          </div>
+        </div>
+      </div>
+      <div
+        style="border-top: 1px solid #333; margin-top: 30px; padding-top: 20px; text-align: center; color: #777; font-size: 0.8rem;">
+        &copy; 2025 BiyeShaddi.com. All rights reserved.
+      </div>
+    </div>
+  </footer>
 
 </body>
+
 </html>
-
-
-
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Josefin Sans", sans-serif;
-  }
-
-  header {
-    width: 100%;
-    height: 100vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.15)), url("/picture/biye.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-
-  nav {
-    width: 100%;
-    height: 15vh;
-    background: rgba(0, 0, 0, 0.2);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-transform: uppercase;
-  }
-
-  nav .logo {
-    width: 25%;
-    text-align: center;
-   text-transform: initial;
-    font-size: 30px;
-  }
-
-  nav .menu {
-    width: 40%;
-    display: flex;
-    justify-content: space-around;
-    gap: 30px;
-  }
-
-  nav .menu a {
-    width: 25%;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-  }
-
-  nav .menu a:first-child {
-    color: #ae0f0f;
-    font-weight: bold;
-    text-decoration: none;
-    width: 25%;
-  }
-
-  main {
-    width: 100%;
-    height: 85vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: white;
-  }
-
-  section h3 {
-    font-size: 35px;
-    font-weight: 200;
-    letter-spacing: 3px;
-    text-shadow: 1px 1px 2px black;
-  }
-
-  section h1 {
-    margin: 30px 0 20px 0;
-    font-size: 40px;
-    font-weight: 700;
-    text-shadow: 2px 1px 5px black;
-    text-transform: uppercase;
-  }
-
-  section p {
-    font-size: 25px;
-    word-spacing: 2px;
-    margin-bottom: 25px;
-    text-shadow: 1px 1px 1px black;
-  }
-
-  section a {
-    padding: 12px 30px;
-    border-radius: 4px;
-    outline: none;
-    text-transform: uppercase;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    letter-spacing: 1px;
-    transition: all 0.5s ease;
-  }
-
-  section .btnone {
-    /*background: #00b894;*/
-    background: #fff;
-    color: #000;
-  }
-
-  .btnone:hover {
-    /*background: #00b894;*/
-    background: #ae0f0f;
-    color: white;
-  }
-
-  section .btntwo {
-  /*background: #00b894;*/
-    background: #ae0f0f;
-  color: white;
-}
-
-.btntwo:hover {
-  background: #fff;
-  color: #000;
-}
-
-.change_content:after {
-  content: "";
-  animation: changetext 10s infinite linear;
- /* color: #00b894;*/
-  color: #ae0f0f;
-}
-
-@keyframes changetext {
-  0% {
-    content: "respect";
-  }
-  20% {
-    content: "honesty";
-  }
-  35% {
-    content: "support";
-  }
-  60% {
-    content: "teamwork";
-  }
-  80% {
-    content: "patience";
-  }
-  100% {
-    content: "communication";
-  }
-}
-</style>

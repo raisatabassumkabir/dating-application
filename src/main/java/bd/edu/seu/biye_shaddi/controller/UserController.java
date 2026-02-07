@@ -26,6 +26,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/user_dashboard")
     public String userDashboardPage(Model model, @RequestParam(value = "emailId", required = false) String emailId) {
         User user;
@@ -40,12 +41,15 @@ public class UserController {
             user = new User();
         }
         model.addAttribute("user", user);
-        System.out.println("Accessing user_dashboard with emailId: " + emailId + ", Profile Picture: " + user.getProfilePictureUrl());
+        model.addAttribute("emailId", emailId);
+        System.out.println("Accessing user_dashboard with emailId: " + emailId + ", Profile Picture: "
+                + user.getProfilePictureUrl());
         return "user_dashboard";
     }
 
     @PostMapping("/user-info-form")
-    public String userInfoForm(@ModelAttribute User user, @RequestParam("profilePicture") MultipartFile file) throws IOException {
+    public String userInfoForm(@ModelAttribute User user, @RequestParam("profilePicture") MultipartFile file)
+            throws IOException {
         System.out.println("Received user data: " + user);
         System.out.println("Profile picture is empty: " + file.isEmpty());
 
@@ -91,7 +95,9 @@ public class UserController {
         Optional<User> userOptional = userService.getUserByEmail(emailId);
         if (userOptional.isPresent()) {
             model.addAttribute("user", userOptional.get());
-            System.out.println("Displaying user_info for emailId: " + emailId + ", Profile Picture: " + userOptional.get().getProfilePictureUrl());
+            model.addAttribute("emailId", emailId);
+            System.out.println("Displaying user_info for emailId: " + emailId + ", Profile Picture: "
+                    + userOptional.get().getProfilePictureUrl());
         } else {
             model.addAttribute("error", "User not found");
             System.out.println("User not found for emailId: " + emailId);

@@ -27,7 +27,6 @@ public class ContactDetailsController {
         this.contactDetailsService = contactDetailsService;
     }
 
-
     @GetMapping("/contact_details")
     public String showContactDetailsForm(Model model, @RequestParam("emailId") String emailId) {
         Optional<User> userOptional = userService.getUserByEmail(emailId);
@@ -42,13 +41,15 @@ public class ContactDetailsController {
         contactDetails.setEmailId(emailId);
         model.addAttribute("contactDetails", contactDetails);
         model.addAttribute("user", userOptional.get());
+        model.addAttribute("emailId", emailId);
         logger.debug("Loaded contact details for emailId: {}", emailId);
 
         return "contact_details";
     }
 
     @PostMapping("/saveContactDetails")
-    public String saveContactDetails(@ModelAttribute ContactDetails contactDetails, @RequestParam("emailId") String emailId, Model model) {
+    public String saveContactDetails(@ModelAttribute ContactDetails contactDetails,
+            @RequestParam("emailId") String emailId, Model model) {
         logger.debug("Saving contact details for emailId: {}, ContactDetails: {}", emailId, contactDetails);
         // Clean emailId to prevent duplication
         String cleanedEmailId = emailId.split(",")[0].trim();
@@ -77,8 +78,14 @@ public class ContactDetailsController {
 
         Optional<ContactDetails> contactDetailsOptional = contactDetailsService.getContactDetailsByEmail(emailId);
         ContactDetails contactDetails = contactDetailsOptional.orElse(new ContactDetails());
+        // Ensure emailId is set even if it's a new object so the view doesn't break
+        if (contactDetails.getEmailId() == null) {
+            contactDetails.setEmailId(emailId);
+        }
+
         model.addAttribute("contactDetails", contactDetails);
         model.addAttribute("user", userOptional.get());
+        model.addAttribute("emailId", emailId);
         logger.info("Rendering contact_info.html for emailId: {}", emailId);
 
         return "contact_info";
