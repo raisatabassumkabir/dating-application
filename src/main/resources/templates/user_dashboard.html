@@ -8,97 +8,53 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/dashboard.css}">
     <style>
-        /* Dashboard Layout Shared Styles */
-        .dashboard-layout {
+        /* Shared layout styles are now in dashboard.css */
+
+        /* Tab Styles */
+        .profile-tabs {
             display: flex;
-            min-height: 100vh;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+            gap: 20px;
+            overflow-x: auto;
         }
 
-        .sidebar {
-            width: 260px;
-            background: white;
-            border-right: 1px solid #eee;
-            position: fixed;
-            height: 100vh;
-            padding-top: 80px;
-            display: none;
-            z-index: 900;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 80px 20px 80px 20px;
-            background: var(--bg-light);
-            min-height: 100vh;
-        }
-
-        @media (min-width: 1024px) {
-            .sidebar {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 260px;
-                padding-bottom: 20px;
-            }
-
-            .bottom-nav {
-                display: none !important;
-            }
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            color: var(--text-body);
-            font-weight: 500;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: rgba(255, 107, 107, 0.05);
-            color: var(--primary-color);
-            border-right: 3px solid var(--primary-color);
-        }
-
-        .sidebar-link i {
-            width: 30px;
-            font-size: 1.1rem;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .profile-tab {
+            padding: 15px 5px;
+            font-weight: 600;
             color: var(--text-light);
-            font-size: 0.75rem;
-            text-decoration: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
         }
 
-        .nav-item.active {
+        .profile-tab.active {
             color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
         }
 
-        .nav-item i {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -147,125 +103,263 @@
 
         <!-- Main Content (Edit Form) -->
         <main class="main-content">
-            <div class="container" style="max-width: 800px;">
-                <div class="card">
-                    <h2
-                        style="margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid #eee; color: var(--primary-color);">
-                        <i class="fas fa-user-edit"></i> Edit Profile
+            <div class="container" style="max-width: 850px;">
+                <div class="card" style="min-height: 600px;">
+                    <h2 style="margin-bottom: 14px; color: var(--primary-color);">
+                        <i class="fas fa-user-edit"></i> Complete Your Profile
                     </h2>
+                    <p style="color: var(--text-light); margin-bottom: 30px;">
+                        Provide detailed information to find the best match.
+                    </p>
+
+                    <!-- Tabs -->
+                    <div class="profile-tabs">
+                        <div class="profile-tab active" onclick="showTab('personal')">
+                            <i class="fas fa-user-circle"></i> Personal Info
+                        </div>
+                        <div class="profile-tab" onclick="showTab('family')">
+                            <i class="fas fa-users"></i> Family & Background
+                        </div>
+                        <div class="profile-tab" onclick="showTab('partner')">
+                            <i class="fas fa-heart"></i> Partner Preferences
+                        </div>
+                    </div>
 
                     <form th:object="${user}" th:action="@{/user-info-form}" method="post"
                         enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" />
                         <input type="hidden" th:field="*{emailId}" />
 
-                        <div class="grid grid-cols-2 gap-md">
-                            <div class="form-group">
-                                <label class="form-label">Name</label>
-                                <input type="text" th:field="*{name}" class="form-control" required />
+                        <!-- TAB 1: Personal Info -->
+                        <div id="tab-personal" class="tab-content active">
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" th:field="*{name}" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" th:field="*{dateOfBirth}" class="form-control" required />
+                                </div>
                             </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Height (e.g. 5'8")</label>
+                                    <input type="text" th:field="*{height}" class="form-control"
+                                        placeholder="Ft'In&quot;" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <select th:field="*{gender}" class="form-control" required>
+                                        <option value="">Select</option>
+                                        <option value="female">Female</option>
+                                        <option value="male">Male</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Marital Status</label>
+                                    <select th:field="*{maritalStatus}" class="form-control">
+                                        <option value="">Select</option>
+                                        <option value="Single">Single</option>
+                                        <option value="Married">Married</option>
+                                        <option value="Divorced">Divorced</option>
+                                        <option value="Widowed">Widowed</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Religion</label>
+                                    <input type="text" th:field="*{religion}" class="form-control" required />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Education</label>
+                                    <input type="text" th:field="*{education}" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Profession</label>
+                                    <select th:field="*{profession}" class="form-control" required>
+                                        <option value="">Select</option>
+                                        <option value="doctor">Doctor</option>
+                                        <option value="engineer">Engineer</option>
+                                        <option value="teacher">Teacher</option>
+                                        <option value="business">Business</option>
+                                        <option value="student">Student</option>
+                                        <option value="others">Others</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Location (City)</label>
+                                    <select th:field="*{location}" class="form-control" required>
+                                        <option value="">Select City</option>
+                                        <option value="Dhaka">Dhaka</option>
+                                        <option value="Chittagong">Chittagong</option>
+                                        <option value="Sylhet">Sylhet</option>
+                                        <option value="Khulna">Khulna</option>
+                                        <option value="Rajshahi">Rajshahi</option>
+                                        <option value="Barishal">Barishal</option>
+                                        <option value="Rangpur">Rangpur</option>
+                                        <option value="Mymensingh">Mymensingh</option>
+                                        <option value="Cumilla">Cumilla</option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Monthly Income</label>
+                                    <input type="text" th:field="*{monthlyIncome}" class="form-control"
+                                        placeholder="e.g. 50,000 BDT" />
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label class="form-label">Date of Birth</label>
-                                <input type="date" th:field="*{dateOfBirth}" class="form-control" required />
+                                <label class="form-label">Bio / About Me</label>
+                                <textarea th:field="*{bio}" class="form-control" style="min-height: 100px;"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Profile Picture</label>
+                                <input type="file" name="profilePicture" class="form-control" accept="image/*" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Interests</label>
+                                <div class="flex gap-md" style="flex-wrap: wrap;">
+                                    <label><input type="checkbox" th:field="*{interests}" value="travel"> Travel</label>
+                                    <label><input type="checkbox" th:field="*{interests}" value="music"> Music</label>
+                                    <label><input type="checkbox" th:field="*{interests}" value="reading">
+                                        Reading</label>
+                                    <label><input type="checkbox" th:field="*{interests}" value="sports"> Sports</label>
+                                </div>
+                            </div>
+
+                            <!-- Age hidden as it is derived -->
+                            <input type="hidden" th:field="*{age}" value="0">
+
+                            <div style="text-align: right; margin-top: 30px;">
+                                <button type="button" class="btn btn-primary" onclick="showTab('family')">Next: Family
+                                    Info &rarr;</button>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-md">
-                            <div class="form-group">
-                                <label class="form-label">Age</label>
-                                <input type="number" th:field="*{age}" class="form-control" required />
+                        <!-- TAB 2: Family & Background -->
+                        <div id="tab-family" class="tab-content">
+                            <h3 style="margin-bottom: 20px; color: var(--secondary-color);">Family Information</h3>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Family Status</label>
+                                    <select th:field="*{familyStatus}" class="form-control">
+                                        <option value="">Select</option>
+                                        <option value="Middle Class">Middle Class</option>
+                                        <option value="Upper Middle Class">Upper Middle Class</option>
+                                        <option value="Rich">Rich/Affluent</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Family Type</label>
+                                    <select th:field="*{familyType}" class="form-control">
+                                        <option value="">Select</option>
+                                        <option value="Nuclear">Nuclear</option>
+                                        <option value="Joint">Joint</option>
+                                    </select>
+                                </div>
                             </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Father's Profession</label>
+                                    <input type="text" th:field="*{fatherStatus}" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Mother's Profession</label>
+                                    <input type="text" th:field="*{motherStatus}" class="form-control" />
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label class="form-label">Gender</label>
-                                <select th:field="*{gender}" class="form-control" required>
-                                    <option value="">Select</option>
-                                    <option value="female">Female</option>
-                                    <option value="male">Male</option>
-                                </select>
+                                <label class="form-label">Number of Siblings</label>
+                                <input type="number" th:field="*{numberOfSiblings}" class="form-control" />
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                                <button type="button" class="btn btn-outline" onclick="showTab('personal')">&larr;
+                                    Back</button>
+                                <button type="button" class="btn btn-primary" onclick="showTab('partner')">Next: Partner
+                                    Prefs &rarr;</button>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-md">
+                        <!-- TAB 3: Partner Preferences -->
+                        <div id="tab-partner" class="tab-content">
+                            <h3 style="margin-bottom: 20px; color: var(--secondary-color);">Ideal Partner Preferences
+                            </h3>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Min Age</label>
+                                    <input type="number" th:field="*{preferredAgeMin}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Max Age</label>
+                                    <input type="number" th:field="*{preferredAgeMax}" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Min Height</label>
+                                    <input type="text" th:field="*{preferredHeightMin}" class="form-control"
+                                        placeholder="5'0&quot;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Max Height</label>
+                                    <input type="text" th:field="*{preferredHeightMax}" class="form-control"
+                                        placeholder="6'0&quot;">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label">Preferred Religion</label>
+                                    <input type="text" th:field="*{preferredReligion}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Preferred Marital Status</label>
+                                    <select th:field="*{preferredMaritalStatus}" class="form-control">
+                                        <option value="">Any</option>
+                                        <option value="Single">Single</option>
+                                        <option value="Divorced">Divorced</option>
+                                        <option value="Widowed">Widowed</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label class="form-label">Location</label>
-                                <select th:field="*{location}" class="form-control" required>
-                                    <option value="">Select City</option>
-                                    <option value="Dhaka">Dhaka</option>
-                                    <option value="Chittagong">Chittagong</option>
-                                    <option value="Sylhet">Sylhet</option>
-                                    <option value="Khulna">Khulna</option>
-                                    <option value="Rajshahi">Rajshahi</option>
-                                    <option value="Barishal">Barishal</option>
-                                    <option value="Rangpur">Rangpur</option>
-                                    <option value="Mymensingh">Mymensingh</option>
-                                    <option value="Cumilla">Cumilla</option>
-                                    <option value="Others">Others</option>
-                                </select>
+                                <label class="form-label">Preferred Education</label>
+                                <input type="text" th:field="*{preferredEducation}" class="form-control">
                             </div>
+
                             <div class="form-group">
-                                <label class="form-label">Religion</label>
-                                <input type="text" th:field="*{religion}" class="form-control" required />
+                                <label class="form-label">Preferred Location</label>
+                                <input type="text" th:field="*{preferredLocation}" class="form-control">
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                                <button type="button" class="btn btn-outline" onclick="showTab('family')">&larr;
+                                    Back</button>
+                                <button type="submit" class="btn btn-primary" style="padding: 12px 40px;">Save All
+                                    Changes</button>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-md">
-                            <div class="form-group">
-                                <label class="form-label">Education</label>
-                                <input type="text" th:field="*{education}" class="form-control" required />
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Profession</label>
-                                <select th:field="*{profession}" class="form-control" required>
-                                    <option value="">Select</option>
-                                    <option value="doctor">Doctor</option>
-                                    <option value="engineer">Engineer</option>
-                                    <option value="teacher">Teacher</option>
-                                    <option value="business">Business</option>
-                                    <option value="student">Student</option>
-                                    <option value="others">Others</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Bio</label>
-                            <textarea th:field="*{bio}" class="form-control" style="min-height: 100px;"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Interests</label>
-                            <div class="flex gap-md" style="flex-wrap: wrap;">
-                                <label><input type="checkbox" th:field="*{interests}" value="travel"> Travel</label>
-                                <label><input type="checkbox" th:field="*{interests}" value="music"> Music</label>
-                                <label><input type="checkbox" th:field="*{interests}" value="reading"> Reading</label>
-                                <label><input type="checkbox" th:field="*{interests}" value="sports"> Sports</label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Profile Picture</label>
-                            <input type="file" name="profilePicture" class="form-control" accept="image/*" />
-                        </div>
-
-                        <h3
-                            style="margin-top: 30px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: var(--secondary-color);">
-                            Partner Preferences</h3>
-
-                        <div class="grid grid-cols-2 gap-md">
-                            <div class="form-group">
-                                <label class="form-label">Min Age</label>
-                                <input type="number" th:field="*{preferredAgeMin}" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Max Age</label>
-                                <input type="number" th:field="*{preferredAgeMax}" class="form-control">
-                            </div>
-                        </div>
-
-                        <div style="text-align: right; margin-top: 30px;">
-                            <button type="submit" class="btn btn-primary" style="padding: 12px 40px;">Save
-                                Changes</button>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -291,6 +385,30 @@
             <span>Profile</span>
         </a>
     </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+
+            // Highlight header
+            const tabButtons = document.querySelectorAll('.profile-tab');
+            if (tabName === 'personal') tabButtons[0].classList.add('active');
+            if (tabName === 'family') tabButtons[1].classList.add('active');
+            if (tabName === 'partner') tabButtons[2].classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
 
 </body>
 

@@ -9,73 +9,10 @@
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Dashboard Layout */
-        .dashboard-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 260px;
-            background: white;
-            border-right: 1px solid #eee;
-            position: fixed;
-            height: 100vh;
-            padding-top: 80px;
-            /* Space for top navbar */
-            display: none;
-            /* Hidden on mobile */
-            z-index: 900;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 80px 20px 80px 20px;
-            /* Top/Bottom padding for navs */
-            background: var(--bg-light);
-            min-height: 100vh;
-        }
-
-        @media (min-width: 1024px) {
-            .sidebar {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 260px;
-                padding-bottom: 20px;
-                /* No bottom nav on desktop */
-            }
-
-            .bottom-nav {
-                display: none !important;
-            }
-        }
-
-        /* Sidebar Links */
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            color: var(--text-body);
-            font-weight: 500;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: rgba(255, 107, 107, 0.05);
-            color: var(--primary-color);
-            border-right: 3px solid var(--primary-color);
-        }
-
-        .sidebar-link i {
-            width: 30px;
-            font-size: 1.1rem;
-        }
+        /* Shared layout styles are now in dashboard.css */
 
         /* Match Card */
         .match-card {
@@ -119,38 +56,7 @@
             display: flex;
             gap: 10px;
         }
-
-        /* Bottom Nav (Mobile) */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-light);
-            font-size: 0.75rem;
-            text-decoration: none;
-        }
-
-        .nav-item.active {
-            color: var(--primary-color);
-        }
-
-        .nav-item i {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
-        }
+    </style>
     </style>
 </head>
 
@@ -250,6 +156,22 @@
                                     Skip
                                 </button>
                             </div>
+
+                            <!-- Advanced Actions -->
+                            <div class="flex gap-sm" style="margin-top: 10px; justify-content: space-between;">
+                                <button class="btn btn-outline shortlist-btn"
+                                    style="flex: 1; font-size: 0.8rem; border-color: #ddd; color: var(--text-light);"
+                                    th:attr="data-user-id=${emailId},data-shortlist-id=${match.emailId}"
+                                    title="Shortlist">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="btn btn-outline block-btn"
+                                    style="flex: 1; font-size: 0.8rem; border-color: #ddd; color: var(--text-light);"
+                                    th:attr="data-user-id=${emailId},data-block-id=${match.emailId}"
+                                    title="Block / Report">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </div>
                             <div class="message"
                                 style="display: none; font-size: 0.8rem; margin-top: 5px; text-align: center;"></div>
                         </div>
@@ -306,6 +228,40 @@
                         $messageDiv.text('Error').css('color', 'red').show();
                     }
                 });
+            });
+
+            // Shortlist Action
+            $('.shortlist-btn').click(function () {
+                const $btn = $(this);
+                const userId = $btn.data('user-id');
+                const shortlistedUserId = $btn.data('shortlist-id');
+                const $icon = $btn.find('i');
+
+                $.post('/api/shortlist/add', { userId: userId, shortlistedUserId: shortlistedUserId })
+                    .done(function () {
+                        $icon.removeClass('far').addClass('fas').css('color', 'var(--primary-color)');
+                        $btn.prop('title', 'Shortlisted');
+                    })
+                    .fail(function () {
+                        alert('Error adding to shortlist');
+                    });
+            });
+
+            // Block Action
+            $('.block-btn').click(function () {
+                if (!confirm('Are you sure you want to block this user? They will not appear in your recommendations.')) return;
+
+                const $btn = $(this);
+                const userId = $btn.data('user-id');
+                const blockedUserId = $btn.data('block-id');
+
+                $.post('/api/block/add', { userId: userId, blockedUserId: blockedUserId })
+                    .done(function () {
+                        $btn.closest('.match-card').fadeOut();
+                    })
+                    .fail(function () {
+                        alert('Error blocking user');
+                    });
             });
         });
     </script>
