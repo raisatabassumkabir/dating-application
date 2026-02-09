@@ -83,11 +83,11 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div style="margin-bottom: 20px;">
-                <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link">
-                    <i class="fas fa-fire"></i> New Matches
+                <a th:href="@{/discover(emailId=${emailId})}" class="sidebar-link">
+                    <i class="fas fa-compass"></i> Discover
                 </a>
                 <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link">
-                    <i class="fas fa-heart"></i> Daily Recommendations
+                    <i class="fas fa-heart"></i> Matches
                 </a>
                 <a th:href="@{/talkrequest(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-comment-alt"></i> Messages
@@ -368,17 +368,17 @@
 
     <!-- Bottom Nav (Mobile) -->
     <div class="bottom-nav">
+        <a th:href="@{/discover(emailId=${emailId})}" class="nav-item">
+            <i class="fas fa-compass"></i>
+            <span>Discover</span>
+        </a>
         <a th:href="@{/matches(emailId=${emailId})}" class="nav-item">
-            <i class="fas fa-fire"></i>
+            <i class="fas fa-heart"></i>
             <span>Matches</span>
         </a>
         <a th:href="@{/talkrequest(emailId=${emailId})}" class="nav-item">
             <i class="fas fa-comment-alt"></i>
             <span>Chats</span>
-        </a>
-        <a th:href="@{/user_dashboard(emailId=${emailId})}" class="nav-item active">
-            <i class="fas fa-user-edit"></i>
-            <span>Edit</span>
         </a>
         <a th:href="@{/user_info(emailId=${emailId})}" class="nav-item">
             <i class="fas fa-user"></i>

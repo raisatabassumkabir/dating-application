@@ -21,13 +21,28 @@ public class TalkRequestService {
         if (fromEmailId.equals(toEmailId)) {
             throw new IllegalArgumentException("Cannot send talk request to self");
         }
-        List<TalkRequest> existingRequests = talkRequestRepository.findByFromEmailIdAndToEmailIdAndStatus(fromEmailId, toEmailId, "PENDING");
+        List<TalkRequest> existingRequests = talkRequestRepository.findByFromEmailIdAndToEmailIdAndStatus(fromEmailId,
+                toEmailId, "PENDING");
         if (!existingRequests.isEmpty()) {
             throw new IllegalStateException("Talk request already sent");
         }
         TalkRequest request = new TalkRequest(fromEmailId, toEmailId, "PENDING");
         request.setId(UUID.randomUUID().toString());
         return talkRequestRepository.save(request);
+    }
+
+    public void createRequestIfNotExists(String fromEmailId, String toEmailId) {
+        if (fromEmailId.equals(toEmailId)) {
+            return;
+        }
+        List<TalkRequest> existingRequests = talkRequestRepository.findByFromEmailIdAndToEmailId(fromEmailId,
+                toEmailId);
+        if (existingRequests.isEmpty()) {
+            TalkRequest request = new TalkRequest(fromEmailId, toEmailId, "PENDING");
+            request.setId(UUID.randomUUID().toString());
+            talkRequestRepository.save(request);
+            System.out.println("Auto-created talk request from " + fromEmailId + " to " + toEmailId);
+        }
     }
 
     public TalkRequest acceptTalkRequest(String requestId, String emailId) {

@@ -3,6 +3,7 @@ package bd.edu.seu.biye_shaddi.controller;
 import bd.edu.seu.biye_shaddi.model.ContactDetails;
 import bd.edu.seu.biye_shaddi.model.User;
 import bd.edu.seu.biye_shaddi.service.ContactDetailsService;
+import bd.edu.seu.biye_shaddi.service.LikeService;
 import bd.edu.seu.biye_shaddi.service.MatchingService;
 import bd.edu.seu.biye_shaddi.service.TalkRequestService;
 import bd.edu.seu.biye_shaddi.service.UserService;
@@ -21,13 +22,16 @@ public class IndexController {
     private final UserService userService;
     private final TalkRequestService talkRequestService;
     private final ContactDetailsService contactDetailsService;
+    private final LikeService likeService;
 
     public IndexController(MatchingService matchingService, UserService userService,
-            TalkRequestService talkRequestService, ContactDetailsService contactDetailsService) {
+            TalkRequestService talkRequestService, ContactDetailsService contactDetailsService,
+            LikeService likeService) {
         this.matchingService = matchingService;
         this.userService = userService;
         this.talkRequestService = talkRequestService;
         this.contactDetailsService = contactDetailsService;
+        this.likeService = likeService;
     }
 
     @GetMapping("/index")
@@ -45,10 +49,67 @@ public class IndexController {
         if (!user.isPresent()) {
             return "redirect:/login";
         }
-        List<User> matches = matchingService.findTopMatchesByEmailId(userEmail, 10);
-        model.addAttribute("matches", matches);
+
+        List<bd.edu.seu.biye_shaddi.dto.MatchDTO> matchDTOs = new java.util.ArrayList<>();
+
+        // 1. Mutual Likes
+        List<User> mutualMatches = likeService.getMutualLikes(userEmail);
+        for (User u : mutualMatches) {
+            matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(u, "MUTUAL"));
+        }
+
+        // 2. Liked Users (Exclude mutuals to avoid duplicates)
+        List<User> likedUsers = likeService.getLikedUsers(userEmail);
+        for (User u : likedUsers) {
+            boolean isMutual = mutualMatches.stream().anyMatch(m -> m.getEmailId().equals(u.getEmailId()));
+            if (!isMutual) {
+                matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(u, "LIKED"));
+            }
+        }
+
+        // 3. Sent Requests (Exclude if already in mutual or liked - though usually
+        // request follows like)
+        List<bd.edu.seu.biye_shaddi.model.TalkRequest> sentRequests = talkRequestService.getSentRequests(userEmail);
+        for (bd.edu.seu.biye_shaddi.model.TalkRequest req : sentRequests) {
+            String targetEmail = req.getToEmailId();
+            // Check if already added as MUTUAL or LIKED
+            boolean alreadyAdded = matchDTOs.stream().anyMatch(m -> m.getUser().getEmailId().equals(targetEmail));
+
+            if (!alreadyAdded) {
+                Optional<User> targetUser = userService.getUserByEmail(targetEmail);
+                if (targetUser.isPresent()) {
+                    matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(targetUser.get(), "SENT"));
+                }
+            } else {
+                // If it was LIKED, upgrade status to SENT if appropriate, or keep as is?
+                // Actually, "SENT" might be more specific than "LIKED".
+                // Let's update status to SENT if it was just LIKED.
+                matchDTOs.stream()
+                        .filter(m -> m.getUser().getEmailId().equals(targetEmail) && "LIKED".equals(m.getStatus()))
+                        .findFirst()
+                        .ifPresent(m -> m.setStatus("SENT"));
+            }
+        }
+
+        model.addAttribute("matches", matchDTOs); // Note: This now contains MatchDTO objects, not User objects
         model.addAttribute("emailId", userEmail);
         return "matches";
+    }
+
+    @GetMapping("/discover")
+    public String getDiscoverPage(@RequestParam(required = false) String emailId, Model model, Principal principal) {
+        String userEmail = emailId != null ? emailId : (principal != null ? principal.getName() : null);
+        if (userEmail == null || userEmail.isEmpty()) {
+            return "redirect:/login";
+        }
+        Optional<User> user = matchingService.getUserByEmailId(userEmail);
+        if (!user.isPresent()) {
+            return "redirect:/login";
+        }
+        List<User> recommendations = matchingService.findTopMatchesByEmailId(userEmail, 20);
+        model.addAttribute("recommendations", recommendations);
+        model.addAttribute("emailId", userEmail);
+        return "discover";
     }
 
     @GetMapping("/matches-contact-info")

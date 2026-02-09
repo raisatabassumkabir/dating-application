@@ -57,7 +57,6 @@
             gap: 10px;
         }
     </style>
-    </style>
 </head>
 
 <body>
@@ -85,11 +84,11 @@
         <!-- Sidebar (Desktop) -->
         <aside class="sidebar">
             <div style="margin-bottom: 20px;">
-                <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link active">
-                    <i class="fas fa-fire"></i> New Matches
+                <a th:href="@{/discover(emailId=${emailId})}" class="sidebar-link">
+                    <i class="fas fa-compass"></i> Discover
                 </a>
-                <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link">
-                    <i class="fas fa-heart"></i> Daily Recommendations
+                <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link active">
+                    <i class="fas fa-heart"></i> Matches
                 </a>
                 <a th:href="@{/talkrequest(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-comment-alt"></i> Messages
@@ -108,7 +107,7 @@
             <div class="container">
                 <div class="section-title" style="text-align: left; margin-bottom: 30px;">
                     <h2>Your Matches</h2>
-                    <p>Based on your preferences</p>
+                    <p>People you liked who also liked you back</p>
                 </div>
 
                 <!-- Matches Grid -->
@@ -118,62 +117,154 @@
                     <p>Try updating your preferences in Edit Profile.</p>
                 </div>
 
-                <div class="grid grid-cols-3 gap-lg" th:unless="${matches.isEmpty()}">
-                    <div th:each="match : ${matches}" class="match-card">
-                        <div class="match-img-container">
-                            <img th:src="@{${match.profilePictureUrl} ?: '/picture/biye.jpg'}" class="match-img"
-                                alt="Profile">
-                            <div class="match-overlay">
-                                <h3 style="color: white; margin: 0; font-size: 1.4rem;" th:text="${match.name}">Name
-                                </h3>
-                                <p style="font-size: 0.9rem; opacity: 0.9;">
-                                    <span th:text="${match.age}">25</span> yrs,
-                                    <span th:text="${match.location}">Location</span>
-                                </p>
+                <div th:unless="${matches.isEmpty()}">
+                    <!-- Mutual Matches Section -->
+                    <div th:if="${matches.stream().anyMatch(m -> m.status == 'MUTUAL')}">
+                        <h3
+                            style="margin-bottom: 20px; border-bottom: 2px solid var(--primary-color); display: inline-block; padding-bottom: 5px;">
+                            Mutual Matches</h3>
+                        <div class="grid grid-cols-3 gap-lg">
+                            <div th:each="matchDTO : ${matches}" th:if="${matchDTO.status == 'MUTUAL'}"
+                                class="match-card">
+                                <div class="match-img-container">
+                                    <img th:src="${matchDTO.user.profilePictureUrl != null ? matchDTO.user.profilePictureUrl : '/picture/biye.jpg'}"
+                                        class="match-img" alt="Profile">
+                                    <div class="compatibility-badge"
+                                        style="top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: white;">
+                                        <i class="fas fa-handshake"></i> Matched
+                                    </div>
+                                    <div class="match-overlay">
+                                        <h3 style="color: white; margin: 0; font-size: 1.4rem;"
+                                            th:text="${matchDTO.user.name}">Name</h3>
+                                        <p style="font-size: 0.9rem; opacity: 0.9;">
+                                            <span th:text="${matchDTO.user.age}">25</span> yrs,
+                                            <span th:text="${matchDTO.user.location}">Location</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="match-actions flex-col">
+                                    <div
+                                        style="padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 10px;">
+                                        <p style="font-size: 0.9rem; color: var(--text-body); margin-bottom: 5px;">
+                                            <i class="fas fa-briefcase"
+                                                style="width: 20px; color: var(--text-light);"></i>
+                                            <span th:text="${matchDTO.user.profession}">Profession</span>
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-sm">
+                                        <a th:href="@{/talkrequest(emailId=${emailId})}" class="btn btn-primary"
+                                            style="flex: 1; font-size: 0.9rem; text-decoration: none; text-align: center;">
+                                            <i class="fas fa-comments"></i> Message
+                                        </a>
+                                        <button class="btn btn-outline ignore-button"
+                                            style="flex: 1; font-size: 0.9rem; color: var(--text-main); border-color: #ddd;"
+                                            th:attr="data-email=${matchDTO.user.emailId}">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="match-actions flex-col">
-                            <div style="padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 10px;">
-                                <p style="font-size: 0.9rem; color: var(--text-body); margin-bottom: 5px;">
-                                    <i class="fas fa-briefcase" style="width: 20px; color: var(--text-light);"></i>
-                                    <span th:text="${match.profession}">Profession</span>
-                                </p>
-                                <p style="font-size: 0.9rem; color: var(--text-body);">
-                                    <i class="fas fa-graduation-cap" style="width: 20px; color: var(--text-light);"></i>
-                                    <span th:text="${match.education}">Education</span>
-                                </p>
-                            </div>
+                    </div>
 
-                            <!-- Action Buttons -->
-                            <div class="flex gap-sm">
-                                <button class="btn btn-primary talk-button" style="flex: 1; font-size: 0.9rem;"
-                                    th:attr="data-from-email=${emailId},data-to-email=${match.emailId}">
-                                    Interest
-                                </button>
-                                <button class="btn btn-outline ignore-button"
-                                    style="flex: 1; font-size: 0.9rem; color: var(--text-main); border-color: #ddd;"
-                                    th:attr="data-email=${match.emailId}">
-                                    Skip
-                                </button>
+                    <!-- Sent Requests Section -->
+                    <div th:if="${matches.stream().anyMatch(m -> m.status == 'SENT')}" style="margin-top: 40px;">
+                        <h3
+                            style="margin-bottom: 20px; border-bottom: 2px solid #3498db; display: inline-block; padding-bottom: 5px;">
+                            Sent Requests</h3>
+                        <div class="grid grid-cols-3 gap-lg">
+                            <div th:each="matchDTO : ${matches}" th:if="${matchDTO.status == 'SENT'}"
+                                class="match-card">
+                                <div class="match-img-container">
+                                    <img th:src="${matchDTO.user.profilePictureUrl != null ? matchDTO.user.profilePictureUrl : '/picture/biye.jpg'}"
+                                        class="match-img" alt="Profile">
+                                    <div class="compatibility-badge"
+                                        style="top: 15px; right: 15px; background: rgba(52, 152, 219, 0.9); color: white;">
+                                        <i class="fas fa-paper-plane"></i> Request Sent
+                                    </div>
+                                    <div class="match-overlay">
+                                        <h3 style="color: white; margin: 0; font-size: 1.4rem;"
+                                            th:text="${matchDTO.user.name}">Name</h3>
+                                        <p style="font-size: 0.9rem; opacity: 0.9;">
+                                            <span th:text="${matchDTO.user.age}">25</span> yrs,
+                                            <span th:text="${matchDTO.user.location}">Location</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="match-actions flex-col">
+                                    <div
+                                        style="padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 10px;">
+                                        <p style="font-size: 0.9rem; color: var(--text-body); margin-bottom: 5px;">
+                                            <i class="fas fa-briefcase"
+                                                style="width: 20px; color: var(--text-light);"></i>
+                                            <span th:text="${matchDTO.user.profession}">Profession</span>
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-sm">
+                                        <button class="btn btn-secondary"
+                                            style="flex: 1; font-size: 0.9rem; cursor: default; opacity: 0.7;" disabled>
+                                            <i class="fas fa-clock"></i> Pending
+                                        </button>
+                                        <button class="btn btn-outline ignore-button"
+                                            style="flex: 1; font-size: 0.9rem; color: var(--text-main); border-color: #ddd;"
+                                            th:attr="data-email=${matchDTO.user.emailId}">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Advanced Actions -->
-                            <div class="flex gap-sm" style="margin-top: 10px; justify-content: space-between;">
-                                <button class="btn btn-outline shortlist-btn"
-                                    style="flex: 1; font-size: 0.8rem; border-color: #ddd; color: var(--text-light);"
-                                    th:attr="data-user-id=${emailId},data-shortlist-id=${match.emailId}"
-                                    title="Shortlist">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <button class="btn btn-outline block-btn"
-                                    style="flex: 1; font-size: 0.8rem; border-color: #ddd; color: var(--text-light);"
-                                    th:attr="data-user-id=${emailId},data-block-id=${match.emailId}"
-                                    title="Block / Report">
-                                    <i class="fas fa-ban"></i>
-                                </button>
+                    <!-- Liked Profiles Section -->
+                    <div th:if="${matches.stream().anyMatch(m -> m.status == 'LIKED')}" style="margin-top: 40px;">
+                        <h3
+                            style="margin-bottom: 20px; border-bottom: 2px solid #e74c3c; display: inline-block; padding-bottom: 5px;">
+                            Liked Profiles</h3>
+                        <div class="grid grid-cols-3 gap-lg">
+                            <div th:each="matchDTO : ${matches}" th:if="${matchDTO.status == 'LIKED'}"
+                                class="match-card">
+                                <div class="match-img-container">
+                                    <img th:src="${matchDTO.user.profilePictureUrl != null ? matchDTO.user.profilePictureUrl : '/picture/biye.jpg'}"
+                                        class="match-img" alt="Profile">
+                                    <div class="compatibility-badge"
+                                        style="top: 15px; right: 15px; background: rgba(231, 76, 60, 0.9); color: white;">
+                                        <i class="fas fa-heart"></i> Liked
+                                    </div>
+                                    <div class="match-overlay">
+                                        <h3 style="color: white; margin: 0; font-size: 1.4rem;"
+                                            th:text="${matchDTO.user.name}">Name</h3>
+                                        <p style="font-size: 0.9rem; opacity: 0.9;">
+                                            <span th:text="${matchDTO.user.age}">25</span> yrs,
+                                            <span th:text="${matchDTO.user.location}">Location</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="match-actions flex-col">
+                                    <div
+                                        style="padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 10px;">
+                                        <p style="font-size: 0.9rem; color: var(--text-body); margin-bottom: 5px;">
+                                            <i class="fas fa-briefcase"
+                                                style="width: 20px; color: var(--text-light);"></i>
+                                            <span th:text="${matchDTO.user.profession}">Profession</span>
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-sm">
+                                        <button class="btn btn-primary talk-button" style="flex: 1; font-size: 0.9rem;"
+                                            th:attr="data-from-email=${emailId},data-to-email=${matchDTO.user.emailId}">
+                                            Send Interest
+                                        </button>
+                                        <button class="btn btn-outline ignore-button"
+                                            style="flex: 1; font-size: 0.9rem; color: var(--text-main); border-color: #ddd;"
+                                            th:attr="data-email=${matchDTO.user.emailId}">
+                                            Remove
+                                        </button>
+                                    </div>
+                                    <div class="message"
+                                        style="display: none; font-size: 0.8rem; margin-top: 5px; text-align: center;">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="message"
-                                style="display: none; font-size: 0.8rem; margin-top: 5px; text-align: center;"></div>
                         </div>
                     </div>
                 </div>
@@ -183,17 +274,17 @@
 
     <!-- Bottom Nav (Mobile) -->
     <div class="bottom-nav">
+        <a th:href="@{/discover(emailId=${emailId})}" class="nav-item">
+            <i class="fas fa-compass"></i>
+            <span>Discover</span>
+        </a>
         <a th:href="@{/matches(emailId=${emailId})}" class="nav-item active">
-            <i class="fas fa-fire"></i>
+            <i class="fas fa-heart"></i>
             <span>Matches</span>
         </a>
         <a th:href="@{/talkrequest(emailId=${emailId})}" class="nav-item">
             <i class="fas fa-comment-alt"></i>
             <span>Chats</span>
-        </a>
-        <a th:href="@{/user_dashboard(emailId=${emailId})}" class="nav-item">
-            <i class="fas fa-user-edit"></i>
-            <span>Edit</span>
         </a>
         <a th:href="@{/user_info(emailId=${emailId})}" class="nav-item">
             <i class="fas fa-user"></i>
@@ -212,7 +303,7 @@
                 const $button = $(this);
                 const fromEmailId = $button.data('from-email');
                 const toEmailId = $button.data('to-email');
-                const $messageDiv = $button.parent().find('.message'); // Adjusted selector
+                const $messageDiv = $button.parent().parent().find('.message'); // Adjusted selector to find sibling of flex container
 
                 // AJAX call (simplified for brevity, assume same logic as before)
                 $.ajax({
@@ -224,8 +315,10 @@
                         $messageDiv.text('Sent!').css('color', 'green').show();
                         $button.prop('disabled', true).text('Pending');
                     },
-                    error: function () {
-                        $messageDiv.text('Error').css('color', 'red').show();
+                    error: function (xhr) {
+                        let msg = 'Error';
+                        if (xhr.responseText) msg = xhr.responseText;
+                        $messageDiv.text(msg).css('color', 'red').show();
                     }
                 });
             });
