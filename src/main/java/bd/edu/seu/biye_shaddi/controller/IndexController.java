@@ -61,7 +61,12 @@ public class IndexController {
         // 2. Liked Users (Exclude mutuals to avoid duplicates)
         List<User> likedUsers = likeService.getLikedUsers(userEmail);
         for (User u : likedUsers) {
-            boolean isMutual = mutualMatches.stream().anyMatch(m -> m.getEmailId().equals(u.getEmailId()));
+            if (u.getEmailId() == null)
+                continue; // Skip if email is null
+            boolean isMutual = mutualMatches.stream()
+                    .filter(m -> m.getEmailId() != null)
+                    .anyMatch(m -> m.getEmailId().equals(u.getEmailId()));
+
             if (!isMutual) {
                 matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(u, "LIKED"));
             }
@@ -72,8 +77,13 @@ public class IndexController {
         List<bd.edu.seu.biye_shaddi.model.TalkRequest> sentRequests = talkRequestService.getSentRequests(userEmail);
         for (bd.edu.seu.biye_shaddi.model.TalkRequest req : sentRequests) {
             String targetEmail = req.getToEmailId();
+            if (targetEmail == null)
+                continue; // Skip if target email is null
+
             // Check if already added as MUTUAL or LIKED
-            boolean alreadyAdded = matchDTOs.stream().anyMatch(m -> m.getUser().getEmailId().equals(targetEmail));
+            boolean alreadyAdded = matchDTOs.stream()
+                    .filter(m -> m.getUser() != null && m.getUser().getEmailId() != null)
+                    .anyMatch(m -> m.getUser().getEmailId().equals(targetEmail));
 
             if (!alreadyAdded) {
                 Optional<User> targetUser = userService.getUserByEmail(targetEmail);
@@ -81,10 +91,9 @@ public class IndexController {
                     matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(targetUser.get(), "SENT"));
                 }
             } else {
-                // If it was LIKED, upgrade status to SENT if appropriate, or keep as is?
-                // Actually, "SENT" might be more specific than "LIKED".
-                // Let's update status to SENT if it was just LIKED.
+                // If it was LIKED, upgrade status to SENT if appropriate
                 matchDTOs.stream()
+                        .filter(m -> m.getUser() != null && m.getUser().getEmailId() != null)
                         .filter(m -> m.getUser().getEmailId().equals(targetEmail) && "LIKED".equals(m.getStatus()))
                         .findFirst()
                         .ifPresent(m -> m.setStatus("SENT"));

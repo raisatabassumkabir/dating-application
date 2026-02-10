@@ -115,13 +115,16 @@
                     <!-- Tabs -->
                     <div class="profile-tabs">
                         <div class="profile-tab active" onclick="showTab('personal')">
-                            <i class="fas fa-user-circle"></i> Personal Info
+                            <i class="fas fa-user-circle"></i> Personal
                         </div>
                         <div class="profile-tab" onclick="showTab('family')">
-                            <i class="fas fa-users"></i> Family & Background
+                            <i class="fas fa-users"></i> Family
                         </div>
                         <div class="profile-tab" onclick="showTab('partner')">
-                            <i class="fas fa-heart"></i> Partner Preferences
+                            <i class="fas fa-heart"></i> Partner
+                        </div>
+                        <div class="profile-tab" onclick="showTab('contact')">
+                            <i class="fas fa-address-book"></i> Contact
                         </div>
                     </div>
 
@@ -143,11 +146,12 @@
                                 </div>
                             </div>
 
+
                             <div class="grid grid-cols-2 gap-md">
                                 <div class="form-group">
                                     <label class="form-label">Height (e.g. 5'8")</label>
                                     <input type="text" th:field="*{height}" class="form-control"
-                                        placeholder="Ft'In&quot;" />
+                                        placeholder="Ft'In&quot;" required />
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Gender</label>
@@ -162,7 +166,7 @@
                             <div class="grid grid-cols-2 gap-md">
                                 <div class="form-group">
                                     <label class="form-label">Marital Status</label>
-                                    <select th:field="*{maritalStatus}" class="form-control">
+                                    <select th:field="*{maritalStatus}" class="form-control" required>
                                         <option value="">Select</option>
                                         <option value="Single">Single</option>
                                         <option value="Married">Married</option>
@@ -215,13 +219,14 @@
                                 <div class="form-group">
                                     <label class="form-label">Monthly Income</label>
                                     <input type="text" th:field="*{monthlyIncome}" class="form-control"
-                                        placeholder="e.g. 50,000 BDT" />
+                                        placeholder="e.g. 50,000 BDT" required />
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Bio / About Me</label>
-                                <textarea th:field="*{bio}" class="form-control" style="min-height: 100px;"></textarea>
+                                <textarea th:field="*{bio}" class="form-control" style="min-height: 100px;"
+                                    required></textarea>
                             </div>
 
                             <div class="form-group">
@@ -256,7 +261,7 @@
                             <div class="grid grid-cols-2 gap-md">
                                 <div class="form-group">
                                     <label class="form-label">Family Status</label>
-                                    <select th:field="*{familyStatus}" class="form-control">
+                                    <select th:field="*{familyStatus}" class="form-control" required>
                                         <option value="">Select</option>
                                         <option value="Middle Class">Middle Class</option>
                                         <option value="Upper Middle Class">Upper Middle Class</option>
@@ -265,7 +270,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Family Type</label>
-                                    <select th:field="*{familyType}" class="form-control">
+                                    <select th:field="*{familyType}" class="form-control" required>
                                         <option value="">Select</option>
                                         <option value="Nuclear">Nuclear</option>
                                         <option value="Joint">Joint</option>
@@ -276,17 +281,17 @@
                             <div class="grid grid-cols-2 gap-md">
                                 <div class="form-group">
                                     <label class="form-label">Father's Profession</label>
-                                    <input type="text" th:field="*{fatherStatus}" class="form-control" />
+                                    <input type="text" th:field="*{fatherStatus}" class="form-control" required />
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Mother's Profession</label>
-                                    <input type="text" th:field="*{motherStatus}" class="form-control" />
+                                    <input type="text" th:field="*{motherStatus}" class="form-control" required />
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Number of Siblings</label>
-                                <input type="number" th:field="*{numberOfSiblings}" class="form-control" />
+                                <input type="number" th:field="*{numberOfSiblings}" class="form-control" required />
                             </div>
 
                             <div style="display: flex; justify-content: space-between; margin-top: 30px;">
@@ -305,11 +310,11 @@
                             <div class="grid grid-cols-2 gap-md">
                                 <div class="form-group">
                                     <label class="form-label">Min Age</label>
-                                    <input type="number" th:field="*{preferredAgeMin}" class="form-control">
+                                    <input type="number" th:field="*{preferredAgeMin}" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Max Age</label>
-                                    <input type="number" th:field="*{preferredAgeMax}" class="form-control">
+                                    <input type="number" th:field="*{preferredAgeMax}" class="form-control" required>
                                 </div>
                             </div>
 
@@ -317,23 +322,23 @@
                                 <div class="form-group">
                                     <label class="form-label">Min Height</label>
                                     <input type="text" th:field="*{preferredHeightMin}" class="form-control"
-                                        placeholder="5'0&quot;">
+                                        placeholder="5'0&quot;" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Max Height</label>
                                     <input type="text" th:field="*{preferredHeightMax}" class="form-control"
-                                        placeholder="6'0&quot;">
+                                        placeholder="6'0&quot;" required>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-md">
                                 <div class="form-group">
                                     <label class="form-label">Preferred Religion</label>
-                                    <input type="text" th:field="*{preferredReligion}" class="form-control">
+                                    <input type="text" th:field="*{preferredReligion}" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Preferred Marital Status</label>
-                                    <select th:field="*{preferredMaritalStatus}" class="form-control">
+                                    <select th:field="*{preferredMaritalStatus}" class="form-control" required>
                                         <option value="">Any</option>
                                         <option value="Single">Single</option>
                                         <option value="Divorced">Divorced</option>
@@ -343,17 +348,64 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Preferred Education</label>
-                                <input type="text" th:field="*{preferredEducation}" class="form-control">
+                                <label class="form-label">Preferred Profession (Select all that apply)</label>
+                                <div class="flex gap-md" style="flex-wrap: wrap;">
+                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="doctor">
+                                        Doctor</label>
+                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="engineer">
+                                        Engineer</label>
+                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="teacher">
+                                        Teacher</label>
+                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="business">
+                                        Business</label>
+                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="student">
+                                        Student</label>
+                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="others">
+                                        Others</label>
+                                </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Preferred Location</label>
-                                <input type="text" th:field="*{preferredLocation}" class="form-control">
+                                <input type="text" th:field="*{preferredLocation}" class="form-control" required>
                             </div>
 
                             <div style="display: flex; justify-content: space-between; margin-top: 30px;">
                                 <button type="button" class="btn btn-outline" onclick="showTab('family')">&larr;
+                                    Back</button>
+                                <button type="button" class="btn btn-primary" onclick="showTab('contact')">Next: Contact
+                                    Info &rarr;</button>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: Contact Info -->
+                        <div id="tab-contact" class="tab-content">
+                            <h3 style="margin-bottom: 20px; color: var(--secondary-color);">Contact Information</h3>
+                            <p style="margin-bottom: 20px; color: var(--text-light); font-size: 0.9rem;">
+                                This information will be shared with your matches.
+                            </p>
+
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-mobile-alt"></i> Mobile Number</label>
+                                <input type="text" th:field="*{contactDetails.mobile}" class="form-control"
+                                    placeholder="e.g. +88017..." required />
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-md">
+                                <div class="form-group">
+                                    <label class="form-label"><i class="fab fa-facebook"></i> Facebook Profile</label>
+                                    <input type="text" th:field="*{contactDetails.facebook}" class="form-control"
+                                        placeholder="Profile Link/Username" required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label"><i class="fab fa-instagram"></i> Instagram</label>
+                                    <input type="text" th:field="*{contactDetails.instagram}" class="form-control"
+                                        placeholder="@username" required />
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                                <button type="button" class="btn btn-outline" onclick="showTab('partner')">&larr;
                                     Back</button>
                                 <button type="submit" class="btn btn-primary" style="padding: 12px 40px;">Save All
                                     Changes</button>
@@ -404,6 +456,7 @@
             if (tabName === 'personal') tabButtons[0].classList.add('active');
             if (tabName === 'family') tabButtons[1].classList.add('active');
             if (tabName === 'partner') tabButtons[2].classList.add('active');
+            if (tabName === 'contact') tabButtons[3].classList.add('active');
 
             // Scroll to top
             window.scrollTo(0, 0);

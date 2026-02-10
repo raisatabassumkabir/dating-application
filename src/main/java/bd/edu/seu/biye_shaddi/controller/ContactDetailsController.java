@@ -49,10 +49,20 @@ public class ContactDetailsController {
 
     @PostMapping("/saveContactDetails")
     public String saveContactDetails(@ModelAttribute ContactDetails contactDetails,
+            org.springframework.validation.BindingResult bindingResult,
             @RequestParam("emailId") String emailId, Model model) {
         logger.debug("Saving contact details for emailId: {}, ContactDetails: {}", emailId, contactDetails);
+
+        if (bindingResult.hasErrors()) {
+            logger.error("Binding errors in ContactDetails: {}", bindingResult.getAllErrors());
+        }
+
         // Clean emailId to prevent duplication
         String cleanedEmailId = emailId.split(",")[0].trim();
+        if (contactDetails.getEmailId() != null) {
+            contactDetails.setEmailId(contactDetails.getEmailId().trim());
+        }
+
         Optional<User> userOptional = userService.getUserByEmail(cleanedEmailId);
         if (!userOptional.isPresent()) {
             logger.error("User not found for emailId: {}", cleanedEmailId);

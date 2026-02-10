@@ -263,12 +263,19 @@
                                 <div class="detail-row">
                                     <div class="detail-icon"><i class="fas fa-user"></i></div>
                                     <div class="detail-text"><span style="font-weight: 600;">Gender:</span> <span
-                                            th:text="${user.gender}">Female</span></div>
+                                            th:text="${user.gender}">Gender</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-birthday-cake"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Date of Birth:</span> <span
+                                            th:text="${#dates.format(user.dateOfBirth, 'dd-MMM-yyyy')}">Jan 1,
+                                            1990</span></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-icon"><i class="fas fa-heart"></i></div>
-                                    <div class="detail-text"><span style="font-weight: 600;">Status:</span> <span
-                                            th:text="${user.relationshipStatus}">Single</span></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Marital Status:</span>
+                                        <span th:text="${user.maritalStatus}">Single</span>
+                                    </div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-icon"><i class="fas fa-pray"></i></div>
@@ -278,12 +285,116 @@
                                 <div class="detail-row">
                                     <div class="detail-icon"><i class="fas fa-ruler-vertical"></i></div>
                                     <div class="detail-text"><span style="font-weight: 600;">Height:</span> <span
-                                            th:text="${user.height}">5.5</span></div>
+                                            th:text="${user.height}">Height</span></div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-icon"><i class="fas fa-graduation-cap"></i></div>
                                     <div class="detail-text"><span style="font-weight: 600;">Education:</span> <span
                                             th:text="${user.education}">Degree</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-briefcase"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Profession:</span> <span
+                                            th:text="${user.profession}">Profession</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Income:</span> <span
+                                            th:text="${user.monthlyIncome}">Income</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Family Information -->
+                            <div class="card" style="box-shadow: none; border: 1px solid #eee; margin-top: 20px;">
+                                <h4 style="color: var(--text-main); margin-bottom: 20px;">Family Background</h4>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-users"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Family Status:</span> <span
+                                            th:text="${user.familyStatus}">Status</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-home"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Family Type:</span> <span
+                                            th:text="${user.familyType}">Type</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-male"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Father:</span> <span
+                                            th:text="${user.fatherStatus}">Father</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-female"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Mother:</span> <span
+                                            th:text="${user.motherStatus}">Mother</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-child"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Siblings:</span> <span
+                                            th:text="${user.numberOfSiblings}">0</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Partner Preferences -->
+                            <div class="card" style="box-shadow: none; border: 1px solid #eee; margin-top: 20px;">
+                                <h4 style="color: var(--text-main); margin-bottom: 20px;">Partner Preferences</h4>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-user-check"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Age:</span>
+                                        <span th:text="${user.preferredAgeMin}">18</span> - <span
+                                            th:text="${user.preferredAgeMax}">30</span>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-ruler"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Height:</span>
+                                        <span th:text="${user.preferredHeightMin}">5'0"</span> - <span
+                                            th:text="${user.preferredHeightMax}">6'0"</span>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-pray"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Religion:</span> <span
+                                            th:text="${user.preferredReligion}">Any</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Location:</span> <span
+                                            th:text="${user.preferredLocation}">Any</span></div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-icon"><i class="fas fa-user-md"></i></div>
+                                    <div class="detail-text"
+                                        style="display: flex; align-items: center; flex-wrap: wrap;">
+                                        <span style="font-weight: 600; margin-right: 5px;">Profession:</span>
+                                        <span th:if="${#lists.isEmpty(user.preferredProfession)}">Any</span>
+                                        <div th:unless="${#lists.isEmpty(user.preferredProfession)}"
+                                            style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                            <span th:each="prof : ${user.preferredProfession}" class="badge"
+                                                style="background: #eef2ff; color: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-size: 0.9em;"
+                                                th:text="${prof}">Profession</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact Details -->
+                            <div class="card" style="box-shadow: none; border: 1px solid #eee; margin-top: 20px;"
+                                th:if="${user.contactDetails != null}">
+                                <h4 style="color: var(--text-main); margin-bottom: 20px;">Contact Information</h4>
+                                <div class="detail-row" th:if="${user.contactDetails.mobile != null}">
+                                    <div class="detail-icon"><i class="fas fa-mobile-alt"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Mobile:</span> <span
+                                            th:text="${user.contactDetails.mobile}">+880...</span></div>
+                                </div>
+                                <div class="detail-row" th:if="${user.contactDetails.facebook != null}">
+                                    <div class="detail-icon"><i class="fab fa-facebook"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Facebook:</span> <span
+                                            th:text="${user.contactDetails.facebook}">Link</span></div>
+                                </div>
+                                <div class="detail-row" th:if="${user.contactDetails.instagram != null}">
+                                    <div class="detail-icon"><i class="fab fa-instagram"></i></div>
+                                    <div class="detail-text"><span style="font-weight: 600;">Instagram:</span> <span
+                                            th:text="${user.contactDetails.instagram}">@handle</span></div>
                                 </div>
                             </div>
                         </div>

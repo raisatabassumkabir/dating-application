@@ -52,7 +52,7 @@
     </scm>
 
     <properties>
-        <java.version>23</java.version>
+        <java.version>17</java.version>
         <spring-ai.version>1.0.0</spring-ai.version>
     </properties>
 

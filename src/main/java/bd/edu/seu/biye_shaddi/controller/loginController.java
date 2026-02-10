@@ -22,7 +22,6 @@ public class loginController {
     private final UserRepository userRepository;
     private final UserService userService;
 
-
     public loginController(LoginService loginService, UserRepository userRepository, UserService userService) {
         this.loginService = loginService;
 
@@ -38,22 +37,24 @@ public class loginController {
 
     @PostMapping("/login-form")
     public String loginForm(@RequestParam String email, @RequestParam String password, Model model) {
-        boolean isUserAuthenticated = loginService.userAuthenticated(email, password);
+        String normalizedEmail = email.trim();
+        boolean isUserAuthenticated = loginService.userAuthenticated(normalizedEmail, password);
         if (isUserAuthenticated) {
             // Check if user-info exists and is filled
-            Optional<User> userOptional = userRepository.findByEmailId(email);
-            if (userOptional.isPresent() && userOptional.get().getName() != null && !userOptional.get().getName().isEmpty()) {
+            Optional<User> userOptional = userRepository.findByEmailId(normalizedEmail);
+            if (userOptional.isPresent() && userOptional.get().getName() != null
+                    && !userOptional.get().getName().isEmpty()) {
                 // Profile is filled, redirect to dashboard
-                 return "redirect:/user_info?emailId=" + email;
+                return "redirect:/user_info?emailId=" + normalizedEmail;
 
             } else {
                 // Profile not filled, redirect to user_info
-                return "redirect:/user_dashboard?emailId=" + email;
+                return "redirect:/user_dashboard?emailId=" + normalizedEmail;
             }
         } else {
             model.addAttribute("error", "Invalid email or password");
             return "login";
         }
-    }//working one
+    }// working one
 
 }

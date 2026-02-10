@@ -40,9 +40,11 @@ public class User {
     private String preferredHeightMin;
     private String preferredHeightMax;
     private String preferredReligion;
-    private String preferredEducation;
+    private List<String> preferredProfession;
     private String preferredLocation;
     private String preferredMaritalStatus;
+
+    // ... (rest of the file as needed, but let's focus on the change)
 
     // Interests
     private List<String> interests;
@@ -322,12 +324,12 @@ public class User {
         this.preferredReligion = preferredReligion;
     }
 
-    public String getPreferredEducation() {
-        return preferredEducation;
+    public List<String> getPreferredProfession() {
+        return preferredProfession;
     }
 
-    public void setPreferredEducation(String preferredEducation) {
-        this.preferredEducation = preferredEducation;
+    public void setPreferredProfession(List<String> preferredProfession) {
+        this.preferredProfession = preferredProfession;
     }
 
     public String getPreferredLocation() {

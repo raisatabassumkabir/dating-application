@@ -26,100 +26,133 @@ public class MatchingService {
         this.talkRequestService = talkRequestService;
     }
 
+    /**
+     * Derive the opposite gender for matching.
+     * If user is "male" -> preferred is "female" and vice versa.
+     * Falls back to the user's explicit preferredGender if set.
+     */
+    private String derivePreferredGender(User user) {
+        String pg = user.getPreferredGender();
+        if (pg != null && !pg.trim().isEmpty()) {
+            return pg.trim();
+        }
+        // Auto-derive from own gender
+        String gender = user.getGender();
+        if (gender == null)
+            return null;
+        if (gender.trim().equalsIgnoreCase("male"))
+            return "female";
+        if (gender.trim().equalsIgnoreCase("female"))
+            return "male";
+        return null;
+    }
+
     public double calculateCompatibilityScore(User user1, User user2) {
-        System.out.println("\n=== Calculating compatibility score between:");
-        System.out.println("User1: " + user1.getEmailId());
-        System.out.println("User2: " + user2.getEmailId());
+        System.out.println("\n=== Compatibility: " + user1.getEmailId() + " -> " + user2.getEmailId());
 
         double score = 0.0;
         int maxScore = 7; // Gender: 2, Height: 2, Interests: 2, Age: 1
 
         // Age compatibility
-        if (user2.getAge() >= user1.getPreferredAgeMin() && user2.getAge() <= user1.getPreferredAgeMax()) {
+        int age2 = user2.getAge();
+        int prefAgeMin = user1.getPreferredAgeMin();
+        int prefAgeMax = user1.getPreferredAgeMax();
+        if (prefAgeMax == 0)
+            prefAgeMax = 100;
+        if (age2 >= prefAgeMin && age2 <= prefAgeMax) {
             score += 1;
-            System.out.println("✓ Age match: " + user2.getEmailId() + " age " + user2.getAge() + " in ["
-                    + user1.getPreferredAgeMin() + ", " + user1.getPreferredAgeMax() + "]");
+            System.out.println("  ✓ Age match: " + age2 + " in [" + prefAgeMin + ", " + prefAgeMax + "]");
         } else {
-            System.out.println("✗ Age mismatch: " + user2.getEmailId() + " age " + user2.getAge() + " not in ["
-                    + user1.getPreferredAgeMin() + ", " + user1.getPreferredAgeMax() + "]");
+            System.out.println("  ✗ Age mismatch: " + age2 + " not in [" + prefAgeMin + ", " + prefAgeMax + "]");
         }
 
-        // Gender compatibility
-        if (user1.getPreferredGender() != null && user1.getPreferredGender().equalsIgnoreCase(user2.getGender())) {
+        // Gender compatibility (auto-derived)
+        String preferredGender = derivePreferredGender(user1);
+        if (preferredGender != null && preferredGender.equalsIgnoreCase(user2.getGender())) {
             score += 2;
-            System.out.println("✓ Gender match: " + user2.getEmailId() + " gender " + user2.getGender() + " = "
-                    + user1.getPreferredGender());
+            System.out.println("  ✓ Gender match: " + user2.getGender());
+        } else if (preferredGender == null) {
+            score += 1;
+            System.out.println("  ~ Gender unknown, partial credit");
         } else {
-            System.out.println("✗ Gender mismatch: " + user2.getEmailId() + " gender " + user2.getGender() + " != "
-                    + user1.getPreferredGender());
+            System.out.println("  ✗ Gender mismatch: wanted " + preferredGender + ", got " + user2.getGender());
         }
 
         // Height compatibility
-        if (user2.getHeight() != null && user1.getPreferredHeightMin() != null
-                && user1.getPreferredHeightMax() != null) {
-            try {
-                double height2 = parseHeight(user2.getHeight());
-                double min = parseHeight(user1.getPreferredHeightMin());
-                double max = parseHeight(user1.getPreferredHeightMax());
-                System.out.println(
-                        "Height check for " + user2.getEmailId() + ": " + height2 + " in [" + min + ", " + max + "]");
-                if (height2 >= min && height2 <= max) {
+        try {
+            double height2 = parseHeight(user2.getHeight());
+            double hMin = parseHeight(user1.getPreferredHeightMin());
+            double hMax = parseHeight(user1.getPreferredHeightMax());
+            if (hMax == 0.0)
+                hMax = Double.MAX_VALUE;
+
+            if (height2 > 0 && hMin > 0) {
+                if (height2 >= hMin && height2 <= hMax) {
                     score += 2;
-                    System.out.println("✓ Height match");
+                    System.out.println("  ✓ Height match: " + height2 + " in [" + hMin + ", " + hMax + "]");
                 } else {
-                    System.out.println("✗ Height mismatch");
+                    System.out.println("  ✗ Height mismatch: " + height2 + " not in [" + hMin + ", " + hMax + "]");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("✗ Height parsing failed for " + user2.getEmailId() + ": " + user2.getHeight());
+            } else {
+                score += 1;
+                System.out.println("  ~ Height data incomplete, partial credit");
             }
-        } else {
-            System.out.println("✗ Height data missing for " + user2.getEmailId());
+        } catch (Exception e) {
+            score += 1;
+            System.out.println("  ~ Height parse error, partial credit: " + e.getMessage());
         }
 
         // Interests similarity
-        if (user1.getInterests() != null && user2.getInterests() != null) {
-            System.out.println("User1 (" + user1.getEmailId() + ") interests: " + user1.getInterests());
-            System.out.println("User2 (" + user2.getEmailId() + ") interests: " + user2.getInterests());
-            if (!user1.getInterests().isEmpty() && !user2.getInterests().isEmpty()) {
-                Set<String> commonInterests = new HashSet<>(user1.getInterests());
-                commonInterests.retainAll(user2.getInterests());
-                double interestScore = commonInterests.isEmpty() ? 1.0
-                        : (2.0 * commonInterests.size()) / (user1.getInterests().size() + user2.getInterests().size());
-                score += interestScore;
-                System.out.println("✓ Interest score for " + user2.getEmailId() + ": " + interestScore + ", common: "
-                        + commonInterests);
-            } else {
-                score += 1.0; // Encourage matches with any interests
-                System.out.println("✓ Interest score for " + user2.getEmailId() + ": 1.0 (no overlap or empty)");
-            }
+        List<String> int1 = user1.getInterests();
+        List<String> int2 = user2.getInterests();
+        if (int1 != null && int2 != null && !int1.isEmpty() && !int2.isEmpty()) {
+            Set<String> s1 = int1.stream().map(String::toLowerCase).collect(Collectors.toSet());
+            Set<String> s2 = int2.stream().map(String::toLowerCase).collect(Collectors.toSet());
+            Set<String> common = new HashSet<>(s1);
+            common.retainAll(s2);
+            double interestScore = common.isEmpty() ? 0.5
+                    : (2.0 * common.size()) / (s1.size() + s2.size());
+            score += interestScore;
+            System.out.println("  ✓ Interest score: " + interestScore + " (common: " + common + ")");
         } else {
-            System.out.println("✗ Interests missing for " + user2.getEmailId());
+            score += 1.0;
+            System.out.println("  ~ Interests not filled, partial credit");
         }
 
         double percentage = (score / maxScore) * 100;
-        System.out.println(
-                "Final score for " + user2.getEmailId() + ": " + score + "/" + maxScore + " = " + percentage + "%");
+        System.out.println("  TOTAL: " + String.format("%.1f", score) + "/" + maxScore
+                + " = " + String.format("%.1f", percentage) + "%");
         return percentage;
     }
 
+    /**
+     * Parse height string like "5'6''" into total inches.
+     * "5'6''" -> strips quotes -> "5 6" -> 5*12 + 6 = 66 inches
+     */
     private double parseHeight(String height) {
         if (height == null || height.trim().isEmpty()) {
-            System.out.println("Height is null or empty: " + height);
-            return 0.0;
-        }
-        String numericPart = height.replaceAll("[^0-9.]", "");
-        if (numericPart.isEmpty()) {
-            System.out.println("Height parsing failed: " + height);
             return 0.0;
         }
         try {
-            double value = Double.parseDouble(numericPart);
-            System.out.println("Parsed height: " + height + " -> " + value);
-            return value;
-        } catch (NumberFormatException e) {
-            System.out.println("Height parsing exception: " + height);
-            return 0.0;
+            String clean = height.replaceAll("['\u2018\u2019\u201C\u201D\"` ]", " ").replaceAll("\\s+", " ").trim();
+            String[] parts = clean.split(" ");
+
+            if (parts.length >= 2) {
+                double feet = Double.parseDouble(parts[0]);
+                double inches = Double.parseDouble(parts[1]);
+                double total = (feet * 12) + inches;
+                System.out.println("    parseHeight(\"" + height + "\") -> " + total + " in");
+                return total;
+            } else if (parts.length == 1 && !parts[0].isEmpty()) {
+                double val = Double.parseDouble(parts[0]);
+                double total = (val < 10) ? val * 12 : val;
+                System.out.println("    parseHeight(\"" + height + "\") -> " + total + " in");
+                return total;
+            }
+        } catch (Exception e) {
+            System.out.println("    parseHeight ERROR: \"" + height + "\" -> " + e.getMessage());
         }
+        return 0.0;
     }
 
     public List<User> findTopMatchesByEmailId(String emailId, int limit) {
@@ -128,40 +161,53 @@ public class MatchingService {
             System.out.println("User not found: " + emailId);
             return Collections.emptyList();
         }
-        System.out
-                .println("Finding matches for: " + emailId + ", preferredGender: " + currentUser.getPreferredGender());
+
+        String preferredGender = derivePreferredGender(currentUser);
+        System.out.println("\n========================================");
+        System.out.println("DISCOVER for: " + emailId);
+        System.out.println("  own gender: " + currentUser.getGender());
+        System.out.println("  derived preferredGender: " + preferredGender);
+        System.out.println("========================================");
 
         Query query = new Query();
         query.addCriteria(Criteria.where("emailId").ne(emailId));
-        query.addCriteria(Criteria.where("relationshipStatus").in(Arrays.asList("single", "divorced")));
 
-        if (currentUser.getPreferredGender() != null && !currentUser.getPreferredGender().isEmpty()) {
-            query.addCriteria(Criteria.where("gender").is(currentUser.getPreferredGender()));
-            System.out.println("Applied gender filter: " + currentUser.getPreferredGender());
+        // Filter: only single or divorced
+        query.addCriteria(Criteria.where("maritalStatus")
+                .in("Single", "single", "SINGLE", "Divorced", "divorced", "DIVORCED"));
+
+        // Filter: opposite gender
+        if (preferredGender != null) {
+            query.addCriteria(Criteria.where("gender").regex("^" + preferredGender + "$", "i"));
+            System.out.println("  Gender filter applied: " + preferredGender);
         }
 
-        // Relax age filter to avoid premature exclusion
-        // Age will be checked in scoring
-        System.out.println("No age filter applied, checking in scoring");
-
         List<User> allPotentialMatches = mongoTemplate.find(query, User.class);
-        System.out.println("Potential matches found: " + allPotentialMatches.size() + " users");
+        System.out.println("  DB returned " + allPotentialMatches.size() + " potential matches");
+        for (User u : allPotentialMatches) {
+            System.out.println("    - " + u.getEmailId() + " | gender=" + u.getGender()
+                    + " | maritalStatus=" + u.getMaritalStatus() + " | age=" + u.getAge());
+        }
 
         Map<User, Double> matchScores = new HashMap<>();
         for (User match : allPotentialMatches) {
-            System.out.println("\nEvaluating match: " + match.getEmailId());
             double score = calculateCompatibilityScore(currentUser, match);
             double reverseScore = calculateCompatibilityScore(match, currentUser);
-            if (score >= 40 && reverseScore >= 40) { // Enforce 40% mutual similarity
-                match.setCompatibilityScore(score);
-                matchScores.put(match, score);
-                System.out.println("Match accepted: " + match.getEmailId() + ", score: " + score + "%, reverse: "
-                        + reverseScore + "%");
-            } else {
-                System.out.println("Match rejected: " + match.getEmailId() + ", score: " + score + "%, reverse: "
-                        + reverseScore + "%");
-            }
+            double avgScore = (score + reverseScore) / 2.0;
 
+            System.out.println("  >> " + match.getEmailId()
+                    + ": fwd=" + String.format("%.1f", score) + "%"
+                    + ", rev=" + String.format("%.1f", reverseScore) + "%"
+                    + ", avg=" + String.format("%.1f", avgScore) + "%");
+
+            // Very lenient threshold to ensure people see recommendations
+            if (avgScore >= 20) {
+                match.setCompatibilityScore((double) Math.round(avgScore));
+                matchScores.put(match, avgScore);
+                System.out.println("     -> ACCEPTED");
+            } else {
+                System.out.println("     -> REJECTED (below 20%)");
+            }
         }
 
         List<User> sortedMatches = matchScores.entrySet().stream()
@@ -169,8 +215,11 @@ public class MatchingService {
                 .map(Map.Entry::getKey)
                 .limit(limit)
                 .collect(Collectors.toList());
-        System.out.println(
-                "Final sorted matches: " + sortedMatches.stream().map(User::getEmailId).collect(Collectors.toList()));
+
+        System.out.println("\nFinal recommendations: "
+                + sortedMatches.stream().map(u -> u.getEmailId() + "(" + u.getCompatibilityScore() + "%)")
+                        .collect(Collectors.toList()));
+        System.out.println("========================================\n");
         return sortedMatches;
     }
 
@@ -198,10 +247,12 @@ public class MatchingService {
 
         Query query = new Query();
         query.addCriteria(Criteria.where("emailId").ne(emailId));
-        query.addCriteria(Criteria.where("relationshipStatus").in(Arrays.asList("single", "divorced")));
+        query.addCriteria(Criteria.where("maritalStatus")
+                .in("Single", "single", "SINGLE", "Divorced", "divorced", "DIVORCED"));
 
-        if (currentUser.getPreferredGender() != null && !currentUser.getPreferredGender().isEmpty()) {
-            query.addCriteria(Criteria.where("gender").is(currentUser.getPreferredGender()));
+        String preferredGender = derivePreferredGender(currentUser);
+        if (preferredGender != null) {
+            query.addCriteria(Criteria.where("gender").regex("^" + preferredGender + "$", "i"));
         }
 
         return mongoTemplate.count(query, User.class);
@@ -220,5 +271,4 @@ public class MatchingService {
         }
         return countPotentialMatchesByEmailId(currentUser.getEmailId());
     }
-
 }
