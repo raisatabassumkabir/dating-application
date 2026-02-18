@@ -8,15 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -58,6 +59,214 @@ public class UserController {
                 + user.getProfilePictureUrl());
         return "user_dashboard";
     }
+
+    // ==================== AJAX per-section save endpoints ====================
+
+    @PostMapping("/api/save-personal")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> savePersonal(
+            @RequestParam String emailId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String dateOfBirth,
+            @RequestParam(required = false) String height,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String maritalStatus,
+            @RequestParam(required = false) String religion,
+            @RequestParam(required = false) String education,
+            @RequestParam(required = false) String profession,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String monthlyIncome,
+            @RequestParam(required = false) String bio,
+            @RequestParam(value = "interests", required = false) List<String> interests,
+            @RequestParam(value = "profilePicture", required = false) MultipartFile file) {
+        try {
+            User user = getOrCreateUser(emailId);
+
+            if (name != null)
+                user.setName(name);
+            if (height != null)
+                user.setHeight(height);
+            if (gender != null)
+                user.setGender(gender);
+            if (maritalStatus != null)
+                user.setMaritalStatus(maritalStatus);
+            if (religion != null)
+                user.setReligion(religion);
+            if (education != null)
+                user.setEducation(education);
+            if (profession != null)
+                user.setProfession(profession);
+            if (location != null)
+                user.setLocation(location);
+            if (monthlyIncome != null)
+                user.setMonthlyIncome(monthlyIncome);
+            if (bio != null)
+                user.setBio(bio);
+            if (interests != null)
+                user.setInterests(interests);
+
+            // Parse DOB
+            if (dateOfBirth != null && !dateOfBirth.isEmpty()) {
+                try {
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    user.setDateOfBirth(sdf.parse(dateOfBirth));
+                    long ageInMillis = new java.util.Date().getTime() - user.getDateOfBirth().getTime();
+                    long ageInYears = ageInMillis / (1000L * 60 * 60 * 24 * 365);
+                    user.setAge((int) ageInYears);
+                } catch (Exception e) {
+                    System.out.println("Error parsing DOB: " + e.getMessage());
+                }
+            }
+
+            // Handle profile picture
+            if (file != null && !file.isEmpty()) {
+                String uploadDir = "Uploads/";
+                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath))
+                    Files.createDirectories(uploadPath);
+                Files.copy(file.getInputStream(), uploadPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+                user.setProfilePictureUrl("/" + uploadDir + fileName);
+            }
+
+            userService.saveUser(user);
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", true);
+            res.put("message", "Personal info saved successfully!");
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", false);
+            res.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
+    @PostMapping("/api/save-family")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> saveFamily(
+            @RequestParam String emailId,
+            @RequestParam(required = false) String familyStatus,
+            @RequestParam(required = false) String familyType,
+            @RequestParam(required = false) String fatherStatus,
+            @RequestParam(required = false) String motherStatus,
+            @RequestParam(required = false, defaultValue = "0") int numberOfSiblings) {
+        try {
+            User user = getOrCreateUser(emailId);
+
+            if (familyStatus != null)
+                user.setFamilyStatus(familyStatus);
+            if (familyType != null)
+                user.setFamilyType(familyType);
+            if (fatherStatus != null)
+                user.setFatherStatus(fatherStatus);
+            if (motherStatus != null)
+                user.setMotherStatus(motherStatus);
+            user.setNumberOfSiblings(numberOfSiblings);
+
+            userService.saveUser(user);
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", true);
+            res.put("message", "Family info saved successfully!");
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", false);
+            res.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
+    @PostMapping("/api/save-partner")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> savePartner(
+            @RequestParam String emailId,
+            @RequestParam(required = false, defaultValue = "0") int preferredAgeMin,
+            @RequestParam(required = false, defaultValue = "0") int preferredAgeMax,
+            @RequestParam(required = false) String preferredHeightMin,
+            @RequestParam(required = false) String preferredHeightMax,
+            @RequestParam(required = false) String preferredReligion,
+            @RequestParam(required = false) String preferredMaritalStatus,
+            @RequestParam(value = "preferredProfession", required = false) List<String> preferredProfession,
+            @RequestParam(required = false) String preferredLocation) {
+        try {
+            User user = getOrCreateUser(emailId);
+
+            user.setPreferredAgeMin(preferredAgeMin);
+            user.setPreferredAgeMax(preferredAgeMax);
+            if (preferredHeightMin != null)
+                user.setPreferredHeightMin(preferredHeightMin);
+            if (preferredHeightMax != null)
+                user.setPreferredHeightMax(preferredHeightMax);
+            if (preferredReligion != null)
+                user.setPreferredReligion(preferredReligion);
+            if (preferredMaritalStatus != null)
+                user.setPreferredMaritalStatus(preferredMaritalStatus);
+            if (preferredProfession != null)
+                user.setPreferredProfession(preferredProfession);
+            if (preferredLocation != null)
+                user.setPreferredLocation(preferredLocation);
+
+            userService.saveUser(user);
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", true);
+            res.put("message", "Partner preferences saved successfully!");
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", false);
+            res.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
+    @PostMapping("/api/save-contact")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> saveContact(
+            @RequestParam String emailId,
+            @RequestParam(required = false) String mobile,
+            @RequestParam(required = false) String facebook,
+            @RequestParam(required = false) String instagram) {
+        try {
+            User user = getOrCreateUser(emailId);
+
+            if (user.getContactDetails() == null) {
+                user.setContactDetails(new bd.edu.seu.biye_shaddi.model.ContactDetails());
+            }
+            if (mobile != null)
+                user.getContactDetails().setMobile(mobile);
+            if (facebook != null)
+                user.getContactDetails().setFacebook(facebook);
+            if (instagram != null)
+                user.getContactDetails().setInstagram(instagram);
+            user.getContactDetails().setEmailId(emailId);
+
+            userService.saveUser(user);
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", true);
+            res.put("message", "Contact info saved successfully!");
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", false);
+            res.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
+    /** Helper: fetch existing user by email or create a new one */
+    private User getOrCreateUser(String emailId) {
+        Optional<User> opt = userService.getUserByEmail(emailId.trim());
+        if (opt.isPresent())
+            return opt.get();
+        User newUser = new User();
+        newUser.setEmailId(emailId.trim());
+        syncRegistrationData(newUser, emailId.trim());
+        return newUser;
+    }
+
+    // ==================== Original endpoints (kept for compatibility)
+    // ====================
 
     @PostMapping("/user-info-form")
     public String userInfoForm(@ModelAttribute User user, org.springframework.validation.BindingResult bindingResult,

@@ -22,9 +22,11 @@ public class SecurityConfiguration {
                                                 "/contact_info", "/matches", "/talkrequest", "/matches-contact-info",
                                                 "/error", "/discover")
                                 .permitAll()
-                                .requestMatchers("/picture/**", "/css/**", "/uploads/**", "/user/**",
+                                .requestMatchers("/picture/**", "/css/**", "/js/**", "/uploads/**", "/user/**",
                                                 "/api/talk-requests/**",
-                                                "/api/like/**", "/api/shortlist/**", "/api/block/**")
+                                                "/api/like/**", "/api/shortlist/**", "/api/block/**",
+                                                "/api/chat/**", "/api/save-personal", "/api/save-family",
+                                                "/api/save-partner", "/api/save-contact", "/ws/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
@@ -35,7 +37,9 @@ public class SecurityConfiguration {
                                                 .failureUrl("/login?error=true")
                                                 .permitAll())
                                 .csrf(csrf -> csrf
-                                                .ignoringRequestMatchers("/user-info-form", "/saveContactDetails"))
+                                                .ignoringRequestMatchers("/user-info-form", "/saveContactDetails",
+                                                                "/api/save-personal", "/api/save-family",
+                                                                "/api/save-partner", "/api/save-contact"))
                                 .build();
 
         }

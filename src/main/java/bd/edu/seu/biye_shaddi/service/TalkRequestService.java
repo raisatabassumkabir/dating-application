@@ -97,4 +97,12 @@ public class TalkRequestService {
     public List<TalkRequest> findByToEmailIdAndFromEmailId(String toEmailId, String fromEmailId) {
         return talkRequestRepository.findByToEmailIdAndFromEmailId(toEmailId, fromEmailId);
     }
+
+    public List<TalkRequest> getAcceptedReceivedRequests(String emailId) {
+        return talkRequestRepository.findByToEmailIdAndStatus(emailId, "ACCEPTED");
+    }
+
+    public List<TalkRequest> getAcceptedSentRequests(String emailId) {
+        return talkRequestRepository.findByFromEmailIdAndStatus(emailId, "ACCEPTED");
+    }
 }

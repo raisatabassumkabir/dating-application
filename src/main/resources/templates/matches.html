@@ -8,19 +8,21 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/variables.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script th:src="@{/js/theme.js}"></script>
     <style>
         /* Shared layout styles are now in dashboard.css */
 
         /* Match Card */
         .match-card {
-            background: white;
+            background: var(--bg-white);
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background 0.3s ease;
             position: relative;
         }
 
@@ -61,6 +63,32 @@
 
 <body>
 
+    <!-- Settings Overlay -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3><i class="fas fa-cog"></i>&nbsp; Settings</h3>
+            <button class="settings-close" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-body">
+            <div class="setting-item">
+                <div class="setting-label">
+                    <i class="setting-icon dark-icon"><i class="fas fa-moon"></i></i>
+                    <div>
+                        <div class="setting-name">Dark Mode</div>
+                        <div class="setting-desc">Switch between light &amp; dark themes</div>
+                    </div>
+                </div>
+                <label class="theme-toggle">
+                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                    <div class="theme-toggle-track"></div>
+                    <div class="theme-toggle-thumb"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Header -->
     <nav class="navbar" style="position: fixed; width: 100%;">
         <div class="container nav-container" style="max-width: 100%;">
@@ -99,6 +127,9 @@
                 <a th:href="@{/user_info(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-user"></i> View Profile
                 </a>
+                <button class="sidebar-settings-btn" onclick="openSettings()">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
             </div>
         </aside>
 
@@ -119,7 +150,7 @@
 
                 <div th:unless="${matches.isEmpty()}">
                     <!-- Mutual Matches Section -->
-                    <div th:if="${matches.stream().anyMatch(m -> m.status == 'MUTUAL')}">
+                    <div th:if="${hasMutual}">
                         <h3
                             style="margin-bottom: 20px; border-bottom: 2px solid var(--primary-color); display: inline-block; padding-bottom: 5px;">
                             Mutual Matches</h3>
@@ -168,7 +199,7 @@
                     </div>
 
                     <!-- Sent Requests Section -->
-                    <div th:if="${matches.stream().anyMatch(m -> m.status == 'SENT')}" style="margin-top: 40px;">
+                    <div th:if="${hasSent}" style="margin-top: 40px;">
                         <h3
                             style="margin-bottom: 20px; border-bottom: 2px solid #3498db; display: inline-block; padding-bottom: 5px;">
                             Sent Requests</h3>
@@ -216,8 +247,55 @@
                         </div>
                     </div>
 
-                    <!-- Liked Profiles Section -->
-                    <div th:if="${matches.stream().anyMatch(m -> m.status == 'LIKED')}" style="margin-top: 40px;">
+                    <!-- Connections Section (Accepted Requests) -->
+                    <div th:if="${hasConnection}" style="margin-top: 40px;">
+                        <h3
+                            style="margin-bottom: 20px; border-bottom: 2px solid #2ecc71; display: inline-block; padding-bottom: 5px;">
+                            Connections</h3>
+                        <div class="grid grid-cols-3 gap-lg">
+                            <div th:each="matchDTO : ${matches}" th:if="${matchDTO.status == 'CONNECTION'}"
+                                class="match-card">
+                                <div class="match-img-container">
+                                    <img th:src="${matchDTO.user.profilePictureUrl != null ? matchDTO.user.profilePictureUrl : '/picture/biye.jpg'}"
+                                        class="match-img" alt="Profile">
+                                    <div class="compatibility-badge"
+                                        style="top: 15px; right: 15px; background: rgba(46, 204, 113, 0.9); color: white;">
+                                        <i class="fas fa-link"></i> Connected
+                                    </div>
+                                    <div class="match-overlay">
+                                        <h3 style="color: white; margin: 0; font-size: 1.4rem;"
+                                            th:text="${matchDTO.user.name}">Name</h3>
+                                        <p style="font-size: 0.9rem; opacity: 0.9;">
+                                            <span th:text="${matchDTO.user.age}">25</span> yrs,
+                                            <span th:text="${matchDTO.user.location}">Location</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="match-actions flex-col">
+                                    <div
+                                        style="padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 10px;">
+                                        <p style="font-size: 0.9rem; color: var(--text-body); margin-bottom: 5px;">
+                                            <i class="fas fa-briefcase"
+                                                style="width: 20px; color: var(--text-light);"></i>
+                                            <span th:text="${matchDTO.user.profession}">Profession</span>
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-sm">
+                                        <a th:href="@{/talkrequest(emailId=${emailId})}" class="btn btn-primary"
+                                            style="flex: 1; font-size: 0.9rem; text-decoration: none; text-align: center; background: #2ecc71; border-color: #2ecc71;">
+                                            <i class="fas fa-comments"></i> Message
+                                        </a>
+                                        <button class="btn btn-outline ignore-button"
+                                            style="flex: 1; font-size: 0.9rem; color: var(--text-main); border-color: #ddd;"
+                                            th:attr="data-email=${matchDTO.user.emailId}">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${hasLiked}" style="margin-top: 40px;">
                         <h3
                             style="margin-bottom: 20px; border-bottom: 2px solid #e74c3c; display: inline-block; padding-bottom: 5px;">
                             Liked Profiles</h3>

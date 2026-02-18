@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class IndexController {
@@ -72,13 +74,15 @@ public class IndexController {
             }
         }
 
-        // 3. Sent Requests (Exclude if already in mutual or liked - though usually
-        // request follows like)
+        // 3. Sent Requests — differentiate PENDING vs ACCEPTED
         List<bd.edu.seu.biye_shaddi.model.TalkRequest> sentRequests = talkRequestService.getSentRequests(userEmail);
         for (bd.edu.seu.biye_shaddi.model.TalkRequest req : sentRequests) {
             String targetEmail = req.getToEmailId();
             if (targetEmail == null)
                 continue; // Skip if target email is null
+
+            // Determine display status based on actual request status
+            String displayStatus = "ACCEPTED".equals(req.getStatus()) ? "CONNECTION" : "SENT";
 
             // Check if already added as MUTUAL or LIKED
             boolean alreadyAdded = matchDTOs.stream()
@@ -88,19 +92,51 @@ public class IndexController {
             if (!alreadyAdded) {
                 Optional<User> targetUser = userService.getUserByEmail(targetEmail);
                 if (targetUser.isPresent()) {
-                    matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(targetUser.get(), "SENT"));
+                    matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(targetUser.get(), displayStatus));
                 }
             } else {
-                // If it was LIKED, upgrade status to SENT if appropriate
+                // If it was LIKED, upgrade status based on request status
                 matchDTOs.stream()
                         .filter(m -> m.getUser() != null && m.getUser().getEmailId() != null)
                         .filter(m -> m.getUser().getEmailId().equals(targetEmail) && "LIKED".equals(m.getStatus()))
                         .findFirst()
-                        .ifPresent(m -> m.setStatus("SENT"));
+                        .ifPresent(m -> m.setStatus(displayStatus));
             }
         }
 
-        model.addAttribute("matches", matchDTOs); // Note: This now contains MatchDTO objects, not User objects
+        // 4. Received Accepted Requests — also show as connections
+        List<bd.edu.seu.biye_shaddi.model.TalkRequest> acceptedReceived = talkRequestService
+                .getAcceptedReceivedRequests(userEmail);
+        for (bd.edu.seu.biye_shaddi.model.TalkRequest req : acceptedReceived) {
+            String senderEmail = req.getFromEmailId();
+            if (senderEmail == null)
+                continue;
+
+            boolean alreadyAdded = matchDTOs.stream()
+                    .filter(m -> m.getUser() != null && m.getUser().getEmailId() != null)
+                    .anyMatch(m -> m.getUser().getEmailId().equals(senderEmail));
+
+            if (!alreadyAdded) {
+                Optional<User> senderUser = userService.getUserByEmail(senderEmail);
+                if (senderUser.isPresent()) {
+                    matchDTOs.add(new bd.edu.seu.biye_shaddi.dto.MatchDTO(senderUser.get(), "CONNECTION"));
+                }
+            } else {
+                // Upgrade existing entry to CONNECTION if it was LIKED or SENT
+                matchDTOs.stream()
+                        .filter(m -> m.getUser() != null && m.getUser().getEmailId() != null)
+                        .filter(m -> m.getUser().getEmailId().equals(senderEmail)
+                                && ("LIKED".equals(m.getStatus()) || "SENT".equals(m.getStatus())))
+                        .findFirst()
+                        .ifPresent(m -> m.setStatus("CONNECTION"));
+            }
+        }
+
+        model.addAttribute("matches", matchDTOs);
+        model.addAttribute("hasMutual", matchDTOs.stream().anyMatch(m -> "MUTUAL".equals(m.getStatus())));
+        model.addAttribute("hasSent", matchDTOs.stream().anyMatch(m -> "SENT".equals(m.getStatus())));
+        model.addAttribute("hasLiked", matchDTOs.stream().anyMatch(m -> "LIKED".equals(m.getStatus())));
+        model.addAttribute("hasConnection", matchDTOs.stream().anyMatch(m -> "CONNECTION".equals(m.getStatus())));
         model.addAttribute("emailId", userEmail);
         return "matches";
     }
@@ -116,8 +152,23 @@ public class IndexController {
             return "redirect:/login";
         }
         List<User> recommendations = matchingService.findTopMatchesByEmailId(userEmail, 20);
+
+        // Build set of already-liked emails so the template can show persisted "Liked"
+        // state
+        java.util.Set<String> likedEmails = likeService.getLikesGiven(userEmail).stream()
+                .map(bd.edu.seu.biye_shaddi.model.Like::getLikedUserId)
+                .collect(java.util.stream.Collectors.toSet());
+
+        // Build set of emails the user has already sent interest (talk request) to
+        Set<String> sentInterestEmails = talkRequestService.getSentRequests(userEmail).stream()
+                .map(bd.edu.seu.biye_shaddi.model.TalkRequest::getToEmailId)
+                .collect(Collectors.toSet());
+
         model.addAttribute("recommendations", recommendations);
+        model.addAttribute("likedEmails", likedEmails);
+        model.addAttribute("sentInterestEmails", sentInterestEmails);
         model.addAttribute("emailId", userEmail);
+        model.addAttribute("currentUserId", user.get().getId());
         return "discover";
     }
 

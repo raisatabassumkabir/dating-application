@@ -18,7 +18,8 @@ public class TalkRequestController {
     private final UserService userService;
     private final MatchingService matchingService;
 
-    public TalkRequestController(TalkRequestService talkRequestService, UserService userService, MatchingService matchingService) {
+    public TalkRequestController(TalkRequestService talkRequestService, UserService userService,
+            MatchingService matchingService) {
         this.talkRequestService = talkRequestService;
         this.userService = userService;
         this.matchingService = matchingService;
@@ -28,14 +29,16 @@ public class TalkRequestController {
     public ResponseEntity<?> sendTalkRequest(@RequestParam String fromEmailId, @RequestParam String toEmailId) {
         try {
             TalkRequest request = talkRequestService.sendTalkRequest(fromEmailId, toEmailId);
-            System.out.println("Talk request sent: from=" + fromEmailId + " to=" + toEmailId + ", id=" + request.getId());
+            System.out
+                    .println("Talk request sent: from=" + fromEmailId + " to=" + toEmailId + ", id=" + request.getId());
             return ResponseEntity.ok(request);
         } catch (IllegalArgumentException e) {
             System.out.println("Bad request: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             System.out.println("Error sending talk request: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending talk request: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error sending talk request: " + e.getMessage());
         }
     }
 
@@ -50,7 +53,8 @@ public class TalkRequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             System.out.println("Error accepting talk request: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error accepting talk request: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error accepting talk request: " + e.getMessage());
         }
     }
 
@@ -65,7 +69,8 @@ public class TalkRequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             System.out.println("Error rejecting talk request: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error rejecting talk request: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error rejecting talk request: " + e.getMessage());
         }
     }
 
@@ -80,7 +85,8 @@ public class TalkRequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             System.out.println("Error fetching pending requests: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching pending requests: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching pending requests: " + e.getMessage());
         }
     }
 
@@ -95,7 +101,8 @@ public class TalkRequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             System.out.println("Error fetching sent requests: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching sent requests: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching sent requests: " + e.getMessage());
         }
     }
 
@@ -103,7 +110,9 @@ public class TalkRequestController {
     public ResponseEntity<?> getTalkRequestStatus(@RequestParam String fromEmailId, @RequestParam String toEmailId) {
         try {
             System.out.println("Checking request status: from=" + fromEmailId + " to=" + toEmailId);
-            List<TalkRequest> requests = talkRequestService.findByToEmailIdAndFromEmailId(toEmailId, fromEmailId); // Check incoming requests
+            List<TalkRequest> requests = talkRequestService.findByToEmailIdAndFromEmailId(toEmailId, fromEmailId); // Check
+                                                                                                                   // incoming
+                                                                                                                   // requests
             System.out.println("Found " + requests.size() + " requests from " + fromEmailId + " to " + toEmailId);
             if (requests.isEmpty()) {
                 return ResponseEntity.ok(null);
@@ -111,19 +120,49 @@ public class TalkRequestController {
             return ResponseEntity.ok(requests.get(0));
         } catch (Exception e) {
             System.out.println("Error fetching talk request status: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching talk request status: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching talk request status: " + e.getMessage());
         }
     }
 
-    @GetMapping("/can-view-contact")
-    public ResponseEntity<Boolean> canViewContactDetails(@RequestParam String viewerEmailId, @RequestParam String targetEmailId) {
+    @GetMapping("/connection-status")
+    public ResponseEntity<?> getConnectionStatus(@RequestParam String userEmail, @RequestParam String peerEmail) {
         try {
-            boolean canView = talkRequestService.canViewContactDetails(viewerEmailId, targetEmailId);
-            System.out.println("Can view contact: viewer=" + viewerEmailId + ", target=" + targetEmailId + ", result=" + canView);
-            return ResponseEntity.ok(canView);
+            // Check both directions for any talk request
+            List<TalkRequest> fromMe = talkRequestService.findByFromEmailIdAndToEmailId(userEmail, peerEmail);
+            List<TalkRequest> toMe = talkRequestService.findByToEmailIdAndFromEmailId(userEmail, peerEmail);
+
+            // Check if there's an accepted request in either direction
+            for (TalkRequest r : fromMe) {
+                if ("ACCEPTED".equals(r.getStatus())) {
+                    return ResponseEntity.ok(java.util.Map.of("status", "ACCEPTED", "direction", "sent"));
+                }
+            }
+            for (TalkRequest r : toMe) {
+                if ("ACCEPTED".equals(r.getStatus())) {
+                    return ResponseEntity.ok(java.util.Map.of("status", "ACCEPTED", "direction", "received"));
+                }
+            }
+
+            // Check for pending request TO me (I need to accept/decline)
+            for (TalkRequest r : toMe) {
+                if ("PENDING".equals(r.getStatus())) {
+                    return ResponseEntity
+                            .ok(java.util.Map.of("status", "PENDING", "direction", "received", "requestId", r.getId()));
+                }
+            }
+
+            // Check for pending request FROM me (waiting for them)
+            for (TalkRequest r : fromMe) {
+                if ("PENDING".equals(r.getStatus())) {
+                    return ResponseEntity.ok(java.util.Map.of("status", "PENDING", "direction", "sent"));
+                }
+            }
+
+            return ResponseEntity.ok(java.util.Map.of("status", "NONE"));
         } catch (Exception e) {
-            System.out.println("Error checking contact view: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            System.out.println("Error checking connection status: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
 }

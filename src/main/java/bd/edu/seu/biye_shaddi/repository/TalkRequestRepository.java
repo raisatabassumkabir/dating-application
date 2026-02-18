@@ -8,8 +8,16 @@ import java.util.List;
 public interface TalkRequestRepository extends MongoRepository<TalkRequest, String> {
 
     List<TalkRequest> findByFromEmailIdAndToEmailId(String fromEmailId, String toEmailId);
+
     List<TalkRequest> findByToEmailIdAndStatus(String toEmailId, String status);
+
     List<TalkRequest> findByFromEmailIdAndToEmailIdAndStatus(String fromEmailId, String toEmailId, String status);
+
     List<TalkRequest> findByFromEmailId(String fromEmailId);
+
     List<TalkRequest> findByToEmailIdAndFromEmailId(String toEmailId, String fromEmailId);
+
+    List<TalkRequest> findByToEmailId(String toEmailId);
+
+    List<TalkRequest> findByFromEmailIdAndStatus(String fromEmailId, String status);
 }

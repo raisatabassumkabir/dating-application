@@ -6,49 +6,379 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Edit Profile - BiyeShaddi.com</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href="@{/css/variables.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/dashboard.css}">
+    <script th:src="@{/js/theme.js}"></script>
     <style>
-        /* Shared layout styles are now in dashboard.css */
+        /* ============ BASE RESET + DARK MODE VARIABLES ============ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* Tab Styles */
-        .profile-tabs {
+        :root {
+            --ep-bg: #f4f6f9;
+            --ep-card: #ffffff;
+            --ep-card-border: #eef0f3;
+            --ep-input-bg: #f7f8fa;
+            --ep-input-border: #e2e5ea;
+            --ep-input-focus-bg: #fff;
+            --ep-text-primary: #1a1d23;
+            --ep-text-secondary: #5f6777;
+            --ep-text-muted: #9ca3af;
+            --ep-accent: #FF6B6B;
+            --ep-accent-light: rgba(255, 107, 107, 0.08);
+            --ep-accent-glow: rgba(255, 107, 107, 0.35);
+            --ep-divider: #f0f1f4;
+            --ep-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            --ep-nav-bg: rgba(255, 255, 255, 0.95);
+            --ep-sidebar-bg: #ffffff;
+            --ep-sidebar-hover: rgba(255, 107, 107, 0.05);
+            --ep-tab-bg: #f0f2f5;
+            --ep-chip-bg: #f7f8fa;
+            --ep-overlay: rgba(0, 0, 0, 0.4);
+            --ep-toast-shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --ep-bg: #0f1117;
+            --ep-card: #1a1d27;
+            --ep-card-border: #2a2e3a;
+            --ep-input-bg: #22263200;
+            --ep-input-border: #363b4a;
+            --ep-input-focus-bg: #2a2e3a;
+            --ep-text-primary: #e8eaed;
+            --ep-text-secondary: #9ca3b0;
+            --ep-text-muted: #6b7280;
+            --ep-accent: #FF6B6B;
+            --ep-accent-light: rgba(255, 107, 107, 0.12);
+            --ep-accent-glow: rgba(255, 107, 107, 0.3);
+            --ep-divider: #2a2e3a;
+            --ep-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --ep-nav-bg: rgba(15, 17, 23, 0.95);
+            --ep-sidebar-bg: #1a1d27;
+            --ep-sidebar-hover: rgba(255, 107, 107, 0.08);
+            --ep-tab-bg: #22263200;
+            --ep-chip-bg: #222632;
+            --ep-overlay: rgba(0, 0, 0, 0.6);
+            --ep-toast-shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--ep-bg);
+            color: var(--ep-text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ============ NAVBAR ============ */
+        .ep-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--ep-nav-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--ep-divider);
+            z-index: 1000;
             display: flex;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 30px;
-            gap: 20px;
-            overflow-x: auto;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            transition: background 0.3s ease;
         }
 
-        .profile-tab {
-            padding: 15px 5px;
+        .ep-logo {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--ep-accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ep-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ep-user-email {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--ep-text-secondary);
+        }
+
+        .ep-btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
-            color: var(--text-light);
+            font-size: 0.8rem;
             cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            white-space: nowrap;
+            color: #ef5350;
+            background: rgba(244, 67, 54, 0.08);
+            transition: all 0.25s ease;
+            font-family: inherit;
         }
 
-        .profile-tab.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
+        .ep-btn-logout:hover {
+            background: rgba(244, 67, 54, 0.16);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
         }
 
-        .tab-content {
+        /* ============ LAYOUT ============ */
+        .ep-layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 64px;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .ep-sidebar {
+            width: 240px;
+            background: var(--ep-sidebar-bg);
+            border-right: 1px solid var(--ep-divider);
+            position: fixed;
+            top: 64px;
+            left: 0;
+            bottom: 0;
             display: none;
-            animation: fadeIn 0.3s ease;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px 0;
+            z-index: 900;
+            transition: background 0.3s ease;
+            overflow-y: auto;
         }
 
-        .tab-content.active {
+        @media (min-width: 1024px) {
+            .ep-sidebar {
+                display: flex;
+            }
+
+            .ep-main {
+                margin-left: 240px;
+            }
+
+            .ep-bottom-nav {
+                display: none !important;
+            }
+        }
+
+        .ep-sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ep-text-secondary);
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .ep-sidebar-link:hover {
+            background: var(--ep-sidebar-hover);
+            color: var(--ep-accent);
+        }
+
+        .ep-sidebar-link.active {
+            background: var(--ep-accent-light);
+            color: var(--ep-accent);
+            border-left-color: var(--ep-accent);
+            font-weight: 600;
+        }
+
+        .ep-sidebar-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .ep-sidebar-divider {
+            height: 1px;
+            background: var(--ep-divider);
+            margin: 12px 16px;
+        }
+
+        .ep-sidebar-section-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ep-text-muted);
+            padding: 8px 20px 4px;
+        }
+
+        /* Settings btn in sidebar */
+        .ep-settings-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ep-text-secondary);
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            font-family: inherit;
+        }
+
+        .ep-settings-toggle:hover {
+            background: var(--ep-sidebar-hover);
+            color: var(--ep-accent);
+        }
+
+        .ep-settings-toggle i {
+            width: 22px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .ep-main {
+            flex: 1;
+            padding: 24px 20px 80px;
+            min-height: 100vh;
+        }
+
+        .ep-container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        /* ============ CARD ============ */
+        .ep-card {
+            background: var(--ep-card);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--ep-shadow);
+            border: 1px solid var(--ep-card-border);
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+
+        /* ============ PROFILE HEADER ============ */
+        .ep-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, var(--ep-accent-light), rgba(255, 187, 77, 0.06));
+            border-radius: 14px;
+            border: 1px solid var(--ep-divider);
+        }
+
+        .ep-header-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--ep-accent), #ff8e8e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .ep-header-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--ep-text-primary);
+            margin-bottom: 2px;
+        }
+
+        .ep-header-subtitle {
+            font-size: 0.82rem;
+            color: var(--ep-text-muted);
+        }
+
+        /* ============ TABS ============ */
+        .ep-tabs {
+            display: flex;
+            background: var(--ep-tab-bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            gap: 4px;
+            overflow-x: auto;
+            border: 1px solid var(--ep-divider);
+        }
+
+        .ep-tab {
+            flex: 1;
+            padding: 10px 8px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--ep-text-muted);
+            cursor: pointer;
+            border-radius: 9px;
+            transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+            white-space: nowrap;
+            text-align: center;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .ep-tab:hover {
+            color: var(--ep-accent);
+            background: var(--ep-accent-light);
+        }
+
+        .ep-tab.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--ep-accent), #ff8e8e);
+            box-shadow: 0 3px 12px var(--ep-accent-glow);
+        }
+
+        .ep-tab i {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 3px;
+        }
+
+        /* ============ TAB CONTENT ============ */
+        .ep-tab-content {
+            display: none;
+            animation: epFadeIn 0.3s ease;
+        }
+
+        .ep-tab-content.active {
             display: block;
         }
 
-        @keyframes fadeIn {
+        @keyframes epFadeIn {
             from {
                 opacity: 0;
-                transform: translateY(5px);
+                transform: translateY(8px);
             }
 
             to {
@@ -56,410 +386,1149 @@
                 transform: translateY(0);
             }
         }
+
+        /* ============ SECTION HEADER ============ */
+        .ep-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--ep-divider);
+        }
+
+        .ep-section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .ep-section-icon.personal {
+            background: linear-gradient(135deg, #FF6B6B, #ff8e8e);
+        }
+
+        .ep-section-icon.family {
+            background: linear-gradient(135deg, #4dabf7, #74c0fc);
+        }
+
+        .ep-section-icon.partner {
+            background: linear-gradient(135deg, #FFB74D, #ffd180);
+        }
+
+        .ep-section-icon.contact {
+            background: linear-gradient(135deg, #4CAF50, #81c784);
+        }
+
+        .ep-section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ep-text-primary);
+        }
+
+        .ep-section-subtitle {
+            font-size: 0.78rem;
+            color: var(--ep-text-muted);
+            margin-top: 1px;
+        }
+
+        /* ============ FORM ============ */
+        .ep-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 640px) {
+            .ep-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ep-form-group {
+            margin-bottom: 16px;
+        }
+
+        .ep-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ep-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .ep-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--ep-input-border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: var(--ep-input-bg);
+            color: var(--ep-text-primary);
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .ep-input:focus {
+            border-color: var(--ep-accent);
+            background: var(--ep-input-focus-bg);
+            box-shadow: 0 0 0 3px var(--ep-accent-light);
+        }
+
+        .ep-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* ============ CUSTOM CHIPS (Checkboxes) ============ */
+        .ep-chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ep-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border: 1.5px solid var(--ep-input-border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            color: var(--ep-text-secondary);
+            background: var(--ep-chip-bg);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .ep-chip:hover {
+            border-color: var(--ep-accent);
+            background: var(--ep-accent-light);
+        }
+
+        .ep-chip input[type="checkbox"] {
+            display: none;
+        }
+
+        .ep-chip.checked {
+            border-color: var(--ep-accent);
+            background: var(--ep-accent-light);
+            color: var(--ep-accent);
+            font-weight: 600;
+        }
+
+        /* ============ FILE UPLOAD ============ */
+        .ep-file-upload {
+            border: 2px dashed var(--ep-input-border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: var(--ep-input-bg);
+        }
+
+        .ep-file-upload:hover {
+            border-color: var(--ep-accent);
+            background: var(--ep-accent-light);
+        }
+
+        .ep-file-upload i {
+            font-size: 1.8rem;
+            color: var(--ep-text-muted);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .ep-file-upload p {
+            font-size: 0.82rem;
+            color: var(--ep-text-muted);
+        }
+
+        .ep-file-upload .ep-file-name {
+            font-size: 0.8rem;
+            color: var(--ep-accent);
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        /* ============ SAVE BUTTON ============ */
+        .ep-form-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 16px;
+            margin-top: 8px;
+            border-top: 1px solid var(--ep-divider);
+        }
+
+        .ep-save-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg, var(--ep-accent), #ff8e8e);
+            box-shadow: 0 4px 14px var(--ep-accent-glow);
+            transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+            font-family: inherit;
+        }
+
+        .ep-save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--ep-accent-glow);
+        }
+
+        .ep-save-btn:active {
+            transform: translateY(0);
+        }
+
+        .ep-save-btn.saving {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .ep-save-btn .ep-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: epSpin 0.6s linear infinite;
+        }
+
+        .ep-save-btn.saving .ep-spinner {
+            display: inline-block;
+        }
+
+        .ep-save-btn.saving .ep-btn-label {
+            display: none;
+        }
+
+        @keyframes epSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ============ TOAST ============ */
+        .ep-toast-container {
+            position: fixed;
+            top: 76px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ep-toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 18px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 8px 25px var(--ep-toast-shadow);
+            animation: epToastIn 0.35s ease;
+            min-width: 260px;
+        }
+
+        .ep-toast.success {
+            background: linear-gradient(135deg, #43a047, #66bb6a);
+        }
+
+        .ep-toast.error {
+            background: linear-gradient(135deg, #e53935, #ef5350);
+        }
+
+        @keyframes epToastIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .ep-toast.out {
+            animation: epToastOut 0.3s ease forwards;
+        }
+
+        @keyframes epToastOut {
+            to {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+        }
+
+        /* ============ SETTINGS PANEL (slide-over) ============ */
+        .ep-settings-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--ep-overlay);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .ep-settings-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .ep-settings-panel {
+            position: fixed;
+            top: 0;
+            right: -380px;
+            width: 340px;
+            max-width: 90vw;
+            height: 100vh;
+            background: var(--ep-card);
+            z-index: 2001;
+            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+            transition: right 0.35s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .ep-settings-panel.open {
+            right: 0;
+        }
+
+        .ep-settings-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--ep-divider);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ep-settings-header h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ep-text-primary);
+            margin: 0;
+        }
+
+        .ep-settings-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--ep-input-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ep-text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .ep-settings-close:hover {
+            background: var(--ep-accent-light);
+            color: var(--ep-accent);
+        }
+
+        .ep-settings-body {
+            padding: 20px 24px;
+            flex: 1;
+        }
+
+        .ep-setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--ep-divider);
+        }
+
+        .ep-setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .ep-setting-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ep-setting-label i {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+
+        .ep-setting-label .dark-icon {
+            background: linear-gradient(135deg, #1a1d27, #2a2e3a);
+            color: #ffd43b;
+        }
+
+        .ep-setting-name {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--ep-text-primary);
+        }
+
+        .ep-setting-desc {
+            font-size: 0.75rem;
+            color: var(--ep-text-muted);
+            margin-top: 1px;
+        }
+
+        /* Toggle Switch */
+        .ep-toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            cursor: pointer;
+        }
+
+        .ep-toggle input {
+            display: none;
+        }
+
+        .ep-toggle-track {
+            position: absolute;
+            inset: 0;
+            background: #d1d5db;
+            border-radius: 13px;
+            transition: background 0.3s ease;
+        }
+
+        .ep-toggle input:checked+.ep-toggle-track {
+            background: var(--ep-accent);
+        }
+
+        .ep-toggle-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .ep-toggle input:checked~.ep-toggle-thumb {
+            transform: translateX(22px);
+        }
+
+        /* ============ BOTTOM NAV (Mobile) ============ */
+        .ep-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--ep-card);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+            border-top: 1px solid var(--ep-divider);
+        }
+
+        .ep-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ep-text-muted);
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .ep-nav-item.active {
+            color: var(--ep-accent);
+        }
+
+        .ep-nav-item i {
+            font-size: 1.15rem;
+            margin-bottom: 3px;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .ep-card {
+                padding: 18px;
+                border-radius: 14px;
+            }
+
+            .ep-tabs {
+                gap: 2px;
+                padding: 3px;
+            }
+
+            .ep-tab {
+                padding: 8px 5px;
+                font-size: 0.75rem;
+            }
+
+            .ep-tab i {
+                font-size: 0.95rem;
+            }
+
+            .ep-profile-header {
+                padding: 14px 16px;
+            }
+
+            .ep-nav-right .ep-user-email {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- Top Header -->
-    <nav class="navbar" style="position: fixed; width: 100%;">
-        <div class="container nav-container" style="max-width: 100%;">
-            <a th:href="@{/index}" class="logo">
-                <i class="fas fa-heart" style="color: var(--primary-color);"></i> BiyeShaddi.com
-            </a>
-            <div class="flex items-center gap-md">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="font-weight: 600; color: var(--text-main);" th:text="${emailId}">User</span>
-                    <form th:action="@{/logout}" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-outline"
-                            style="padding: 4px 12px; font-size: 0.8rem; color: var(--text-main); border-color: #ddd;">Logout</button>
-                    </form>
-                </div>
-            </div>
+    <!-- Navbar -->
+    <nav class="ep-navbar">
+        <a th:href="@{/index}" class="ep-logo">
+            <i class="fas fa-heart"></i> BiyeShaddi.com
+        </a>
+        <div class="ep-nav-right">
+            <span class="ep-user-email" th:text="${emailId}">User</span>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="ep-btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
         </div>
     </nav>
 
-    <div class="dashboard-layout">
+    <!-- Toast Container -->
+    <div class="ep-toast-container" id="toastContainer"></div>
+
+    <!-- Settings Overlay -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3><i class="fas fa-cog"></i>&nbsp; Settings</h3>
+            <button class="settings-close" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-body">
+            <div class="setting-item">
+                <div class="setting-label">
+                    <i class="setting-icon dark-icon"><i class="fas fa-moon"></i></i>
+                    <div>
+                        <div class="setting-name">Dark Mode</div>
+                        <div class="setting-desc">Switch between light &amp; dark themes</div>
+                    </div>
+                </div>
+                <label class="theme-toggle">
+                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                    <div class="theme-toggle-track"></div>
+                    <div class="theme-toggle-thumb"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="ep-layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div style="margin-bottom: 20px;">
-                <a th:href="@{/discover(emailId=${emailId})}" class="sidebar-link">
+        <aside class="ep-sidebar">
+            <div>
+                <div class="ep-sidebar-section-title">Navigation</div>
+                <a th:href="@{/discover(emailId=${emailId})}" class="ep-sidebar-link">
                     <i class="fas fa-compass"></i> Discover
                 </a>
-                <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link">
+                <a th:href="@{/matches(emailId=${emailId})}" class="ep-sidebar-link">
                     <i class="fas fa-heart"></i> Matches
                 </a>
-                <a th:href="@{/talkrequest(emailId=${emailId})}" class="sidebar-link">
+                <a th:href="@{/talkrequest(emailId=${emailId})}" class="ep-sidebar-link">
                     <i class="fas fa-comment-alt"></i> Messages
                 </a>
-                <a th:href="@{/user_dashboard(emailId=${emailId})}" class="sidebar-link active">
+
+                <div class="ep-sidebar-divider"></div>
+                <div class="ep-sidebar-section-title">Profile</div>
+                <a th:href="@{/user_dashboard(emailId=${emailId})}" class="ep-sidebar-link active">
                     <i class="fas fa-user-edit"></i> Edit Profile
                 </a>
-                <a th:href="@{/user_info(emailId=${emailId})}" class="sidebar-link">
+                <a th:href="@{/user_info(emailId=${emailId})}" class="ep-sidebar-link">
                     <i class="fas fa-user"></i> View Profile
                 </a>
+
+                <div class="ep-sidebar-divider"></div>
+                <button class="ep-settings-toggle" onclick="openSettings()">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
             </div>
         </aside>
 
-        <!-- Main Content (Edit Form) -->
-        <main class="main-content">
-            <div class="container" style="max-width: 850px;">
-                <div class="card" style="min-height: 600px;">
-                    <h2 style="margin-bottom: 14px; color: var(--primary-color);">
-                        <i class="fas fa-user-edit"></i> Complete Your Profile
-                    </h2>
-                    <p style="color: var(--text-light); margin-bottom: 30px;">
-                        Provide detailed information to find the best match.
-                    </p>
+        <!-- Main Content -->
+        <main class="ep-main">
+            <div class="ep-container">
+                <div class="ep-card">
 
-                    <!-- Tabs -->
-                    <div class="profile-tabs">
-                        <div class="profile-tab active" onclick="showTab('personal')">
-                            <i class="fas fa-user-circle"></i> Personal
+                    <!-- Header -->
+                    <div class="ep-profile-header">
+                        <div class="ep-header-icon">
+                            <i class="fas fa-user-edit"></i>
                         </div>
-                        <div class="profile-tab" onclick="showTab('family')">
-                            <i class="fas fa-users"></i> Family
-                        </div>
-                        <div class="profile-tab" onclick="showTab('partner')">
-                            <i class="fas fa-heart"></i> Partner
-                        </div>
-                        <div class="profile-tab" onclick="showTab('contact')">
-                            <i class="fas fa-address-book"></i> Contact
+                        <div>
+                            <div class="ep-header-title">Edit Your Profile</div>
+                            <div class="ep-header-subtitle">Update any section independently — changes save per tab
+                            </div>
                         </div>
                     </div>
 
-                    <form th:object="${user}" th:action="@{/user-info-form}" method="post"
-                        enctype="multipart/form-data">
-                        <input type="hidden" th:field="*{id}" />
-                        <input type="hidden" th:field="*{emailId}" />
+                    <!-- Tabs -->
+                    <div class="ep-tabs">
+                        <button class="ep-tab active" onclick="showTab('personal')">
+                            <i class="fas fa-user-circle"></i> Personal
+                        </button>
+                        <button class="ep-tab" onclick="showTab('family')">
+                            <i class="fas fa-users"></i> Family
+                        </button>
+                        <button class="ep-tab" onclick="showTab('partner')">
+                            <i class="fas fa-heart"></i> Partner
+                        </button>
+                        <button class="ep-tab" onclick="showTab('contact')">
+                            <i class="fas fa-address-book"></i> Contact
+                        </button>
+                    </div>
 
-                        <!-- TAB 1: Personal Info -->
-                        <div id="tab-personal" class="tab-content active">
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" th:field="*{name}" class="form-control" required />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Date of Birth</label>
-                                    <input type="date" th:field="*{dateOfBirth}" class="form-control" required />
+                    <!-- ============ TAB 1: Personal ============ -->
+                    <div id="tab-personal" class="ep-tab-content active">
+                        <form id="form-personal" enctype="multipart/form-data">
+                            <input type="hidden" name="emailId" th:value="${emailId}" />
+
+                            <div class="ep-section-header">
+                                <div class="ep-section-icon personal"><i class="fas fa-user"></i></div>
+                                <div>
+                                    <div class="ep-section-title">Personal Information</div>
+                                    <div class="ep-section-subtitle">Basic details about you</div>
                                 </div>
                             </div>
 
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Full Name</label>
+                                    <input type="text" name="name" th:value="${user.name}" class="ep-input" required />
+                                </div>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Date of Birth</label>
+                                    <input type="date" name="dateOfBirth"
+                                        th:value="${user.dateOfBirth != null ? #dates.format(user.dateOfBirth, 'yyyy-MM-dd') : ''}"
+                                        class="ep-input" required />
+                                </div>
+                            </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Height (e.g. 5'8")</label>
-                                    <input type="text" th:field="*{height}" class="form-control"
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Height (e.g. 5'8")</label>
+                                    <input type="text" name="height" th:value="${user.height}" class="ep-input"
                                         placeholder="Ft'In&quot;" required />
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Gender</label>
-                                    <select th:field="*{gender}" class="form-control" required>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Gender</label>
+                                    <select name="gender" class="ep-input" required>
                                         <option value="">Select</option>
-                                        <option value="female">Female</option>
-                                        <option value="male">Male</option>
+                                        <option value="female" th:selected="${user.gender == 'female'}">Female</option>
+                                        <option value="male" th:selected="${user.gender == 'male'}">Male</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Marital Status</label>
-                                    <select th:field="*{maritalStatus}" class="form-control" required>
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Marital Status</label>
+                                    <select name="maritalStatus" class="ep-input" required>
                                         <option value="">Select</option>
-                                        <option value="Single">Single</option>
-                                        <option value="Married">Married</option>
-                                        <option value="Divorced">Divorced</option>
-                                        <option value="Widowed">Widowed</option>
+                                        <option value="Single" th:selected="${user.maritalStatus == 'Single'}">Single
+                                        </option>
+                                        <option value="Married" th:selected="${user.maritalStatus == 'Married'}">Married
+                                        </option>
+                                        <option value="Divorced" th:selected="${user.maritalStatus == 'Divorced'}">
+                                            Divorced</option>
+                                        <option value="Widowed" th:selected="${user.maritalStatus == 'Widowed'}">Widowed
+                                        </option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Religion</label>
-                                    <input type="text" th:field="*{religion}" class="form-control" required />
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Religion</label>
+                                    <input type="text" name="religion" th:value="${user.religion}" class="ep-input"
+                                        required />
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Education</label>
-                                    <input type="text" th:field="*{education}" class="form-control" required />
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Education</label>
+                                    <input type="text" name="education" th:value="${user.education}" class="ep-input"
+                                        required />
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Profession</label>
-                                    <select th:field="*{profession}" class="form-control" required>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Profession</label>
+                                    <select name="profession" class="ep-input" required>
                                         <option value="">Select</option>
-                                        <option value="doctor">Doctor</option>
-                                        <option value="engineer">Engineer</option>
-                                        <option value="teacher">Teacher</option>
-                                        <option value="business">Business</option>
-                                        <option value="student">Student</option>
-                                        <option value="others">Others</option>
+                                        <option value="doctor" th:selected="${user.profession == 'doctor'}">Doctor
+                                        </option>
+                                        <option value="engineer" th:selected="${user.profession == 'engineer'}">Engineer
+                                        </option>
+                                        <option value="teacher" th:selected="${user.profession == 'teacher'}">Teacher
+                                        </option>
+                                        <option value="business" th:selected="${user.profession == 'business'}">Business
+                                        </option>
+                                        <option value="student" th:selected="${user.profession == 'student'}">Student
+                                        </option>
+                                        <option value="others" th:selected="${user.profession == 'others'}">Others
+                                        </option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Location (City)</label>
-                                    <select th:field="*{location}" class="form-control" required>
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Location (City)</label>
+                                    <select name="location" class="ep-input" required>
                                         <option value="">Select City</option>
-                                        <option value="Dhaka">Dhaka</option>
-                                        <option value="Chittagong">Chittagong</option>
-                                        <option value="Sylhet">Sylhet</option>
-                                        <option value="Khulna">Khulna</option>
-                                        <option value="Rajshahi">Rajshahi</option>
-                                        <option value="Barishal">Barishal</option>
-                                        <option value="Rangpur">Rangpur</option>
-                                        <option value="Mymensingh">Mymensingh</option>
-                                        <option value="Cumilla">Cumilla</option>
-                                        <option value="Others">Others</option>
+                                        <option value="Dhaka" th:selected="${user.location == 'Dhaka'}">Dhaka</option>
+                                        <option value="Chittagong" th:selected="${user.location == 'Chittagong'}">
+                                            Chittagong</option>
+                                        <option value="Sylhet" th:selected="${user.location == 'Sylhet'}">Sylhet
+                                        </option>
+                                        <option value="Khulna" th:selected="${user.location == 'Khulna'}">Khulna
+                                        </option>
+                                        <option value="Rajshahi" th:selected="${user.location == 'Rajshahi'}">Rajshahi
+                                        </option>
+                                        <option value="Barishal" th:selected="${user.location == 'Barishal'}">Barishal
+                                        </option>
+                                        <option value="Rangpur" th:selected="${user.location == 'Rangpur'}">Rangpur
+                                        </option>
+                                        <option value="Mymensingh" th:selected="${user.location == 'Mymensingh'}">
+                                            Mymensingh</option>
+                                        <option value="Cumilla" th:selected="${user.location == 'Cumilla'}">Cumilla
+                                        </option>
+                                        <option value="Others" th:selected="${user.location == 'Others'}">Others
+                                        </option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Monthly Income</label>
-                                    <input type="text" th:field="*{monthlyIncome}" class="form-control"
-                                        placeholder="e.g. 50,000 BDT" required />
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Monthly Income</label>
+                                    <input type="text" name="monthlyIncome" th:value="${user.monthlyIncome}"
+                                        class="ep-input" placeholder="e.g. 50,000 BDT" required />
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Bio / About Me</label>
-                                <textarea th:field="*{bio}" class="form-control" style="min-height: 100px;"
-                                    required></textarea>
+                            <div class="ep-form-group">
+                                <label class="ep-label">Bio / About Me</label>
+                                <textarea name="bio" class="ep-input ep-textarea" required
+                                    th:text="${user.bio}"></textarea>
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Profile Picture</label>
-                                <input type="file" name="profilePicture" class="form-control" accept="image/*" />
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Interests</label>
-                                <div class="flex gap-md" style="flex-wrap: wrap;">
-                                    <label><input type="checkbox" th:field="*{interests}" value="travel"> Travel</label>
-                                    <label><input type="checkbox" th:field="*{interests}" value="music"> Music</label>
-                                    <label><input type="checkbox" th:field="*{interests}" value="reading">
-                                        Reading</label>
-                                    <label><input type="checkbox" th:field="*{interests}" value="sports"> Sports</label>
+                            <div class="ep-form-group">
+                                <label class="ep-label">Profile Picture</label>
+                                <div class="ep-file-upload"
+                                    onclick="document.getElementById('profilePicInput').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to upload a new photo</p>
+                                    <div class="ep-file-name" id="fileName"></div>
+                                    <input type="file" name="profilePicture" id="profilePicInput" accept="image/*"
+                                        style="display:none"
+                                        onchange="document.getElementById('fileName').textContent = this.files[0]?.name || ''" />
                                 </div>
                             </div>
 
-                            <!-- Age hidden as it is derived -->
-                            <input type="hidden" th:field="*{age}" value="0">
-
-                            <div style="text-align: right; margin-top: 30px;">
-                                <button type="button" class="btn btn-primary" onclick="showTab('family')">Next: Family
-                                    Info &rarr;</button>
+                            <div class="ep-form-group">
+                                <label class="ep-label">Interests</label>
+                                <div class="ep-chip-group" id="interestsChips">
+                                    <label class="ep-chip"
+                                        th:classappend="${user.interests != null && user.interests.contains('travel')} ? 'checked' : ''">
+                                        <input type="checkbox" name="interests" value="travel"
+                                            th:checked="${user.interests != null && user.interests.contains('travel')}">
+                                        <i class="fas fa-plane"></i> Travel
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.interests != null && user.interests.contains('music')} ? 'checked' : ''">
+                                        <input type="checkbox" name="interests" value="music"
+                                            th:checked="${user.interests != null && user.interests.contains('music')}">
+                                        <i class="fas fa-music"></i> Music
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.interests != null && user.interests.contains('reading')} ? 'checked' : ''">
+                                        <input type="checkbox" name="interests" value="reading"
+                                            th:checked="${user.interests != null && user.interests.contains('reading')}">
+                                        <i class="fas fa-book"></i> Reading
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.interests != null && user.interests.contains('sports')} ? 'checked' : ''">
+                                        <input type="checkbox" name="interests" value="sports"
+                                            th:checked="${user.interests != null && user.interests.contains('sports')}">
+                                        <i class="fas fa-futbol"></i> Sports
+                                    </label>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- TAB 2: Family & Background -->
-                        <div id="tab-family" class="tab-content">
-                            <h3 style="margin-bottom: 20px; color: var(--secondary-color);">Family Information</h3>
+                            <div class="ep-form-footer">
+                                <button type="button" class="ep-save-btn" onclick="saveSection('personal')">
+                                    <span class="ep-spinner"></span>
+                                    <span class="ep-btn-label"><i class="fas fa-check"></i> Save Personal Info</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Family Status</label>
-                                    <select th:field="*{familyStatus}" class="form-control" required>
+                    <!-- ============ TAB 2: Family ============ -->
+                    <div id="tab-family" class="ep-tab-content">
+                        <form id="form-family">
+                            <input type="hidden" name="emailId" th:value="${emailId}" />
+
+                            <div class="ep-section-header">
+                                <div class="ep-section-icon family"><i class="fas fa-users"></i></div>
+                                <div>
+                                    <div class="ep-section-title">Family Information</div>
+                                    <div class="ep-section-subtitle">Tell us about your family background</div>
+                                </div>
+                            </div>
+
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Family Status</label>
+                                    <select name="familyStatus" class="ep-input" required>
                                         <option value="">Select</option>
-                                        <option value="Middle Class">Middle Class</option>
-                                        <option value="Upper Middle Class">Upper Middle Class</option>
-                                        <option value="Rich">Rich/Affluent</option>
+                                        <option value="Middle Class"
+                                            th:selected="${user.familyStatus == 'Middle Class'}">Middle Class</option>
+                                        <option value="Upper Middle Class"
+                                            th:selected="${user.familyStatus == 'Upper Middle Class'}">Upper Middle
+                                            Class</option>
+                                        <option value="Rich" th:selected="${user.familyStatus == 'Rich'}">Rich/Affluent
+                                        </option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Family Type</label>
-                                    <select th:field="*{familyType}" class="form-control" required>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Family Type</label>
+                                    <select name="familyType" class="ep-input" required>
                                         <option value="">Select</option>
-                                        <option value="Nuclear">Nuclear</option>
-                                        <option value="Joint">Joint</option>
+                                        <option value="Nuclear" th:selected="${user.familyType == 'Nuclear'}">Nuclear
+                                        </option>
+                                        <option value="Joint" th:selected="${user.familyType == 'Joint'}">Joint</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Father's Profession</label>
-                                    <input type="text" th:field="*{fatherStatus}" class="form-control" required />
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Father's Profession</label>
+                                    <input type="text" name="fatherStatus" th:value="${user.fatherStatus}"
+                                        class="ep-input" required />
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Mother's Profession</label>
-                                    <input type="text" th:field="*{motherStatus}" class="form-control" required />
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Number of Siblings</label>
-                                <input type="number" th:field="*{numberOfSiblings}" class="form-control" required />
-                            </div>
-
-                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                                <button type="button" class="btn btn-outline" onclick="showTab('personal')">&larr;
-                                    Back</button>
-                                <button type="button" class="btn btn-primary" onclick="showTab('partner')">Next: Partner
-                                    Prefs &rarr;</button>
-                            </div>
-                        </div>
-
-                        <!-- TAB 3: Partner Preferences -->
-                        <div id="tab-partner" class="tab-content">
-                            <h3 style="margin-bottom: 20px; color: var(--secondary-color);">Ideal Partner Preferences
-                            </h3>
-
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Min Age</label>
-                                    <input type="number" th:field="*{preferredAgeMin}" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Max Age</label>
-                                    <input type="number" th:field="*{preferredAgeMax}" class="form-control" required>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Mother's Profession</label>
+                                    <input type="text" name="motherStatus" th:value="${user.motherStatus}"
+                                        class="ep-input" required />
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Min Height</label>
-                                    <input type="text" th:field="*{preferredHeightMin}" class="form-control"
-                                        placeholder="5'0&quot;" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Max Height</label>
-                                    <input type="text" th:field="*{preferredHeightMax}" class="form-control"
-                                        placeholder="6'0&quot;" required>
+                            <div class="ep-form-group">
+                                <label class="ep-label">Number of Siblings</label>
+                                <input type="number" name="numberOfSiblings" th:value="${user.numberOfSiblings}"
+                                    class="ep-input" required />
+                            </div>
+
+                            <div class="ep-form-footer">
+                                <button type="button" class="ep-save-btn" onclick="saveSection('family')">
+                                    <span class="ep-spinner"></span>
+                                    <span class="ep-btn-label"><i class="fas fa-check"></i> Save Family Info</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- ============ TAB 3: Partner ============ -->
+                    <div id="tab-partner" class="ep-tab-content">
+                        <form id="form-partner">
+                            <input type="hidden" name="emailId" th:value="${emailId}" />
+
+                            <div class="ep-section-header">
+                                <div class="ep-section-icon partner"><i class="fas fa-heart"></i></div>
+                                <div>
+                                    <div class="ep-section-title">Ideal Partner Preferences</div>
+                                    <div class="ep-section-subtitle">What are you looking for?</div>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label">Preferred Religion</label>
-                                    <input type="text" th:field="*{preferredReligion}" class="form-control" required>
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Min Age</label>
+                                    <input type="number" name="preferredAgeMin" th:value="${user.preferredAgeMin}"
+                                        class="ep-input" required />
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Preferred Marital Status</label>
-                                    <select th:field="*{preferredMaritalStatus}" class="form-control" required>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Max Age</label>
+                                    <input type="number" name="preferredAgeMax" th:value="${user.preferredAgeMax}"
+                                        class="ep-input" required />
+                                </div>
+                            </div>
+
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Min Height</label>
+                                    <input type="text" name="preferredHeightMin" th:value="${user.preferredHeightMin}"
+                                        class="ep-input" placeholder="5'0&quot;" required />
+                                </div>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Max Height</label>
+                                    <input type="text" name="preferredHeightMax" th:value="${user.preferredHeightMax}"
+                                        class="ep-input" placeholder="6'0&quot;" required />
+                                </div>
+                            </div>
+
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Preferred Religion</label>
+                                    <input type="text" name="preferredReligion" th:value="${user.preferredReligion}"
+                                        class="ep-input" required />
+                                </div>
+                                <div class="ep-form-group">
+                                    <label class="ep-label">Preferred Marital Status</label>
+                                    <select name="preferredMaritalStatus" class="ep-input" required>
                                         <option value="">Any</option>
-                                        <option value="Single">Single</option>
-                                        <option value="Divorced">Divorced</option>
-                                        <option value="Widowed">Widowed</option>
+                                        <option value="Single" th:selected="${user.preferredMaritalStatus == 'Single'}">
+                                            Single</option>
+                                        <option value="Divorced"
+                                            th:selected="${user.preferredMaritalStatus == 'Divorced'}">Divorced</option>
+                                        <option value="Widowed"
+                                            th:selected="${user.preferredMaritalStatus == 'Widowed'}">Widowed</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Preferred Profession (Select all that apply)</label>
-                                <div class="flex gap-md" style="flex-wrap: wrap;">
-                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="doctor">
-                                        Doctor</label>
-                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="engineer">
-                                        Engineer</label>
-                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="teacher">
-                                        Teacher</label>
-                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="business">
-                                        Business</label>
-                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="student">
-                                        Student</label>
-                                    <label><input type="checkbox" th:field="*{preferredProfession}" value="others">
-                                        Others</label>
+                            <div class="ep-form-group">
+                                <label class="ep-label">Preferred Profession</label>
+                                <div class="ep-chip-group" id="profChips">
+                                    <label class="ep-chip"
+                                        th:classappend="${user.preferredProfession != null && user.preferredProfession.contains('doctor')} ? 'checked' : ''">
+                                        <input type="checkbox" name="preferredProfession" value="doctor"
+                                            th:checked="${user.preferredProfession != null && user.preferredProfession.contains('doctor')}">
+                                        Doctor
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.preferredProfession != null && user.preferredProfession.contains('engineer')} ? 'checked' : ''">
+                                        <input type="checkbox" name="preferredProfession" value="engineer"
+                                            th:checked="${user.preferredProfession != null && user.preferredProfession.contains('engineer')}">
+                                        Engineer
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.preferredProfession != null && user.preferredProfession.contains('teacher')} ? 'checked' : ''">
+                                        <input type="checkbox" name="preferredProfession" value="teacher"
+                                            th:checked="${user.preferredProfession != null && user.preferredProfession.contains('teacher')}">
+                                        Teacher
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.preferredProfession != null && user.preferredProfession.contains('business')} ? 'checked' : ''">
+                                        <input type="checkbox" name="preferredProfession" value="business"
+                                            th:checked="${user.preferredProfession != null && user.preferredProfession.contains('business')}">
+                                        Business
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.preferredProfession != null && user.preferredProfession.contains('student')} ? 'checked' : ''">
+                                        <input type="checkbox" name="preferredProfession" value="student"
+                                            th:checked="${user.preferredProfession != null && user.preferredProfession.contains('student')}">
+                                        Student
+                                    </label>
+                                    <label class="ep-chip"
+                                        th:classappend="${user.preferredProfession != null && user.preferredProfession.contains('others')} ? 'checked' : ''">
+                                        <input type="checkbox" name="preferredProfession" value="others"
+                                            th:checked="${user.preferredProfession != null && user.preferredProfession.contains('others')}">
+                                        Others
+                                    </label>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Preferred Location</label>
-                                <input type="text" th:field="*{preferredLocation}" class="form-control" required>
+                            <div class="ep-form-group">
+                                <label class="ep-label">Preferred Location</label>
+                                <input type="text" name="preferredLocation" th:value="${user.preferredLocation}"
+                                    class="ep-input" required />
                             </div>
 
-                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                                <button type="button" class="btn btn-outline" onclick="showTab('family')">&larr;
-                                    Back</button>
-                                <button type="button" class="btn btn-primary" onclick="showTab('contact')">Next: Contact
-                                    Info &rarr;</button>
+                            <div class="ep-form-footer">
+                                <button type="button" class="ep-save-btn" onclick="saveSection('partner')">
+                                    <span class="ep-spinner"></span>
+                                    <span class="ep-btn-label"><i class="fas fa-check"></i> Save Partner
+                                        Preferences</span>
+                                </button>
                             </div>
-                        </div>
+                        </form>
+                    </div>
 
-                        <!-- TAB 4: Contact Info -->
-                        <div id="tab-contact" class="tab-content">
-                            <h3 style="margin-bottom: 20px; color: var(--secondary-color);">Contact Information</h3>
-                            <p style="margin-bottom: 20px; color: var(--text-light); font-size: 0.9rem;">
-                                This information will be shared with your matches.
-                            </p>
+                    <!-- ============ TAB 4: Contact ============ -->
+                    <div id="tab-contact" class="ep-tab-content">
+                        <form id="form-contact">
+                            <input type="hidden" name="emailId" th:value="${emailId}" />
 
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-mobile-alt"></i> Mobile Number</label>
-                                <input type="text" th:field="*{contactDetails.mobile}" class="form-control"
-                                    placeholder="e.g. +88017..." required />
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-md">
-                                <div class="form-group">
-                                    <label class="form-label"><i class="fab fa-facebook"></i> Facebook Profile</label>
-                                    <input type="text" th:field="*{contactDetails.facebook}" class="form-control"
-                                        placeholder="Profile Link/Username" required />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label"><i class="fab fa-instagram"></i> Instagram</label>
-                                    <input type="text" th:field="*{contactDetails.instagram}" class="form-control"
-                                        placeholder="@username" required />
+                            <div class="ep-section-header">
+                                <div class="ep-section-icon contact"><i class="fas fa-address-book"></i></div>
+                                <div>
+                                    <div class="ep-section-title">Contact Information</div>
+                                    <div class="ep-section-subtitle">Shared with your matches</div>
                                 </div>
                             </div>
 
-                            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                                <button type="button" class="btn btn-outline" onclick="showTab('partner')">&larr;
-                                    Back</button>
-                                <button type="submit" class="btn btn-primary" style="padding: 12px 40px;">Save All
-                                    Changes</button>
+                            <div class="ep-form-group">
+                                <label class="ep-label"><i class="fas fa-mobile-alt"></i> Mobile Number</label>
+                                <input type="text" name="mobile" th:value="${user.contactDetails?.mobile}"
+                                    class="ep-input" placeholder="e.g. +88017..." required />
                             </div>
-                        </div>
 
-                    </form>
+                            <div class="ep-grid">
+                                <div class="ep-form-group">
+                                    <label class="ep-label"><i class="fab fa-facebook"></i> Facebook</label>
+                                    <input type="text" name="facebook" th:value="${user.contactDetails?.facebook}"
+                                        class="ep-input" placeholder="Profile Link" />
+                                </div>
+                                <div class="ep-form-group">
+                                    <label class="ep-label"><i class="fab fa-instagram"></i> Instagram</label>
+                                    <input type="text" name="instagram" th:value="${user.contactDetails?.instagram}"
+                                        class="ep-input" placeholder="@username" />
+                                </div>
+                            </div>
+
+                            <div class="ep-form-footer">
+                                <button type="button" class="ep-save-btn" onclick="saveSection('contact')">
+                                    <span class="ep-spinner"></span>
+                                    <span class="ep-btn-label"><i class="fas fa-check"></i> Save Contact Info</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </main>
     </div>
 
     <!-- Bottom Nav (Mobile) -->
-    <div class="bottom-nav">
-        <a th:href="@{/discover(emailId=${emailId})}" class="nav-item">
-            <i class="fas fa-compass"></i>
-            <span>Discover</span>
+    <div class="ep-bottom-nav">
+        <a th:href="@{/discover(emailId=${emailId})}" class="ep-nav-item">
+            <i class="fas fa-compass"></i><span>Discover</span>
         </a>
-        <a th:href="@{/matches(emailId=${emailId})}" class="nav-item">
-            <i class="fas fa-heart"></i>
-            <span>Matches</span>
+        <a th:href="@{/matches(emailId=${emailId})}" class="ep-nav-item">
+            <i class="fas fa-heart"></i><span>Matches</span>
         </a>
-        <a th:href="@{/talkrequest(emailId=${emailId})}" class="nav-item">
-            <i class="fas fa-comment-alt"></i>
-            <span>Chats</span>
+        <a th:href="@{/talkrequest(emailId=${emailId})}" class="ep-nav-item">
+            <i class="fas fa-comment-alt"></i><span>Chats</span>
         </a>
-        <a th:href="@{/user_info(emailId=${emailId})}" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
+        <a th:href="@{/user_info(emailId=${emailId})}" class="ep-nav-item">
+            <i class="fas fa-user"></i><span>Profile</span>
         </a>
     </div>
 
     <script>
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.profile-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+        // ============ THEME (DARK MODE) ============
+        // theme.js already handles init and exposes toggleDarkMode().
+        // Just sync the toggle checkbox on this page.
+        (function () {
+            var saved = localStorage.getItem('biyeshaddi-theme');
+            var toggle = document.getElementById('darkModeToggle');
+            if (toggle) toggle.checked = (saved === 'dark');
+        })();
 
-            // Show selected tab
+        // ============ SETTINGS PANEL ============
+        function openSettings() {
+            document.getElementById('settingsOverlay').classList.add('open');
+            document.getElementById('settingsPanel').classList.add('open');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsOverlay').classList.remove('open');
+            document.getElementById('settingsPanel').classList.remove('open');
+        }
+
+        // ============ TABS ============
+        function showTab(tabName) {
+            document.querySelectorAll('.ep-tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.ep-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
 
-            // Highlight header
-            const tabButtons = document.querySelectorAll('.profile-tab');
-            if (tabName === 'personal') tabButtons[0].classList.add('active');
-            if (tabName === 'family') tabButtons[1].classList.add('active');
-            if (tabName === 'partner') tabButtons[2].classList.add('active');
-            if (tabName === 'contact') tabButtons[3].classList.add('active');
+            const tabs = document.querySelectorAll('.ep-tab');
+            const map = { personal: 0, family: 1, partner: 2, contact: 3 };
+            tabs[map[tabName]].classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-            // Scroll to top
-            window.scrollTo(0, 0);
+        // ============ CHIP TOGGLE ============
+        document.querySelectorAll('.ep-chip').forEach(chip => {
+            chip.addEventListener('click', function (e) {
+                // Let the checkbox toggle naturally, then sync the .checked class
+                const cb = this.querySelector('input[type="checkbox"]');
+                // Small delay to allow checkbox state to update
+                setTimeout(() => {
+                    this.classList.toggle('checked', cb.checked);
+                }, 10);
+            });
+        });
+
+        // ============ TOAST ============
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'ep-toast ' + type;
+            toast.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + '"></i> ' + message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('out');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ============ AJAX SAVE ============
+        const endpoints = {
+            personal: '/api/save-personal',
+            family: '/api/save-family',
+            partner: '/api/save-partner',
+            contact: '/api/save-contact'
+        };
+
+        function saveSection(section) {
+            const form = document.getElementById('form-' + section);
+            const btn = form.querySelector('.ep-save-btn');
+            btn.classList.add('saving');
+
+            fetch(endpoints[section], { method: 'POST', body: new FormData(form) })
+                .then(r => r.json())
+                .then(d => {
+                    btn.classList.remove('saving');
+                    showToast(d.message || 'Saved!', d.success ? 'success' : 'error');
+                })
+                .catch(err => {
+                    btn.classList.remove('saving');
+                    showToast('Network error. Please try again.', 'error');
+                    console.error(err);
+                });
         }
     </script>
 
