@@ -115,6 +115,55 @@
       background: var(--primary-color);
     }
 
+    /* Chat Dropdown Menu */
+    .chat-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 15px;
+      background: var(--bg-white);
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 160px;
+      padding: 8px 0;
+      display: none;
+      z-index: 100;
+      border: 1px solid #eee;
+    }
+
+    .chat-dropdown.show {
+      display: block;
+      animation: fadeIn 0.15s ease-out;
+    }
+
+    .chat-dropdown-item {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .chat-dropdown-item:hover {
+      background: #f8f9fa;
+    }
+
+    .chat-dropdown-item i {
+      color: var(--text-light);
+      width: 16px;
+      text-align: center;
+    }
+
+    .chat-dropdown-item.danger-action {
+      color: #dc3545;
+    }
+
+    .chat-dropdown-item.danger-action i {
+      color: #dc3545;
+    }
+
     /* ===== SEARCH BAR ===== */
     .search-bar {
       margin: 14px 20px 6px;
@@ -958,10 +1007,6 @@
       </a>
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="font-weight:600;color:var(--text-main);" th:text="${emailId}">User</span>
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-          <button type="submit" class="btn btn-outline"
-            style="padding:4px 12px;font-size:0.8rem;color:var(--text-main);border-color:#ddd;">Logout</button>
-        </form>
       </div>
     </div>
   </nav>
@@ -970,6 +1015,7 @@
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar">
       <div style="margin-bottom:20px;">
+        <div class="sidebar-section-title">Navigation</div>
         <a th:href="@{/discover(emailId=${emailId})}" class="sidebar-link">
           <i class="fas fa-compass"></i> Discover
         </a>
@@ -979,15 +1025,25 @@
         <a th:href="@{/talkrequest(emailId=${emailId})}" class="sidebar-link active">
           <i class="fas fa-comment-dots"></i> Messages
         </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section-title">Profile</div>
         <a th:href="@{/user_dashboard(emailId=${emailId})}" class="sidebar-link">
           <i class="fas fa-user-edit"></i> Edit Profile
         </a>
         <a th:href="@{/user_info(emailId=${emailId})}" class="sidebar-link">
           <i class="fas fa-user"></i> View Profile
         </a>
+
+        <div class="sidebar-divider"></div>
         <button class="sidebar-settings-btn" onclick="openSettings()">
           <i class="fas fa-cog"></i> Settings
         </button>
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+          <button type="submit" class="sidebar-logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </form>
       </div>
     </aside>
 
@@ -1053,7 +1109,8 @@
               <p><strong>No pending requests</strong></p>
               <p>When someone sends you interest, it shows here</p>
             </div>
-            <div th:each="sender, iter : ${senders}" class="req-card">
+            <div th:each="sender, iter : ${senders}" class="req-card" th:data-email="${sender.emailId}"
+              th:data-name="${sender.name}" onclick="if(!event.target.closest('button')) openChat(this.dataset.email, this.dataset.name)">
               <div class="avatar avatar-sm" th:classappend="'gradient-' + ${(#strings.length(sender.emailId) % 6) + 1}"
                 th:text="${sender.name != null ? sender.name.substring(0,1).toUpperCase() : '?'}">T</div>
               <div class="req-details">
@@ -1084,7 +1141,8 @@
               <p><strong>No sent requests</strong></p>
               <p>Your outgoing interest requests appear here</p>
             </div>
-            <div th:each="request : ${sentRequests}" class="req-card">
+            <div th:each="request : ${sentRequests}" class="req-card" th:data-email="${request.toUser != null ? request.toUser.emailId : ''}"
+              th:data-name="${request.toUser != null ? request.toUser.name : 'Unknown'}" onclick="if(!event.target.closest('button')) openChat(this.dataset.email, this.dataset.name)">
               <div class="avatar avatar-sm"
                 th:classappend="'gradient-' + ${(request.toUser != null && request.toUser.emailId != null ? #strings.length(request.toUser.emailId) % 6 : 0) + 1}"
                 th:text="${request.toUser != null && request.toUser.name != null ? request.toUser.name.substring(0,1).toUpperCase() : '?'}">
@@ -1134,8 +1192,19 @@
                 <h4 id="chatName">Name</h4>
                 <span><span class="dot-online"></span> Online</span>
               </div>
-              <div class="chat-top-actions">
-                <button class="icon-btn" title="More options"><i class="fas fa-ellipsis-v"></i></button>
+              <div class="chat-top-actions" style="position: relative;">
+                <button class="icon-btn" title="More options" onclick="toggleChatMenu(event)"><i
+                    class="fas fa-ellipsis-v"></i></button>
+
+                <!-- Chat Context Menu -->
+                <div class="chat-dropdown" id="chatMenu">
+                  <div class="chat-dropdown-item" onclick="viewChatProfile()">
+                    <i class="fas fa-user"></i> View Profile
+                  </div>
+                  <div class="chat-dropdown-item danger-action" onclick="blockChatUser()">
+                    <i class="fas fa-ban"></i> Block User
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1283,10 +1352,10 @@
           pendingRequestId = data.requestId;
           showRequestPrompt(name, 'received');
         } else if (data.status === 'PENDING' && data.direction === 'sent') {
-          // I sent the request, waiting for them
+          // Pending request FROM me — show sent prompt
           showRequestPrompt(name, 'sent');
         } else {
-          // No request exists — show compose bar (fallback)
+          // No connection or unrecognized state — show compose bar as fallback
           showComposeBar();
         }
       }).fail(function () {
@@ -1614,6 +1683,59 @@
 
     // Init
     connectWS();
+
+    /* ===== CHAT MENU ACTIONS ===== */
+    function toggleChatMenu(event) {
+      event.stopPropagation();
+      const menu = document.getElementById('chatMenu');
+      if (menu) {
+        menu.classList.toggle('show');
+      }
+    }
+
+    // Close menu when clicking outside
+    window.addEventListener('click', function (event) {
+      const menu = document.getElementById('chatMenu');
+      if (menu && menu.classList.contains('show') && !event.target.closest('.chat-top-actions')) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function viewChatProfile() {
+      if (!activePeer) return;
+      document.getElementById('chatMenu').classList.remove('show');
+      // Redirect to the contact info page
+      window.location.href = '/matches-contact-info?emailId=' + activePeer + '&viewerEmailId=' + ME;
+    }
+
+    function blockChatUser() {
+      if (!activePeer) return;
+      document.getElementById('chatMenu').classList.remove('show');
+
+      if (confirm('Are you sure you want to block this user? You will no longer receive their messages.')) {
+        $.ajax({
+          url: '/api/block/add',
+          method: 'POST',
+          headers: { [CSRF_HEADER]: CSRF_TOKEN },
+          data: {
+            userId: ME,
+            blockedUserId: activePeer,
+            reason: 'Blocked from chat menu'
+          },
+          success: function (res) {
+            toast('User has been blocked', 'ok');
+            closeChat();
+            // Remove from the sidebar list visually
+            const el = document.querySelector('.convo-item[data-email="' + activePeer + '"]');
+            if (el) el.remove();
+          },
+          error: function (err) {
+            console.error('Error blocking user:', err);
+            toast('Failed to block user', 'fail');
+          }
+        });
+      }
+    }
     /*]]>*/
   </script>
 </body>

@@ -99,10 +99,6 @@
                 <!-- User Payload -->
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="font-weight: 600; color: var(--text-main);" th:text="${emailId}">User</span>
-                    <form th:action="@{/logout}" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-outline"
-                            style="padding: 4px 12px; font-size: 0.8rem; color: var(--text-main); border-color: #ddd;">Logout</button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -112,6 +108,7 @@
         <!-- Sidebar (Desktop) -->
         <aside class="sidebar">
             <div style="margin-bottom: 20px;">
+                <div class="sidebar-section-title">Navigation</div>
                 <a th:href="@{/discover(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-compass"></i> Discover
                 </a>
@@ -121,15 +118,25 @@
                 <a th:href="@{/talkrequest(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-comment-alt"></i> Messages
                 </a>
+
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-section-title">Profile</div>
                 <a th:href="@{/user_dashboard(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-user-edit"></i> Edit Profile
                 </a>
                 <a th:href="@{/user_info(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-user"></i> View Profile
                 </a>
+
+                <div class="sidebar-divider"></div>
                 <button class="sidebar-settings-btn" onclick="openSettings()">
                     <i class="fas fa-cog"></i> Settings
                 </button>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="sidebar-logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
             </div>
         </aside>
 

@@ -271,4 +271,40 @@ public class MatchingService {
         }
         return countPotentialMatchesByEmailId(currentUser.getEmailId());
     }
+
+    public List<User> searchPublicProfiles(String gender, int minAge, int maxAge, String religion, int limit) {
+        System.out.println(
+                "PUBLIC SEARCH: gender=" + gender + ", age=" + minAge + "-" + maxAge + ", religion=" + religion);
+        Query query = new Query();
+
+        // 1. Only show single/divorced
+        query.addCriteria(Criteria.where("maritalStatus")
+                .in("Single", "single", "SINGLE", "Divorced", "divorced", "DIVORCED"));
+
+        // 2. Filter by Gender (if specified)
+        if (gender != null && !gender.trim().isEmpty()) {
+            query.addCriteria(Criteria.where("gender").regex("^" + gender.trim() + "$", "i"));
+        }
+
+        // 3. Filter by Religion (if specified)
+        if (religion != null && !religion.trim().isEmpty()) {
+            query.addCriteria(Criteria.where("religion").regex("^" + religion.trim() + "$", "i"));
+        }
+
+        // 4. Filter by Age
+        // Ensure maxAge is at least minAge (handle defaults if empty)
+        if (minAge <= 0)
+            minAge = 18;
+        if (maxAge <= 0 || maxAge < minAge)
+            maxAge = 100;
+        query.addCriteria(Criteria.where("age").gte(minAge).lte(maxAge));
+
+        // Get limited random/latest profiles
+        // We can sort by id desc to get latest or just limit
+        query.limit(limit);
+
+        List<User> results = mongoTemplate.find(query, User.class);
+        System.out.println("  PUBLIC SEARCH returned " + results.size() + " profiles.");
+        return results;
+    }
 }

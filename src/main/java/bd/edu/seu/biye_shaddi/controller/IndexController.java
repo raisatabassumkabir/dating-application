@@ -225,6 +225,24 @@ public class IndexController {
         return "matches-contact-info";
     }
 
+    @GetMapping("/public-search")
+    public String publicSearch(@RequestParam(required = false) String gender,
+            @RequestParam(required = false, defaultValue = "18") int minAge,
+            @RequestParam(required = false, defaultValue = "100") int maxAge,
+            @RequestParam(required = false) String religion,
+            Model model) {
+
+        List<User> results = matchingService.searchPublicProfiles(gender, minAge, maxAge, religion, 12);
+
+        model.addAttribute("results", results);
+        model.addAttribute("searchGender", gender);
+        model.addAttribute("searchMinAge", minAge);
+        model.addAttribute("searchMaxAge", maxAge);
+        model.addAttribute("searchReligion", religion);
+
+        return "public-search";
+    }
+
     // @GetMapping("/matches-contact-info")
     // public String getMatchesContactInfoPage(@RequestParam String emailId,
     // @RequestParam(required = false) String viewerEmailId, Model model) {

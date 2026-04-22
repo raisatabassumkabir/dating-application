@@ -148,19 +148,38 @@
         }
 
         .back-home {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: var(--text-light);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-main);
+            background: #f8f9fa;
             text-decoration: none;
             font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            margin-bottom: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 50px;
+            border: 1px solid transparent;
+            align-self: flex-start;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .back-home:hover {
             color: var(--primary-color);
+            background: #ffffff;
+            border-color: rgba(255, 107, 107, 0.2);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .back-home i {
+            transition: transform 0.3s ease;
+        }
+
+        .back-home:hover i {
+            transform: translateX(-4px);
         }
     </style>
 </head>

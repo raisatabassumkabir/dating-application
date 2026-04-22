@@ -57,18 +57,29 @@
     <div class="dashboard-layout">
         <aside class="sidebar">
             <div style="margin-bottom: 20px;">
+                <div class="sidebar-section-title">Navigation</div>
                 <a th:href="@{/matches(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-fire"></i> New Matches
                 </a>
                 <a th:href="@{/talkrequest(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-comment-alt"></i> Messages
                 </a>
+
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-section-title">Profile</div>
                 <a th:href="@{/user_dashboard(emailId=${emailId})}" class="sidebar-link">
                     <i class="fas fa-user-edit"></i> Edit Profile
                 </a>
+
+                <div class="sidebar-divider"></div>
                 <button class="sidebar-settings-btn" onclick="openSettings()">
                     <i class="fas fa-cog"></i> Settings
                 </button>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="sidebar-logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
             </div>
         </aside>
 
